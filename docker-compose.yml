@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  dowellscale:
+    build:
+      context: .
+    container_name: dowellscale
+    restart: always
+    command: npm run dev
+
+    ports:
+      - 8003:8003
+    expose:
+      - "8003"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - default
+networks:
+    default:
+        name: webnet
