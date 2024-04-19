@@ -3,8 +3,8 @@ import logo from '../assets/logo.svg';
 import { PiSealCheck } from 'react-icons/pi';
 import { useLocation } from 'react-router-dom';
 import { NpsLiteScaleInterpretation } from '../utils/helper';
-import SubscribeForm from '../Components/Newsletters';
-import SocialLinks from '../Components/SocialLinks';
+// import SubscribeForm from '../Components/Newsletters';
+// import SocialLinks from '../Components/SocialLinks';
 import FeedbackForm from '../Components/FeedbackForm';
 
 function useQuery() {
@@ -34,7 +34,7 @@ function NpsLiteScale() {
         <div className="mt-2">
           <PiSealCheck className="text-green-500 text-5xl md:text-6xl" />
         </div>
-        <h1 className="text-xl md:text-xl font-bold mt-4">{scores}</h1>
+        <h1 className="text-xl md:text-xl font-bold mt-4">Thank you for your response</h1>
       </header>
 
       <section className="bg-white rounded-lg shadow-md p-2 w-full md:w-3/4 lg:w-1/2 mt-4">
@@ -42,9 +42,9 @@ function NpsLiteScale() {
       </section>
 
       <footer className="mt-8 text-center text-gray-600">
-        <SocialLinks />
+        {/* <SocialLinks /> */}
         <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:ml-8">
-          <SubscribeForm />
+          {/* <SubscribeForm /> */}
         </div>
         <p className="mt-4">&copy; 2024 DoWell Research, All rights reserved.</p>
       </footer>
