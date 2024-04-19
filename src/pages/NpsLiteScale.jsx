@@ -16,9 +16,11 @@ function NpsLiteScale() {
   const query = useQuery();
 
   // this may be used later on
-  // const scale_type = query.get('scale_type');
+  const scale_type = query.get('scale_type');
   // const workspace_id = query.get('workspace_id');
   const score = query.get('score');
+  const channel = query.get('channel') || "";
+  const instance = query.get('instance') || "";
 
   useEffect(() => {
     if (score) {
@@ -38,7 +40,7 @@ function NpsLiteScale() {
       </header>
 
       <section className="bg-white rounded-lg shadow-md p-2 w-full md:w-3/4 lg:w-1/2 mt-4">
-        <FeedbackForm />
+        <FeedbackForm scale_type={scale_type} score={score} channel={channel} instance={instance}/>
       </section>
 
       <footer className="mt-8 text-center text-gray-600">

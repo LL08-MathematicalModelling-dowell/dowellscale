@@ -2,13 +2,15 @@ import { useState } from 'react';
 import { sendEmail } from '../utils/services';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
+import CircularProgress from '@mui/material/CircularProgress';
 
-function FeedbackForm() {
+function FeedbackForm({ scale_type, score, channel, instance }) {
   const [feedback, setFeedback] = useState('');
   const [email, setEmail] = useState('');
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertSeverity, setAlertSeverity] = useState('success');
   const [alertMessage, setAlertMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -24,9 +26,17 @@ function FeedbackForm() {
   };
 
   const handleSubmit = async () => {
+    setIsLoading(true);
     try {
       if (feedback.trim() !== '' && email.trim() !== '') {
-        await sendEmail(feedback, email);
+        await sendEmail({
+          message: feedback,
+          email: email,
+          scale_name: scale_type,
+          score: score,
+          channel: channel,
+          instance: instance,
+        });
         setAlertSeverity('success');
         setAlertMessage('Feedback sent successfully!');
         setFeedback('');
@@ -42,6 +52,8 @@ function FeedbackForm() {
       setAlertSeverity('error');
       setAlertMessage('Failed to send feedback. Please try again.');
       setAlertOpen(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -66,8 +78,9 @@ function FeedbackForm() {
       <button
         className="mt-4 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200 ease-in-out"
         onClick={handleSubmit}
+        disabled={isLoading}
       >
-        Submit
+        {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Submit'}
       </button>
       {alertOpen && (
         <Alert
