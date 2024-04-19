@@ -4,7 +4,7 @@ import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import CircularProgress from '@mui/material/CircularProgress';
 
-function FeedbackForm({ scale_type, score, channel, instance }) {
+function FeedbackForm({ scale_type, score, channel, instance, username }) {
   const [feedback, setFeedback] = useState('');
   const [email, setEmail] = useState('');
   const [alertOpen, setAlertOpen] = useState(false);
@@ -36,6 +36,7 @@ function FeedbackForm({ scale_type, score, channel, instance }) {
           score: score,
           channel: channel,
           instance: instance,
+          username: username
         });
         setAlertSeverity('success');
         setAlertMessage('Feedback sent successfully!');

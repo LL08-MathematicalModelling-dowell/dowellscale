@@ -16,6 +16,7 @@ const emailTemplate = `
             <a href="#" style="font-size:1.2em;color: #00466a;text-decoration:none;font-weight:600">Dowell UX Living Lab</a>
           </div>
           <p style="font-size:1.1em">Scale Feedback Form Response</p>
+          <p style="font-size:1.1em">Username: {username}</p>
           <p style="font-size:1.1em">Scale Name: {scale_name}</p>
           <p style="font-size:1.1em">Response Value: {score}</p>
           <p style="font-size:1.1em">Channel: {channel}</p>
@@ -27,14 +28,15 @@ const emailTemplate = `
 </html>
 `;
 
-const sendEmail = async ({ message, email, scale_name, score, channel, instance }) => {
+const sendEmail = async ({ message, email, scale_name, score, channel, instance, username }) => {
     try {
         const emailContent = emailTemplate
             .replace("{scale_name}", scale_name)
             .replace("{score}", score)
             .replace("{channel}", channel)
             .replace("{instance}", instance)
-            .replace("{message}", message);
+            .replace("{message}", message)
+            .replace("{username}", username);
 
         const currentDate = new Date();
         const formattedDate = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
