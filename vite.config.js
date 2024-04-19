@@ -7,4 +7,7 @@ export default defineConfig({
     port: 8003,
   },
   plugins: [react()],
+  base: '/dowellscale/'
 })
+
+// http://localhost:8004/npslitescale/?workspace_id=ABC&scale_type=npslite&score=0
