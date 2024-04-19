@@ -17,5 +17,6 @@ services:
     networks:
       - default
 networks:
-    default:
-        name: webnet
+  webnet:
+    external: true
+    name: webnet
