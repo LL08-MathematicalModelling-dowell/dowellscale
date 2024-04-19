@@ -6,7 +6,7 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/dowellscale" element={<HomePage />} />
         <Route path="/dowellscale/npslitescale" Component={NpsLiteScale} />
       </Routes>
     </>
