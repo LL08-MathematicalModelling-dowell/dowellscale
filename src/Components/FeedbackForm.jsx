@@ -58,6 +58,10 @@ function FeedbackForm({ scale_type, score, channel, instance, username }) {
     }
   };
 
+  const handleCloseTab = () => {
+    window.location.href = 'https://www.uxlivinglab.org/';
+  };
+
   return (
     <>
       <h2 className="text-lg md:text-xl font-semibold mb-4">Write feedback to us</h2>
@@ -82,6 +86,12 @@ function FeedbackForm({ scale_type, score, channel, instance, username }) {
         disabled={isLoading}
       >
         {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Submit'}
+      </button>
+      <button
+        className="mt-4 ml-2 px-6 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition duration-200 ease-in-out"
+        onClick={handleCloseTab}
+      >
+        Close
       </button>
       {alertOpen && (
         <Alert
