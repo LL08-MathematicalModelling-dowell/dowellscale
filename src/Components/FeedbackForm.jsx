@@ -63,10 +63,11 @@ function FeedbackForm({ scale_type, score, channel, instance, username }) {
   };
 
   return (
-    <>
-      <h2 className="text-lg md:text-xl font-semibold mb-4">Write feedback to us</h2>
+    <div className="flex flex-col items-center justify-center">
+      <h2 className="text-lg md:text-xl font-semibold text-red-500 mb-4">Write feedback to us</h2>
+      <hr className="w-1/2 border border-gray-300 mb-4" />
       <textarea
-        className="w-full p-3 border rounded-md resize-none focus:border-blue-500 focus:outline-none h-32"
+        className="w-80 md:w-full p-3 border rounded-md resize-none focus:border-blue-500 focus:outline-none h-32"
         placeholder="Write here"
         name="feedback"
         value={feedback}
@@ -74,25 +75,27 @@ function FeedbackForm({ scale_type, score, channel, instance, username }) {
       ></textarea>
       <input
         type="email"
-        className="w-full p-3 mt-4 border rounded-md focus:border-blue-500 focus:outline-none"
+        className="w-80 md:w-full p-3 mt-4 border rounded-md focus:border-blue-500 focus:outline-none"
         placeholder="Your Email"
         name="email"
         value={email}
         onChange={handleInputChange}
       />
-      <button
-        className="mt-4 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200 ease-in-out"
-        onClick={handleSubmit}
-        disabled={isLoading}
-      >
-        {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Submit'}
-      </button>
-      <button
-        className="mt-4 ml-2 px-6 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition duration-200 ease-in-out"
-        onClick={handleCloseTab}
-      >
-        Close
-      </button>
+      <div className="flex mt-4">
+        <button
+          className="mr-2 px-6 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition duration-200 ease-in-out"
+          onClick={handleCloseTab}
+        >
+          Close
+        </button>
+        <button
+          className="px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition duration-200 ease-in-out"
+          onClick={handleSubmit}
+          disabled={isLoading}
+        >
+          {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Submit'}
+        </button>
+      </div>
       {alertOpen && (
         <Alert
           onClose={handleCloseAlert}
@@ -103,8 +106,9 @@ function FeedbackForm({ scale_type, score, channel, instance, username }) {
           {alertMessage}
         </Alert>
       )}
-    </>
+    </div>
   );
 }
 
 export default FeedbackForm;
+
