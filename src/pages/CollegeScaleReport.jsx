@@ -13,7 +13,7 @@ import axios from "axios";
 const instanceNames = {
   instance_1: "Attendance",
   instance_2: "Re-Explaination",
-  instance_3: "Uderstatood",
+  instance_3: "understood",
   instance_4: "Explaination",
   instance_5: "Application in life",
 };
