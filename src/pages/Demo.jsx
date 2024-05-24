@@ -46,11 +46,13 @@ export default function Demo() {
     };
 
     const handleSubmission=(index,i)=>{
+        if(!answered[index]){
         localStorage.setItem(`answered[${index}]`,i)
         window.location.href=
         `https://100035.pythonanywhere.com/addons/create-response/v3/?user=True&scale_type=nps_lite&channel=channel_1&instance=instance_${index+1}
         &workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=66506bd4134317e89f2e207b&item=${i}`
     }
+}
     useEffect(()=>{
         let arr=[false,false,false,false,false]
         let clickArr=[]
