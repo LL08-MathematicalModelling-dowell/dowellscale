@@ -55,8 +55,8 @@ export default function Demo() {
         let arr=[false,false,false,false,false]
         let clickArr=[]
         for(let i=0;i<4;i++){
-          localStorage.removeItem(`answered[${i}]`)
-          localStorage.removeItem(`clicked[${i}]`)
+        //   localStorage.removeItem(`answered[${i}]`)
+        //   localStorage.removeItem(`clicked[${i}]`)
            arr[i]=localStorage.getItem(`answered[${i}]`) ? true : false
            clickArr[i]=localStorage.getItem(`clicked[${i}]`) ? true : false
         }
