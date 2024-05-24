@@ -70,10 +70,10 @@ export default function Demo() {
                 <p className="mt-5">MVJ College Of Engineering</p>
                 <p>Bengaluru</p>
             </div>
-            <div className="flex flex-col justify-center items-center w-full mt-3 gap-6 sm:gap-2">
+            <div className="flex flex-col justify-center items-center  w-[80%] ml-auto  mt-3 gap-6 sm:gap-2">
                 {questions.map((question, index) => (
                     <div key={index} className="flex flex-col justify-center items-center w-full mb-4 ">
-                        <div className="flex justify-start items-center gap-2 sm:gap-8 w-[100%] lg:w-[65%]  px-4">
+                        <div className="flex justify-start items-center gap-1 sm:gap-8 w-[100%]   px-4">
    
                           <img src={images[index]} alt="image" className="lg:w-[100px] sm:w-[70px] w-[30px]"/>
 
@@ -84,7 +84,7 @@ export default function Demo() {
                         )}
                         </div>
                             <button
-                                className={`rounded-full sm:w-[32px] sm:h-[32px] h-[16px] w-[16px] flex items-center justify-center text-white text-lg font-semibold ${
+                                className={`rounded-full md:w-[32px] md:h-[32px] h-[16px] w-[16px] flex items-center justify-center text-white text-lg font-semibold ${
                                     clicked[index] ? 'bg-green-500' : 'bg-gray-500'
                                 }`}
                                 onClick={() => handleButtonClick(index)}
@@ -98,7 +98,7 @@ export default function Demo() {
                                         handleSubmission(index,i)
                                        
                                     }}
-                                      className="bg-green-500 font-medium border-none relative rounded-full cursor-pointer text-[9px] sm:text-[10px] md:text-[12px] lg:text-[16px] py-[8px] px-[6px] sm:px-[12px] md:p-2 md:px-4">{data} </button>
+                                      className="bg-green-500 font-medium border-none relative rounded-full cursor-pointer text-[9px] sm:text-[10px] md:text-[12px] lg:text-[16px] py-[8px] px-[4px]  md:p-2 md:px-3">{data} </button>
                                 ))}
                              
                             </div>
