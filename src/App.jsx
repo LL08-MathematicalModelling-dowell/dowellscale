@@ -16,8 +16,8 @@ function App() {
         <Route path="/dowellscale/report" Component={ReportPage} />
         <Route path="/dowellscale/dowellscaleforcollege" Component={DowellScaleForCollege} />
         <Route path="/dowellscale/dowellscalecollegereport" Component={DowellScaleForCollegeReport} />
-        <Route path="/dowellscale/dowellscalecollegereport/demo" Component={Demo} />
-        <Route path="/dowellscale/dowellscalecollegereport/evaluate" Component={Evaluate} />
+        <Route path="/dowellscale/teacher" Component={Demo} />
+        <Route path="/dowellscale/teacherevaluation" Component={Evaluate} />
       </Routes>
     </>
   );
