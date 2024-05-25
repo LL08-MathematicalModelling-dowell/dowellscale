@@ -6,6 +6,7 @@ import DowellScaleForCollege from "./pages/DowellScaleForCollege";
 import DowellScaleForCollegeReport from "./pages/CollegeScaleReport";
 import Demo from "./pages/Demo";
 import Evaluate from "./pages/Evaluate";
+import TeacherReport from "./pages/TeacherReport";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/dowellscale/dowellscalecollegereport" Component={DowellScaleForCollegeReport} />
         <Route path="/dowellscale/teacher" Component={Demo} />
         <Route path="/dowellscale/teacherevaluation" Component={Evaluate} />
+        <Route path="/dowellscale/teacherevaluationreport" Component={TeacherReport} />
       </Routes>
     </>
   );

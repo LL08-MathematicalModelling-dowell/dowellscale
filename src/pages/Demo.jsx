@@ -25,11 +25,11 @@ export default function Demo() {
     const handleButtonClick = async(index) => {
      
         if(!clicked[index]){
-        if (index !== 0) {
-            for (let i = 0; i < index; i++) {
-                if (!answered[i]) return;
-            }
-        }
+        // if (index !== 0) {
+        //     for (let i = 0; i < index; i++) {
+        //         if (!answered[i]) return;
+        //     }
+        // }
         try{
             localStorage.setItem(`clicked[${index}]`,index)
             let newClicked = [...clicked];
@@ -44,7 +44,7 @@ export default function Demo() {
        
     }
     };
-
+console.log(clicked)
     const handleSubmission=(index,i)=>{
         if(!answered[index]){
         localStorage.setItem(`answered[${index}]`,i)
@@ -56,7 +56,7 @@ export default function Demo() {
     useEffect(()=>{
         let arr=[false,false,false,false,false]
         let clickArr=[]
-        for(let i=0;i<4;i++){
+        for(let i=0;i<5;i++){
         //   localStorage.removeItem(`answered[${i}]`)
         //   localStorage.removeItem(`clicked[${i}]`)
            arr[i]=localStorage.getItem(`answered[${i}]`) ? true : false
@@ -81,17 +81,17 @@ export default function Demo() {
 
                             <div className="flex flex-col gap-2 min-w-[80px] md:min-w-[150px] lg:min-w-[200px] w-1/4 justify-center items-center">
                             <div className="lg:text-lg font-semibold md:text-[14px] text-[10px]">{question}</div>
-                            {answered[index] && index < questions.length - 1 && (
+                            { index < questions.length - 1 && (
                             <ImArrowDown className="text-[32px] bg-white  text-red-600 mt-4 " />
                         )}
                         </div>
                             <button
                                 className={`rounded-full sm:w-[32px] sm:h-[32px] h-[16px] w-[16px] flex items-center justify-center text-white text-lg font-semibold ${
-                                    clicked[index] ? 'bg-green-500' : 'bg-gray-500'
+                                    answered[index]?"bg-green-500" :clicked[index] ? 'bg-orange-500' : 'bg-gray-500'
                                 }`}
                                 onClick={() => handleButtonClick(index)}
                             >
-                                {clicked[index] && <span className="p-2">&#10003;</span>}
+                                {answered[index] && <span className="p-2">&#10003;</span>}
                             </button>
                             {clicked[index] && (
                             <div className="flex justify-center items-center gap-2  mt-2">
@@ -110,6 +110,11 @@ export default function Demo() {
                        
                     </div>
                 ))}
+            </div>
+            <div className="flex flex-col gap-3 justify-center items-start ml-[50%] mb-4 w-max border-2 p-4 border-gray-300 text-[10px] md:text-[14px]">
+                 <p className="flex justify-end items-center gap-2 "><span className="h-[8px] w-[8px] bg-gray-500"></span>Unanswered</p>
+                 <p className="flex justify-end items-center gap-2 "><span className="h-[8px] w-[8px] bg-orange-500"></span>Pending</p>
+                 <p className="flex justify-end items-center gap-2 "><span className="h-[8px] w-[8px] bg-green-500"></span>Answered</p>
             </div>
         </div>
     );
