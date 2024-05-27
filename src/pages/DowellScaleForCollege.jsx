@@ -68,7 +68,7 @@ export default function DowellScaleForCollege() {
             let newClicked = [...clicked];
             newClicked[index] = true;
             setClicked(newClicked);  
-        const response=await axios.get(`https://100035.pythonanywhere.com/addons/create-response/v3/?user=False&scale_type=likert&channel=channel_1&instance=instance_1&workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=66549d0f7c92b1b38c9c53da&item=${index+1}`)
+        const response=await axios.get(`https://100035.pythonanywhere.com/addons/create-response/v3/?user=False&scale_type=likert&channel=channel_1&instance=instance_1&workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=66506bd4134317e89f2e207b&item=${index+1}`)
      
        
         }catch(error){
@@ -93,12 +93,12 @@ console.log(clicked)
                 console.log(type)
                 if(type=="False"){
                     const response=await axios.get(`https://100035.pythonanywhere.com/addons/create-response/v3/?user=${type}&scale_type=nps_lite&channel=channel_1&instance=instance_${index+1}
-                    &workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=66549d0f7c92b1b38c9c53da&item=${i}`) 
+                    &workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=66506bd4134317e89f2e207b&item=${i}`) 
                 }
               
                else{
                 let link=`https://100035.pythonanywhere.com/addons/create-response/v3/?user=${type}&scale_type=nps_lite&channel=channel_1&instance=instance_${index+1}
-                &workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=66549d0f7c92b1b38c9c53da&item=${i}`
+                &workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=66506bd4134317e89f2e207b&item=${i}`
                 window.open(link, '_blank', 'width=800,height=600,scrollbars=yes');
 
               

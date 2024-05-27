@@ -246,7 +246,7 @@ const App = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        "https://100035.pythonanywhere.com/addons/get-response/?scale_id=66549d0f7c92b1b38c9c53da"
+        "https://100035.pythonanywhere.com/addons/get-response/?scale_id=66506bd4134317e89f2e207b"
       );
       const data = response.data.data;
 
