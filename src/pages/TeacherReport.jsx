@@ -1,5 +1,6 @@
 import { useEffect,useState } from "react"
 import axios from "axios"
+import LineChart from "../Components/LineChart"
 const channels=["Classroom"]
 const instances=["Student feedback" ]
 export default function TeacherReport(){
@@ -38,7 +39,7 @@ const responseOptions=["Reading","Understanding","Explaining","Evaluating","Appl
         }
     }
 
-    console.log(data[channelName])
+    console.log(data[channelName] && data[channelName][feedbackName] ? data[channelName][feedbackName].learningIndex || 0 :1000)
     return(
         <>
         {loading ? (
@@ -79,7 +80,7 @@ const responseOptions=["Reading","Understanding","Explaining","Evaluating","Appl
 
             <p className="flex justify-center mt-4 text-lg">Total Responses :{data[channelName] && data[channelName][feedbackName] ? data[channelName][feedbackName].totalCount || 0 : 0}</p>
             <p className="flex justify-center mt-4 text-lg">Scores :</p>
-            <div className="grid  gap-8  p-4 w-[80%]  ml-auto ">
+            <div className="grid  gap-8  p-4 w-[90%] lg:w-[80%]  ml-auto ">
                 {responseOptions.map((option,i)=>(
                     <div key={i} className="flex flex-col text-[18px]  gap-3   min-w-[50%] w-max">
                         <p>{option} : {data[channelName] && data[channelName][feedbackName] ?data[channelName][feedbackName] .individualCount[option.toLowerCase()] :""}  ({channelName=="Classroom" &&  classroomData[feedbackName].percentages[option.toLowerCase()].toFixed(1) } %)</p>
@@ -102,8 +103,9 @@ const responseOptions=["Reading","Understanding","Explaining","Evaluating","Appl
                     </div>
 
                 ))}
+          <LineChart/>
+
             </div>
-          
              </div>
                 )}
         </>
