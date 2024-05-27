@@ -142,7 +142,7 @@ const App = () => {
       data.filter(
         (item) =>
           item.channel_name === selectedChannel &&
-          item.instance_name === selectedInstance
+          item.instance_name.trim() === selectedInstance
       )
     );
 
@@ -177,7 +177,7 @@ const App = () => {
 
     const allData = instances.map((instance) => {
       const dataForInstance = data.filter(
-        (item) => item.instance_name === instance
+        (item) => item.instance_name.trim() === instance
       );
       const scoreCounts = {
         No: {
@@ -386,7 +386,7 @@ const App = () => {
                     align="left"
                     style={{ marginTop: "32px", marginBottom: "10px" }}
                   >
-                    {index + 1}. {instanceNames[item?.instanceName]}
+                    {index + 1}. {instanceNames[item?.instanceName.trim()]}
                   </Typography>
 
                   <Typography
