@@ -25,7 +25,6 @@ export default function DowellScaleForCollege() {
     const [answered, setAnswered] = useState([false, false, false, false, false]);
     const[toggleFeedback,setToggleFeedback]=useState(5)
     const[togglePopup,setTogglePopup]=useState(false)
-    const[loading,setLoading]=useState(false)
     const[indexData,setIndexData]=useState(-1)
 
     
@@ -63,18 +62,13 @@ export default function DowellScaleForCollege() {
         }
     }
         if(!clicked[index]){
-        // if (index !== 0) {
-        //     for (let i = 0; i < index; i++) {
-        //         if (!answered[i]) return;
-        //     }
-        // }
-       
+    
         try{
             localStorage.setItem(`clicked[${index}]`,index)
             let newClicked = [...clicked];
             newClicked[index] = true;
             setClicked(newClicked);  
-        const response=await axios.get(`https://100035.pythonanywhere.com/addons/create-response/v3/?user=False&scale_type=likert&channel=channel_1&instance=instance_1&workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=66506bd4134317e89f2e207b&item=${index+1}`)
+        const response=await axios.get(`https://100035.pythonanywhere.com/addons/create-response/v3/?user=False&scale_type=likert&channel=channel_1&instance=instance_1&workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=66549d0f7c92b1b38c9c53da&item=${index+1}`)
      
        
         }catch(error){
@@ -99,12 +93,12 @@ console.log(clicked)
                 console.log(type)
                 if(type=="False"){
                     const response=await axios.get(`https://100035.pythonanywhere.com/addons/create-response/v3/?user=${type}&scale_type=nps_lite&channel=channel_1&instance=instance_${index+1}
-                    &workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=66506bd4134317e89f2e207b&item=${i}`) 
+                    &workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=66549d0f7c92b1b38c9c53da&item=${i}`) 
                 }
               
                else{
                 let link=`https://100035.pythonanywhere.com/addons/create-response/v3/?user=${type}&scale_type=nps_lite&channel=channel_1&instance=instance_${index+1}
-                &workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=66506bd4134317e89f2e207b&item=${i}`
+                &workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=66549d0f7c92b1b38c9c53da&item=${i}`
                 window.open(link, '_blank', 'width=800,height=600,scrollbars=yes');
 
               
@@ -152,35 +146,47 @@ console.log(clicked)
       
       }
 
-      const PopUp=({onCancel,onConfirm,onMaybe})=>{
-        return(
-           <div className="fixed top-[35%] md:left-[40%] sm:left-[30%] left-[20%] w-max  md:w-max h-max p-5 rounded-lg bg-gray-200" style={{ fontFamily: 'Roboto, sans-serif' }}>
-            <p className="mt-3 ">Do you want to give feedback?</p>
-             <div className="flex gap-8 justify-center items-center mt-3">
-             <button className="p-2 md:px-8 bg-[#129561] rounded" onClick={()=>onConfirm()}>Yes</button>
-         
-             {toggleFeedback==5  ? (
-                  <button className="p-2 md:px-8 bg-yellow-400 rounded" onClick={()=>onMaybe()}>Maybe later</button>
-             ):(
-                <button className="p-2 md:px-8 bg-[#ff4a4a]  rounded" onClick={onCancel}>No</button>
-             )}
-           
-             </div>
-           </div>
-        )
-    }
-    async function df(){
-        console.log("wdcwd")
-        const response=`https://100035.pythonanywhere.com/addons/create-response/v3/?user=True&scale_type=nps_lite&channel=channel_1&instance=instance_1&workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=66506bd4134317e89f2e207b&item=0`
-        console.log(response.data)
-    }
+      console.log(toggleFeedback)
+      const PopUp = ({ onCancel, onConfirm, onMaybe }) => {
+        return (
+            <div 
+                className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" 
+                style={{ fontFamily: 'Roboto, sans-serif' }}
+            >
+                <div className="bg-gray-200 rounded-lg p-5 shadow-lg">
+                    <p className="text-center text-lg">Do you want to give feedback?</p>
+                    <div className="flex gap-4 justify-center items-center mt-4">
+                        <button 
+                            className="p-2 md:px-8 bg-[#129561] text-white rounded hover:bg-[#0e7b4e]" 
+                            onClick={onConfirm}
+                        >
+                            Yes
+                        </button>
+                        {toggleFeedback === 5 ? (
+                            <button 
+                                className="p-2 md:px-8 bg-yellow-400 text-white rounded hover:bg-yellow-500" 
+                                onClick={onMaybe}
+                            >
+                                Maybe later
+                            </button>
+                        ) : (
+                            <button 
+                                className="p-2 md:px-8 bg-[#ff4a4a] text-white rounded hover:bg-[#d93b3b]" 
+                                onClick={onCancel}
+                            >
+                                No
+                            </button>
+                        )}
+                    </div>
+                </div>
+            </div>
+        );
+    };
+    
+
     return (
         <div className="relative">
-        {loading ?(
-            <>
-           <LoadingScreen/>
-            </>
-        ):(
+       
             <>
               <div className="w-full flex flex-col justify-center items-center text-[18px] font-bold text-red-500 p-2 mt-3">
                 <p className="mt-5">MVJ College Of Engineering</p>
@@ -232,7 +238,7 @@ console.log(clicked)
             </div>
             {togglePopup && <PopUp onCancel={onCancel} onConfirm={onConfirm} onMaybe={onMaybe}/>}
             </>
-        )}
+        
           
         </div>
     );

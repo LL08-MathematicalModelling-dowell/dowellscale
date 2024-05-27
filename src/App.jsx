@@ -7,7 +7,7 @@ import DowellScaleForCollegeReport from "./pages/CollegeScaleReport";
 import DowellScaleForCollege from "./pages/DowellScaleForCollege";
 import Evaluate from "./pages/Evaluate";
 import TeacherReport from "./pages/teacher/TeacherReport";
-
+import ReportDemo from "./pages/ReportDemo"
 function App() {
   return (
     <>
@@ -18,8 +18,10 @@ function App() {
         {/* {routes for questions} */}
 
         <Route path="/dowellscale/dowellscaleforcollege" Component={DowellScaleForCollege} />
-        <Route path="/dowellscale/dowellscalecollegereport" Component={DowellScaleForCollegeReport} />
+        <Route path="/dowellscale/dowellscaleforcollege/demoreport" Component={ReportDemo} />
 
+
+        <Route path="/dowellscale/dowellscalecollegereport" Component={DowellScaleForCollegeReport} />
         {/* routes for 0-10 ratings */}
         <Route path="/dowellscale/teacherevaluation" Component={Evaluate} />
         <Route path="/dowellscale/teacherevaluationreport" Component={TeacherReport} />
