@@ -23,6 +23,7 @@ export default function DowellScaleForCollege() {
     const [clicked, setClicked] = useState([false, false, false, false, false]);
     const [showButton, setShowButton] = useState([false, false, false, false, false]);
     const [answered, setAnswered] = useState([false, false, false, false, false]);
+    const[responseCount,setResponseCount]=useState(0)
     const[toggleFeedback,setToggleFeedback]=useState(5)
     const[togglePopup,setTogglePopup]=useState(false)
     const[indexData,setIndexData]=useState(-1)
@@ -37,7 +38,11 @@ export default function DowellScaleForCollege() {
         //   localStorage.removeItem(`clicked[${i}]`)
         //   localStorage.removeItem(`showButton[${i}]`)
         // localStorage.removeItem(`feedback`)
+        let count=0
            arr[i]=localStorage.getItem(`answered[${i}]`) ? true : false
+           if(arr[i])
+           count++
+        setResponseCount(count)
            clickArr[i]=localStorage.getItem(`clicked[${i}]`) ? true : false
            showArr[i]=localStorage.getItem(`showButton[${i}]`) ? true : false
            setToggleFeedback(localStorage.getItem(`feedback`) || 5)
@@ -82,6 +87,7 @@ console.log(clicked)
         let type
         if(!answered[index]){
                 localStorage.setItem(`answered[${index}]`,i)
+                setResponseCount((prev)=>prev+1)
                 let newAnswered = [...answered];
                 newAnswered[index] = true;
                 setAnswered(newAnswered); 
@@ -103,6 +109,16 @@ console.log(clicked)
 
               
                }
+            console.log(responseCount)
+               if(responseCount==4){
+                console.log("hello")
+                for(let i=0;i<5;i++){
+                      localStorage.removeItem(`answered[${i}]`)
+                      localStorage.removeItem(`clicked[${i}]`)
+                      localStorage.removeItem(`showButton[${i}]`)
+                    localStorage.removeItem(`feedback`)
+               }
+            }
                
             
            
