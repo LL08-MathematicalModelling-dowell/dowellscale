@@ -280,11 +280,11 @@ const App = () => {
 
   const handleInstanceSelect = (event) => {
     setSelectedInstance(event.target.value);
-
+console.log(data)
     // Filter data based on the selected instance and channel
     const filteredData = data.filter(
       (item) =>
-        item.instance_name === event.target.value &&
+        item.instance_name.trim() === event.target.value &&
         item.channel_name === selectedChannel
     );
 console.log(filteredData)
@@ -416,7 +416,7 @@ console.log(filteredData)
                             >
                               {`${score}: ${data.count} (${data.percentage.toFixed(
                                 2
-                              )}%)`}
+                              ) || 0}%)`}
                             </Typography>
                             <LinearProgress
                               variant="determinate"
@@ -487,7 +487,7 @@ console.log(filteredData)
                   </Typography>
                   <LinearProgress
                     variant="determinate"
-                    value={data.percentage}
+                    value={data.percentage || 0}
                     sx={{
                       height: "10px",
                       borderRadius: "10px",
