@@ -6,7 +6,7 @@ import DowellScaleForCollege from "./pages/DowellScaleForCollege";
 import DowellScaleForCollegeReport from "./pages/CollegeScaleReport";
 import Demo from "./pages/Demo";
 import Evaluate from "./pages/Evaluate";
-import TeacherReport from "./pages/TeacherReport";
+import TeacherReport from "./pages/teacher/TeacherReport";
 
 function App() {
   return (

@@ -1,3 +1,5 @@
+import classImage from "../../src/assets/images/class.png"
+
 const buttons=[0,1,2,3,4,5,6,7,8,9,10]
 export default function Evaluate(){
 
@@ -6,12 +8,12 @@ export default function Evaluate(){
     }
 
     return(
-        <div className="w-[100%] flex flex-col justify-center items-center gap-16 md:gap-8 lg:gap-8 flex-wrap">
+        <div className="w-[100%] flex flex-col justify-center items-center gap-16 md:gap-8 lg:gap-4 flex-wrap">
          <img src='https://i0.wp.com/dowellresearch.de/wp-content/uploads/2023/04/true-moments-logo-1-1-442919954-1538479590775-1.webp?w=382&ssl=1' alt='dowelllogo'
          className="mt-2 " />
         <div className="w-[90%] flex flex-col justify-center items-center ">
-         <div className="sm:w-max w-[80%] bg-[#c5e8c2] p-5 mt-5 flex flex-col justify-center items-center gap-5">
-            <img className="md:w-max w-[200px]" src="https://cdn.discordapp.com/attachments/1232601880878776320/1243523195609288734/image.png?ex=6651c8b9&is=66507739&hm=fe526275a0ccbd40ea60f31c2c8a71259cba621ab5ad1390c3338dbdbc11ce7d&" alt="class image"/>
+         <div className="sm:w-max w-[80%] bg-[#c5e8c2] p-5 mt-3 flex flex-col justify-center items-center gap-5">
+            <img className="md:w-max w-[200px]" src={classImage} alt="class image"/>
            <p className="text-[18px] font-bold">HOW WOULD YOU EVALUATE TODAY'S LEARNING ?</p>
            <div className="flex justify-center gap-1 sm:gap-2 items-center  bg-white p-2 md:p-3 lg:px-8 border-2 border-[#bfbfbf] w-max">
                 {buttons.map((score, index)=>(
@@ -27,7 +29,7 @@ export default function Evaluate(){
                 </div>
          </div>
          </div>
-         <p className="text-[14px]">www.dowellresearch.sg</p>
+         <p className="text-[12px]">www.dowellresearch.sg</p>
         </div>
     )
 }

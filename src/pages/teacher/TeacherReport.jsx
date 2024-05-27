@@ -1,6 +1,7 @@
 import { useEffect,useState } from "react"
 import axios from "axios"
-import LineChart from "../Components/LineChart"
+import LineChart from "../../Components/LineChart"
+import './TeacherReport.css';
 const channels=["Classroom"]
 const instances=["Student feedback" ]
 export default function TeacherReport(){
@@ -40,12 +41,21 @@ const responseOptions=["Reading","Understanding","Explaining","Evaluating","Appl
     }
     const index=data[channelName] && data[channelName][feedbackName] ? data[channelName][feedbackName].learningIndex || 0 :0
     const totalCount=data[channelName] && data[channelName][feedbackName] ? data[channelName][feedbackName].totalCount || 0 : 0
+    console.log(index,totalCount)
     return(
         <>
         {loading ? (
+            <>
            <div className="flex justify-center items-center h-screen w-screen">
-           <div className="border rounded-full border-orange-600 h-24 w-24 flex items-center justify-center">loading...</div>
+           <button type="button" className="bg-indigo-500 text-white py-2 px-4 rounded flex items-center" disabled>
+        <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+          <path d="M4 12a8 8 0 018-8" stroke="currentColor" strokeWidth="4" fill="none" />
+        </svg>
+        Loading...
+      </button>
          </div>
+         </>
         ):(
        <div>
         
