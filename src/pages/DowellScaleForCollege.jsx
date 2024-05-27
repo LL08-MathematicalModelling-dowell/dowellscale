@@ -6,7 +6,7 @@ import brainImage from "../assets/images/brain.png";
 import discussionImage from "../assets/images/discussion.png";
 import developmentImage from "../assets/images/development.png";
 import axios from "axios";
-import LoadingScreen from "../Components/LoadingScree";
+
 // const buttonLinks=["https://100035.pythonanywhere.com/addons/create-response/v3/?user=True&scale_type=nps_lite&channel=channel_1&instance=instance_1&workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=6645f30f1cddfeac941274cb&item=0",
 // "https://100035.pythonanywhere.com/addons/create-response/v3/?user=True&scale_type=nps_lite&channel=channel_1&instance=instance_1&workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=6645f30f1cddfeac941274cb&item=1",
 // "https://100035.pythonanywhere.com/addons/create-response/v3/?user=True&scale_type=nps_lite&channel=channel_1&instance=instance_1&workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=6645f30f1cddfeac941274cb&item=2"]

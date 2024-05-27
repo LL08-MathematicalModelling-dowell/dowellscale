@@ -41,7 +41,8 @@ const responseOptions=["Reading","Understanding","Explaining","Evaluating","Appl
     }
     const index=data[channelName] && data[channelName][feedbackName] ? data[channelName][feedbackName].learningIndex || 0 :0
     const totalCount=data[channelName] && data[channelName][feedbackName] ? data[channelName][feedbackName].totalCount || 0 : 0
-    console.log(index,totalCount)
+    const percentages=data[channelName] && data[channelName][feedbackName] ? data[channelName][feedbackName].percentages || 0 : 0
+    console.log(percentages)
     return(
         <>
         {loading ? (
@@ -93,10 +94,10 @@ const responseOptions=["Reading","Understanding","Explaining","Evaluating","Appl
             <div className="grid  gap-8  p-4 w-[90%] lg:w-[80%]  ml-auto ">
                 {responseOptions.map((option,i)=>(
                     <div key={i} className="flex flex-col text-[18px]  gap-3   min-w-[50%] w-max">
-                        <p>{option} : {data[channelName] && data[channelName][feedbackName] ?data[channelName][feedbackName] .individualCount[option.toLowerCase()] :""}  ({channelName=="Classroom" &&  classroomData[feedbackName].percentages[option.toLowerCase()].toFixed(1) } %)</p>
+                        <p>{option} : {data[channelName] && data[channelName][feedbackName] ?data[channelName][feedbackName].individualCount[option.toLowerCase()] :""}  ({data[channelName] && data[channelName][feedbackName] ?data[channelName][feedbackName].percentages[option.toLowerCase()].toFixed(1) : 0} %)</p>
                         <span className="h-4 w-full bg-indigo-300 rounded-lg">
             <span style={{
-                width: `${data[channelName] && data[channelName][feedbackName] ?data[channelName][feedbackName] .percentages[option.toLowerCase()] : 0}%`,
+                width: `${data[channelName] && data[channelName][feedbackName] ?data[channelName][feedbackName].percentages[option.toLowerCase()] : 0}%`,
                 backgroundColor: (() => {
               
                 if (option=="Reading") return '#FF0000';        // Red

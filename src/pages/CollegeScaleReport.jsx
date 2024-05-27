@@ -46,12 +46,12 @@ const ScaleReport = () => {
         "https://100035.pythonanywhere.com/addons/get-response/?scale_id=6645f30f1cddfeac941274cb"
       );
       const data = response.data.data;
-
+  
       const uniqueChannels = Array.from(
         new Set(data.map((item) => item.channel_name))
       );
       const uniqueInstances = Array.from(
-        new Set(data.map((item) => item.instance_name))
+        new Set(data.map((item) => item.instance_name.trim()))
       );
 
       setChannels(uniqueChannels);

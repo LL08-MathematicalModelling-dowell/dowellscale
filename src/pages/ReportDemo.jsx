@@ -254,7 +254,7 @@ const App = () => {
         new Set(data.map((item) => item.channel_name))
       );
       const uniqueInstances = Array.from(
-        new Set(data.map((item) => item.instance_name))
+        new Set(data.map((item) => item.instance_name.trim()))
       );
 
       setChannels([allChannelsNameTag, ...uniqueChannels]);
@@ -287,7 +287,7 @@ const App = () => {
         item.instance_name === event.target.value &&
         item.channel_name === selectedChannel
     );
-
+console.log(filteredData)
     // Count occurrences of each score
     const scoreCounts = { No: 0, Maybe: 0, Yes: 0 };
     filteredData.forEach((item) => {
