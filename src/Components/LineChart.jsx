@@ -16,20 +16,41 @@ import {Chart as ChartJS,
         Legend,
         Tooltip
     )
-export default function LineChart(){
-    const options={}
-    const data={
-        labels:[
-            0,10,20,30,40,50
-        ],
-        datasets:[
-            {
-                label:"Learning Index",
-                data:[0,1,3,2,5,4],
-                borderColor:"rgb(75,192,192)"
+export default function LineChart({indexes,total}){
+    const options = {
+        scales: {
+          y: {
+            ticks: {
+              stepSize: 1,
+              min: 0,
+              max: 5
+            },
+            beginAtZero: true
+          },
+          x: {
+            type: 'linear',
+            position: 'bottom',
+            ticks: {
+              stepSize: 10,
+              min: 0,
+              max: 50
             }
-        ]
-    }
+          }
+        }
+      };
+ let data
+
+        data={
+            labels:total,
+            datasets:[
+                {
+                    label:"Learning Index",
+                    data:indexes,
+                    borderColor:"rgb(75,192,192)"
+                }
+            ]
+        }
+    
     return(
         <div className=" w-[80%]">
         <p className="w-full flex justify-center items-center text-2xl mt-3 text-orange-600 p-2 font-medium">Graphical view </p>

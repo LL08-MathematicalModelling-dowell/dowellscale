@@ -38,8 +38,8 @@ const responseOptions=["Reading","Understanding","Explaining","Evaluating","Appl
             console.log("finally")
         }
     }
-
-    console.log(data[channelName] && data[channelName][feedbackName] ? data[channelName][feedbackName].learningIndex || 0 :1000)
+    const index=data[channelName] && data[channelName][feedbackName] ? data[channelName][feedbackName].learningIndex || 0 :0
+    const totalCount=data[channelName] && data[channelName][feedbackName] ? data[channelName][feedbackName].totalCount || 0 : 0
     return(
         <>
         {loading ? (
@@ -78,7 +78,7 @@ const responseOptions=["Reading","Understanding","Explaining","Evaluating","Appl
             </select>
        </div>
 
-            <p className="flex justify-center mt-4 text-lg">Total Responses :{data[channelName] && data[channelName][feedbackName] ? data[channelName][feedbackName].totalCount || 0 : 0}</p>
+            <p className="flex justify-center mt-4 text-lg">Total Responses :{totalCount}</p>
             <p className="flex justify-center mt-4 text-lg">Scores :</p>
             <div className="grid  gap-8  p-4 w-[90%] lg:w-[80%]  ml-auto ">
                 {responseOptions.map((option,i)=>(
@@ -103,7 +103,8 @@ const responseOptions=["Reading","Understanding","Explaining","Evaluating","Appl
                     </div>
 
                 ))}
-          <LineChart/>
+               {totalCount!=0 &&   <LineChart indexes={[index,3,1,4]} total={[totalCount,12,23,40]}/>}
+        
 
             </div>
              </div>
