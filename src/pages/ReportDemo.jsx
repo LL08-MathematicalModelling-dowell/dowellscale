@@ -261,7 +261,7 @@ const App = () => {
       setInstances(uniqueInstances);
       setData(data);
       setLoading(false);
-      console.log(uniqueInstances)
+    
     } catch (error) {
       console.error("Error fetching data:", error);
       setLoading(false); // Set loading to false even in case of error
@@ -280,14 +280,14 @@ const App = () => {
 
   const handleInstanceSelect = (event) => {
     setSelectedInstance(event.target.value);
-console.log(data)
+
     // Filter data based on the selected instance and channel
     const filteredData = data.filter(
       (item) =>
         item.instance_name.trim() === event.target.value &&
         item.channel_name === selectedChannel
     );
-console.log(filteredData)
+
     // Count occurrences of each score
     const scoreCounts = { No: 0, Maybe: 0, Yes: 0 };
     filteredData.forEach((item) => {

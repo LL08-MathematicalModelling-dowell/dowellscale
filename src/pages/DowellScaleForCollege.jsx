@@ -82,7 +82,7 @@ export default function DowellScaleForCollege() {
        
     }
     };
-console.log(clicked)
+
     const  handleSubmission=async(index,i)=>{
         let type
         if(!answered[index]){
@@ -96,7 +96,7 @@ console.log(clicked)
                 }else{
                     type="False"
                 }
-                console.log(type)
+             
                 if(type=="False"){
                     const response=await axios.get(`https://100035.pythonanywhere.com/addons/create-response/v3/?user=${type}&scale_type=nps_lite&channel=channel_1&instance=instance_${index+1}
                     &workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=66506bd4134317e89f2e207b&item=${i}`) 
@@ -109,9 +109,9 @@ console.log(clicked)
 
               
                }
-            console.log(responseCount)
+          
                if(responseCount==4){
-                console.log("hello")
+             
                 for(let i=0;i<5;i++){
                       localStorage.removeItem(`answered[${i}]`)
                       localStorage.removeItem(`clicked[${i}]`)
@@ -127,7 +127,7 @@ console.log(clicked)
 
 
      async function onCancel(){
-        console.log("inside cvancel")
+      
            setToggleFeedback(-1)
            localStorage.setItem(`feedback`,-1)
            setTogglePopup(false)
@@ -141,7 +141,7 @@ console.log(clicked)
         setToggleFeedback(1)
         localStorage.setItem(`feedback`,1)
         setTogglePopup(false)
-        console.log("inside confirm")
+    
         let arr = [...showButton];
         arr[indexData] = true;
         setShowButton(arr); 
@@ -150,7 +150,7 @@ console.log(clicked)
       }
 
       async function onMaybe(){
-        console.log("inside maybe")
+       
         localStorage.setItem(`feedback`,2)
         setToggleFeedback(2)
         setTogglePopup(false)
@@ -162,7 +162,7 @@ console.log(clicked)
       
       }
 
-      console.log(toggleFeedback)
+    
       const PopUp = ({ onCancel, onConfirm, onMaybe }) => {
         return (
             <div 
