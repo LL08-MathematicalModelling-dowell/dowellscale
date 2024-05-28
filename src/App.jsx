@@ -4,7 +4,8 @@ import HomePage from "./pages/HomePage";
 import ReportPage from "./pages/ReportPage";
 // import DowellScaleForCollege from "./pages/DowellScaleForCollege11";
 import DowellScaleForCollegeReport from "./pages/CollegeScaleReport";
-import DowellScaleForCollege from "./pages/DowellScaleForCollege";
+// import DowellScaleForCollege from "./pages/DowellScaleForCollege";
+import DowellScaleNew from "./pages/DowellScaleNew";
 import Evaluate from "./pages/Evaluate";
 import TeacherReport from "./pages/teacher/TeacherReport";
 import MVJReport from "./pages/MVJReport"
@@ -17,12 +18,13 @@ function App() {
         <Route path="/dowellscale/report" Component={ReportPage} />
         {/* {routes for questions} */}
 
-        <Route path="/dowellscale/dowellscaleforcollege" Component={DowellScaleForCollege} />
+        {/* <Route path="/dowellscale/dowellscaleforcollege" Component={DowellScaleForCollege} /> */}
+        <Route path="/dowellscale/dowellscaleforcollege" Component={DowellScaleNew} />
         <Route path="/dowellscale/dowellscaleforcollege/report" Component={MVJReport} />
 
 
         <Route path="/dowellscale/dowellscalecollegereport" Component={DowellScaleForCollegeReport} />
-        
+
         {/* routes for 0-10 ratings */}
         <Route path="/dowellscale/teacherevaluation" Component={Evaluate} />
         <Route path="/dowellscale/teacherevaluationreport" Component={TeacherReport} />

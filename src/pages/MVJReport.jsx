@@ -246,10 +246,10 @@ const App = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        "https://100035.pythonanywhere.com/addons/get-response/?scale_id=66506bd4134317e89f2e207b"
+        "https://100035.pythonanywhere.com/addons/get-response/?scale_id=66556a7ff11edcfcfb8b0d54"
       );
       const data = response.data.data;
-
+console.log(response.data)
       const uniqueChannels = Array.from(
         new Set(data.map((item) => item.channel_name))
       );
