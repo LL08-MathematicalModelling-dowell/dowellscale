@@ -56,11 +56,11 @@ export default function DowellScaleForCollege() {
         <div className="relative">
        
             <>
-              <div className="w-full flex flex-col justify-center items-center text-[18px] font-bold text-red-500 p-2 mt-3">
+              <div className="w-full flex flex-col justify-center items-center text-[14px] md:text-[18px] font-bold text-red-500 p-2 mt-3">
                 <p className="mt-5">MVJ College Of Engineering</p>
                 <p>Bengaluru</p>
             </div>
-            <p className="text-lg text-black flex justify-center items-center my-5 font-bold">Which stage are you in?</p>
+            <p className="text-[12px] md:text-[16px] text-black flex justify-center items-center my-5 font-bold">Which stage are you in?</p>
             <div className="flex flex-col justify-center items-center  mt-3 gap-6 ml-auto w-[80%] sm:gap-2">
                 {questions.map((question, index) => (
                     <div key={index} className="flex flex-col justify-center items-center w-full mb-4 ">
@@ -71,7 +71,7 @@ export default function DowellScaleForCollege() {
                             <div className="flex flex-col gap-2 min-w-[80px] md:min-w-[150px] lg:min-w-[200px] w-1/4 justify-center items-center">
                             <div className="lg:text-lg font-semibold md:text-[14px] text-[10px]">{question}</div>
                             { index < questions.length - 1 && (
-                            <ImArrowDown className="text-[32px] bg-white  text-red-600 mt-4 " />
+                            <ImArrowDown className="text-[20px] md:text-[32px] bg-white  text-red-600 mt-4 " />
                         )}
                         </div>
                             <button
