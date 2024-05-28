@@ -249,14 +249,14 @@ const App = () => {
         "https://100035.pythonanywhere.com/addons/get-response/?scale_id=66556a7ff11edcfcfb8b0d54"
       );
       const data = response.data.data;
-console.log(response.data)
+
       const uniqueChannels = Array.from(
         new Set(data.map((item) => item.channel_name))
       );
       const uniqueInstances = Array.from(
         new Set(data.map((item) => item.instance_name.trim()))
       );
-console.log(data)
+
       setChannels([allChannelsNameTag, ...uniqueChannels]);
       setInstances(uniqueInstances);
       setData(data);
@@ -287,9 +287,7 @@ console.log(data)
         item.instance_name.trim() === event.target.value &&
         item.channel_name === selectedChannel
     );
-    console.log(event.target.value)
-    console.log(data)
-console.log(filteredData)
+ 
     // Count occurrences of each score
     const scoreCounts = { No: 0, Maybe: 0, Yes: 0 };
     filteredData.forEach((item) => {

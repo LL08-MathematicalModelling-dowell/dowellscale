@@ -23,7 +23,7 @@ const images=[educationImage,studyImage,brainImage,discussionImage,developmentIm
 export default function DowellScaleForCollege() {
     const [clicked, setClicked] = useState([false, false, false, false, false]);
     const[disabled,setDisabled]=useState([false, false, false, false, false]);
-
+    const[answered,setAnswered]=useState(0)
 
     const handleButtonClick = async(index) => {
   
@@ -39,10 +39,16 @@ export default function DowellScaleForCollege() {
     };
 
     const handleSubmission = async (index, i) => {
-        console.log(index,i)
+        console.log(answered,index)
+        if(answered!=index+1){
+        setAnswered(index+1)
+     
         window.location.href=`https://100035.pythonanywhere.com/addons/create-response/v3/?user=True&scale_type=nps_lite&channel=channel_1&instance=instance_${index+1}&workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=66556a7ff11edcfcfb8b0d54&item=${i}`
     
+    }else{
+        console.log("Submitted a response")
     }
+}
       
       
 
