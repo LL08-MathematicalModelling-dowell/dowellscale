@@ -40,7 +40,8 @@ export default function DowellScaleForCollege() {
     };
 
     const handleSubmission = async (index, i) => {
-           window.location.href=`https://100035.pythonanywhere.com/addons/create-response/v3/?user=True&scale_type=nps_lite&channel=channel_1&instance=instance_${index + 1}&workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=66506bd4134317e89f2e207b&item=${i}`;
+        console.log(index,i)
+        window.location.href=`https://100035.pythonanywhere.com/addons/create-response/v3/?user=True&scale_type=nps_lite&channel=channel_1&instance=instance_${index+1}&workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=66556a7ff11edcfcfb8b0d54&item=${i}`
     
     }
       

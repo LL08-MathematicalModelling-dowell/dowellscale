@@ -256,7 +256,7 @@ console.log(response.data)
       const uniqueInstances = Array.from(
         new Set(data.map((item) => item.instance_name.trim()))
       );
-
+console.log(data)
       setChannels([allChannelsNameTag, ...uniqueChannels]);
       setInstances(uniqueInstances);
       setData(data);
