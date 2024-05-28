@@ -34,7 +34,7 @@ ChartJS.register(
 const instanceNames = {
   instance_1: "Attendance",
   instance_2: "Re-Explaination",
-  instance_3: "understood",
+  instance_3: "Understood",
   instance_4: "Explaination",
   instance_5: "Application in life",
 };
@@ -287,7 +287,9 @@ console.log(data)
         item.instance_name.trim() === event.target.value &&
         item.channel_name === selectedChannel
     );
-
+    console.log(event.target.value)
+    console.log(data)
+console.log(filteredData)
     // Count occurrences of each score
     const scoreCounts = { No: 0, Maybe: 0, Yes: 0 };
     filteredData.forEach((item) => {

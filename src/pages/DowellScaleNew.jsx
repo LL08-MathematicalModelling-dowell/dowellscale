@@ -33,8 +33,7 @@ export default function DowellScaleForCollege() {
   
      let arr = disabled.map((_, i) => i === index ? false : true);
      setDisabled(arr);
-      
-             const response=await axios.get(`https://100035.pythonanywhere.com/addons/create-response/v3/?user=False&scale_type=likert&channel=channel_1&instance=instance_1&workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=6655659e81047b0bb9ed56e2&item=${index+1}`)
+      const response=await axios.get(`https://100035.pythonanywhere.com/addons/create-response/v3/?user=False&scale_type=likert&channel=channel_1&instance=instance_1&workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=6655659e81047b0bb9ed56e2&item=${index+1}`)
          
               
     };
