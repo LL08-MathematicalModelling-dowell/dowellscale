@@ -1,7 +1,7 @@
 import { Line } from "react-chartjs-2";
 
 
-export default function LineChart({ indexes, total }) {
+export default function LineChart({ indexes, total,stepSize }) {
 
   const options = {
     responsive: true,
@@ -19,10 +19,15 @@ export default function LineChart({ indexes, total }) {
         type: 'linear',
         position: 'bottom',
         ticks: {
-          stepSize: 10,
+          stepSize,
           min: 0,
-          max: 50
-        }
+          max:stepSize*5,
+          callback: function(value) {
+            return value.toFixed(0); // Ensure x-axis labels are integers
+          },
+        },
+        beginAtZero: true
+      
       }
     }
   };

@@ -1,128 +1,3 @@
-// import { useEffect,useState } from "react"
-// import axios from "axios"
-// import LineChart from "../../Components/LineChart"
-// import './TeacherReport.css';
-// const channels=["Classroom"]
-// const instances=["Student feedback" ]
-// export default function TeacherReport(){
-// const responseOptions=["Reading","Understanding","Explaining","Evaluating","Applying"]
-   
-//      const[channelName,setChannelName]=useState("")
-//      const[feedbackName,setFeedbackName]=useState("")
-//      const[data,setData]=useState({})
-//      const[loading,setLoading]=useState(true)
-//     useEffect(()=>{
-//         getData()
-//     },[])
-
-//     async function getData(){
-//         try{
-//               const response=await axios.get("https://100035.pythonanywhere.com/addons/learning-index-report/?scale_id=66507d222b2f1ec67e2569a2")
-//               console.log(response.data.learning_index_data)
-//               let totalCount=response.data.learning_index_data.control_group_size
-//               let learningIndex=response.data.learning_index_data.learning_level_index
-//               let percentages=response.data.learning_index_data.learning_level_percentages
-//               let individualCount=response.data.learning_index_data.learning_level_count
-//               let studentData={totalCount,
-//                 learningIndex,
-//                 percentages,
-//                 individualCount
-//               }
-//               let classroomData={
-//                 studentData
-//             }
-//             setData((prev)=>({...prev,classroomData}))
-//               setLoading(false)
-//         }catch(error){
-//             console.log(error)
-//         }finally{
-//             console.log("finally")
-//         }
-//     }
-//     const index=data[channelName] && data[channelName][feedbackName] ? data[channelName][feedbackName].learningIndex || 0 :0
-//     const totalCount=data[channelName] && data[channelName][feedbackName] ? data[channelName][feedbackName].totalCount || 0 : 0
-//     const percentages=data[channelName] && data[channelName][feedbackName] ? data[channelName][feedbackName].percentages || 0 : 0
-//     console.log(percentages)
-//     return(
-//         <>
-//         {loading ? (
-//             <>
-//            <div className="flex justify-center items-center h-screen w-screen">
-//            <button type="button" className="bg-indigo-500 text-white py-2 px-4 rounded flex items-center" disabled>
-//         <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
-//           <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-//           <path d="M4 12a8 8 0 018-8" stroke="currentColor" strokeWidth="4" fill="none" />
-//         </svg>
-//         Loading...
-//       </button>
-//          </div>
-//          </>
-//         ):(
-//        <div>
-        
-//             <p className="md:text-4xl sm:text-2xl text-xl flex justify-center p-2">Feedback Analysis Dashboard</p>
-//             <div className="grid md:flex md:justify-center gap-4 mt-4 md:items-center w-[80%] md:w-full ml-auto md:ml-0">
-//             <select value={channelName=="classroomData" ? "Classroom" : ""} onChange={(e)=>{
-//                 if(e.target.value=="Classroom")
-//                   setChannelName("classroomData")}
-//             }
-           
-//             className="w-[80%] md:w-1/3 bg-gray-100 p-4 border border-gray-500 hover:border-2 hover:border-orange-500 text-lg">
-//                 <option value="" className="text-lg">Select Channel</option>
-//                 {channels.map((channel, i) => (
-//                 <option key={i} value={channel} className="bg-gray-200 text-lg">
-//                     {channel}
-//                 </option>
-//                 ))}
-//             </select>
-//             <select value={feedbackName=="studentData" ? "Student feedback" : ""} onChange={(e)=>{
-//                  if(e.target.value=="Student feedback")
-//                 setFeedbackName("studentData")
-//             }}
-//             className="w-[80%] md:w-1/3 bg-gray-100 p-4 border border-gray-500 hover:border-2 hover:border-orange-500 text-lg">
-//                 <option value="" className="text-lg">Select Instance</option>
-//                 {instances.map((instance, i) => (
-//                 <option key={i} value={instance} className="bg-gray-200 text-lg">
-//                     {instance}
-//                 </option>
-//                 ))}
-//             </select>
-//        </div>
-
-//             <p className="flex justify-center mt-4 text-lg">Total Responses :{totalCount}</p>
-//             <p className="flex justify-center mt-4 text-lg">Scores :</p>
-//             <div className="grid  gap-8  p-4 w-[90%] lg:w-[80%]  ml-auto ">
-//                 {responseOptions.map((option,i)=>(
-//                     <div key={i} className="flex flex-col text-[18px]  gap-3   min-w-[50%] w-max">
-//                         <p>{option} : {data[channelName] && data[channelName][feedbackName] ?data[channelName][feedbackName].individualCount[option.toLowerCase()] :""}  ({data[channelName] && data[channelName][feedbackName] ?data[channelName][feedbackName].percentages[option.toLowerCase()].toFixed(1) : 0} %)</p>
-//                         <span className="h-4 w-full bg-indigo-300 rounded-lg">
-//             <span style={{
-//                 width: `${data[channelName] && data[channelName][feedbackName] ?data[channelName][feedbackName].percentages[option.toLowerCase()] : 0}%`,
-//                 backgroundColor: (() => {
-              
-//                 if (option=="Reading") return '#FF0000';        // Red
-//                 if (option=="Understanding") return '#FF7F00';        // Orange
-//                 if (option=="Explaining") return '#FFFF00';        // Yellow
-//                 if (option=="Evaluating") return '#7FFF00';        // Light Green
-//                 return '#00FF00';                           // Green
-//                 })(),
-//                 display: "block",
-//                 height: "100%",
-//                 borderRadius: "inherit"
-//             }}></span>
-//             </span>
-//                     </div>
-
-//                 ))}
-//                {totalCount!=0 &&   <LineChart indexes={[index,3,1,4]} total={[totalCount,12,23,40]}/>}
-        
-
-//             </div>
-//              </div>
-//                 )}
-//         </>
-//     )
-// }
 
 
 import React, { useState, useEffect } from "react";
@@ -184,53 +59,7 @@ const options = {
   },
 };
 
-// const extractLabelsAndDatasetsInfo = (data = []) => {
-//   const labelsForCharts = [
-//     ...new Set(
-//       data
-//         .map(
-//           (item) =>
-//             item?.dowell_time?.current_time &&
-//             new Date(item?.dowell_time?.current_time).toDateString()
-//         )
-//     ),
-//   ];
 
-//   const datasetsForCharts = {
-//     yesData: [],
-//     noData: [],
-//     maybeData: [],
-//   };
-
-//   labelsForCharts.forEach((item) => {
-//     const matchingData = data.filter(
-//       (dataItem) =>
-//         dataItem?.dowell_time?.current_time &&
-//         new Date(dataItem?.dowell_time?.current_time).toDateString() === item
-//     );
-
-//     datasetsForCharts.noData.push(
-//       matchingData.filter((data) => data?.score === 0).length
-//     );
-//     datasetsForCharts.maybeData.push(
-//       matchingData.filter((data) => data?.score === 1).length
-//     );
-//     datasetsForCharts.yesData.push(
-//       matchingData.filter((data) => data?.score === 2).length
-//     );
-//   });
-
-//   const totalItems =
-//     datasetsForCharts.yesData.reduce((a, b) => a + b, 0) +
-//     datasetsForCharts.noData.reduce((a, b) => a + b, 0) +
-//     datasetsForCharts.maybeData.reduce((a, b) => a + b, 0);
-
-//   return {
-//     labels: labelsForCharts,
-//     datasetsInfo: datasetsForCharts,
-//     totalItems,
-//   };
-// };
 
 const initialScoreData = {
     Reading: { count: 0, percentage: 0 },
@@ -248,215 +77,60 @@ const App = () => {
   const [scores, setScores] = useState(initialScoreData);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
-  const[leaningIndexData,setLearningIndexData]=useState({})
-  const[leaningLevelIndex,setLearningLevelIndex]=useState(0)
-//   const [dateDataForChart, setDateDataForChart] = useState({
-//     labels: [],
-//     datasets: [],
-//   });
-//   const [displayDataForAllSelection, setDisplayDataForAllSelection] = useState(
-//     []
-//   );
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-//   useEffect(() => {
-//     if (selectedChannel.length < 1 || selectedInstance.length < 1) return;
-
-    // const { labels, datasetsInfo, totalItems } = extractLabelsAndDatasetsInfo(
-    //   data.filter(
-    //     (item) =>
-    //       item.channel_name === selectedChannel &&
-    //       item.instance_name.trim() === selectedInstance
-    //   )
-    // );
-
-//     setDateDataForChart({
-//       labels: labels,
-//       datasets: [
-//         {
-//           label: "No",
-//           data: datasetsInfo.noData,
-//           borderColor: "red",
-//           backgroundColor: "red",
-//         },
-//         {
-//           label: "Yes",
-//           data: datasetsInfo.yesData,
-//           borderColor: "green",
-//           backgroundColor: "green",
-//         },
-//         {
-//           label: "Maybe",
-//           data: datasetsInfo.maybeData,
-//           borderColor: "yellow",
-//           backgroundColor: "yellow",
-//         },
-//       ],
-//     });
-//   }, [selectedChannel, selectedInstance, data]);
-
-//   useEffect(() => {
-//     if (selectedChannel !== allChannelsNameTag)
-//       return setDisplayDataForAllSelection([]);
-
-//     const allData = instances.map((instance) => {
-//       const dataForInstance = data.filter(
-//         (item) => item.instance_name.trim() === instance
-//       );
-//       const scoreCounts = {
-//         Reading: { count: 0, percentage: 0 },
-//         Understanding: { count: 0, percentage: 0 },
-//         Explaining: { count: 0, percentage: 0 },
-//         Evaluating: { count: 0, percentage: 0 },
-//         Applying: { count: 0, percentage: 0 }
-//       };
-
-    //   const { labels, datasetsInfo, totalItems } =    (
-    //     dataForInstance
-    //   );
-
-    //   scoreCounts.Reading.count = datasetsInfo.noData.length;
-    //   scoreCounts.Reading.percentage =
-    //     (datasetsInfo.noData.reduce((a, b) => a + b, 0) / totalItems) * 100;
-
-    //   scoreCounts.Maybe.count = datasetsInfo.maybeData.length;
-    //   scoreCounts.Maybe.percentage =
-    //     (datasetsInfo.maybeData.reduce((a, b) => a + b, 0) / totalItems) * 100;
-
-    //   scoreCounts.Yes.count = datasetsInfo.yesData.length;
-    //   scoreCounts.Yes.percentage =
-    //     (datasetsInfo.yesData.reduce((a, b) => a + b, 0) / totalItems) * 100;
-
-//       return {
-//         instanceName: instance,
-//         totalResponses: dataForInstance.length,
-//         scoreCounts,
-//         chartData: {
-//           labels: labels,
-//           datasets: [
-//             {
-//               label: "No",
-//               data: datasetsInfo.noData,
-//               borderColor: "red",
-//               backgroundColor: "red",
-//             },
-//             {
-//               label: "Yes",
-//               data: datasetsInfo.yesData,
-//               borderColor: "green",
-//               backgroundColor: "green",
-//             },
-//             {
-//               label: "Maybe",
-//               data: datasetsInfo.maybeData,
-//               borderColor: "yellow",
-//               backgroundColor: "yellow",
-//             },
-//           ],
-//         },
-//       };
-//     });
-
-//     setDisplayDataForAllSelection(allData);
-//   }, [selectedChannel, data, instances]);
+  const [responseData, setResponseData] = useState([]);
+  const[learningIndexData,setLearningIndexData]=useState({})
+  const[learningLevelIndex,setLearningLevelIndex]=useState(0)
+  const[indexes,setIndexes]=useState([])
+  const[counts,setCounts]=useState([])
+useEffect(()=>{
+  fetchData()
+},[])
 
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        "https://100035.pythonanywhere.com/addons/learning-index-report/?scale_id=66507d222b2f1ec67e2569a2"
+        "https://100035.pythonanywhere.com/addons/learning-index-report/?scale_id=66581beae29ef8faa980b1c2"
       );
       const data = response.data.data;
 
-      const uniqueChannels = Array.from(
-        new Set(data.map((item) => item.channel_name))
-      );
-      const uniqueInstances = Array.from(
-        new Set(data.map((item) => item.instance_name.trim()))
-      );
-
-      setChannels([ ...uniqueChannels]);
-      setInstances(uniqueInstances);
-      setData(data);
-      setLearningIndexData(response.data.learning_index_data)
-      setLoading(false);
-    
+      setChannels(["channel_1"]);
+      setInstances(["instance_1"]);
+      setResponseData(data);
+      setLearningIndexData(data[data.length - 1].learning_index_data);
     } catch (error) {
       console.error("Error fetching data:", error);
-      setLoading(false); // Set loading to false even in case of error
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleChannelSelect = (event) => {
     setSelectedChannel(event.target.value);
-
-    // if (event.target.value === allChannelsNameTag) {
-    //   setSelectedInstance("");
-    //   setScores(initialScoreData);
-    //   setTotalCount(0);
-    // }
   };
 
   const handleInstanceSelect = (event) => {
     setSelectedInstance(event.target.value);
-    const scoreCounts = leaningIndexData.learning_level_count;
-    const percentages=leaningIndexData.learning_level_percentages
+    const scoreCounts = learningIndexData.learning_level_count;
+    const percentages = learningIndexData.learning_level_percentages;
 
-    setTotalCount(leaningIndexData.control_group_size)
-    // Filter data based on the selected instance and channel
-    // const filteredData = data.filter(
-    //   (item) =>
-    //     item.instance_name.trim() === event.target.value &&
-    //     item.channel_name === selectedChannel
-    // );
- 
-    // // Count occurrences of each score
-   
-    // filteredData.forEach((item) => {
-    //   switch (item.score) {
-    //     case 0:
-    //       scoreCounts["Reading"]++;
-    //       break;
-    //     case 1:
-    //       scoreCounts["Understanding"]++;
-    //       break;
-    //     case 2:
-    //       scoreCounts["Explaining"]++;
-    //       break;
-    //     case 3:
-    //       scoreCounts["Evaluating"]++;
-    //       break;
-    //     case 4:
-    //       scoreCounts["Applying"]++;
-    //        break;
-    //     default:
-    //       break;
-    //   }
-    // });
+    setTotalCount(learningIndexData.control_group_size);
 
-    // // Calculate total count
-    // const totalCount = filteredData.length;
-
-    // // Calculate percentage for each score
     const scorePercentages = {
-        Reading: {
+      Reading: {
         count: scoreCounts["reading"],
-        percentage: percentages["reading"] ,
+        percentage: percentages["reading"],
       },
       Understanding: {
         count: scoreCounts["understanding"],
-        percentage:  percentages["understanding"],
+        percentage: percentages["understanding"],
       },
       Explaining: {
         count: scoreCounts["explaining"],
-        percentage:  percentages["explaining"],
+        percentage: percentages["explaining"],
       },
       Evaluating: {
         count: scoreCounts["evaluating"],
-        percentage:  percentages["evaluating"],
+        percentage: percentages["evaluating"],
       },
       Applying: {
         count: scoreCounts["applying"],
@@ -465,9 +139,35 @@ const App = () => {
     };
 
     setScores(scorePercentages);
-    setLearningLevelIndex(leaningIndexData.learning_level_index)
-
+    setLearningLevelIndex(learningIndexData.learning_level_index);
+    getChartDetails();
   };
+
+  const getChartDetails = () => {
+    const lengthOfResponses = responseData.length;
+    if (lengthOfResponses < 5) {
+      const newIndexes = [];
+      const newCounts = [];
+      responseData.forEach((obj) => {
+        newIndexes.push(obj.learning_index_data.learning_level_index);
+        newCounts.push(obj.learning_index_data.control_group_size);
+      });
+      setIndexes(newIndexes);
+      setCounts(newCounts);
+    } else {
+      const increment = Math.floor(lengthOfResponses / 5);
+      const newIndexes = [0];
+      const newCounts = [0];
+      for (let i = increment - 1; i < lengthOfResponses; i += increment) {
+        newIndexes.push(responseData[i].learning_index_data.learning_level_index.toFixed(2));
+        newCounts.push(responseData[i].learning_index_data.control_group_size);
+      }
+      setIndexes(newIndexes);
+      setCounts(newCounts);
+    }
+  };
+
+
 
   if (loading) {
     return <CircularProgress />;
@@ -574,7 +274,7 @@ const App = () => {
               mx: "auto",
             }}
           >
-            {totalCount !== 0 && <LineChart indexes={[leaningLevelIndex, 3, 1, 4]} total={[totalCount, 12, 23, 40]} />}
+            {totalCount !== 0 && <LineChart indexes={indexes} total={counts} stepSize={Math.floor(responseData.length / 5)} />}
           </Box>
         </>
       )}
