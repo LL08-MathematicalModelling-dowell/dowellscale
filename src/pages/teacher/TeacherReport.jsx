@@ -80,6 +80,7 @@ const App = () => {
   const [responseData, setResponseData] = useState([]);
   const[learningIndexData,setLearningIndexData]=useState({})
   const[learningLevelIndex,setLearningLevelIndex]=useState(0)
+  const[learningStage,setLearningStage]=useState("")
   const[indexes,setIndexes]=useState([])
   const[counts,setCounts]=useState([])
 useEffect(()=>{
@@ -97,7 +98,7 @@ useEffect(()=>{
       setInstances(["instance_1"]);
       setResponseData(data);
       setLearningIndexData(data[data.length - 1].learning_index_data);
-      setLearningLevelIndex(data[data.length - 1].learning_index_data.learning_level_index.toFixed(2))
+   
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -138,9 +139,9 @@ useEffect(()=>{
         percentage: percentages["applying"],
       },
     };
-
+setLearningStage(responseData[responseData.length-1].learning_index_data.learning_stage)
     setScores(scorePercentages);
-    setLearningLevelIndex(learningIndexData.learning_level_index);
+    setLearningLevelIndex(learningIndexData.learning_level_index.toFixed(2));
     getChartDetails();
   };
 
@@ -223,6 +224,9 @@ useEffect(()=>{
   </Typography>
   <Typography variant="body1" align="center" gutterBottom >
     Learning Index: {learningLevelIndex}
+  </Typography>
+  <Typography variant="body1" align="center" gutterBottom >
+   Learning Stage: {learningStage}
   </Typography>
 </div>
 
