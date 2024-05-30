@@ -8,28 +8,40 @@ export default function Evaluate(){
     }
 
     return(
-        <div className="w-[100%] flex flex-col justify-center items-center gap-16 md:gap-8 lg:gap-4 flex-wrap">
-         <img src='https://i0.wp.com/dowellresearch.de/wp-content/uploads/2023/04/true-moments-logo-1-1-442919954-1538479590775-1.webp?w=382&ssl=1' alt='dowelllogo'
-         className="mt-2 " />
-        <div className="w-[90%] flex flex-col justify-center items-center ">
-         <div className="sm:w-max w-[80%] bg-[#c5e8c2] p-5 mt-3 flex flex-col justify-center items-center gap-5">
-            <img className="md:w-max w-[200px]" src={classImage} alt="class image"/>
-           <p className="text-[18px] font-bold">HOW WOULD YOU EVALUATE TODAY'S LEARNING ?</p>
-           <div className="flex justify-center gap-1 sm:gap-2 items-center  bg-white p-2 md:p-3 lg:px-8 border-2 border-[#bfbfbf] w-max">
-                {buttons.map((score, index)=>(
-                    <button
-                    key={index}
-                    onClick={()=>{handleButtonClick(index)}}
-                    className=" text-[12px] sm:text-[16px] font-bold py-[2px] px-[6px] sm:p-2  sm:px-3 rounded  md:px-4 bg-[#0097b2] text-white "   
-                    >
-                    {score}
-
-                    </button>
-               ))}
-                </div>
-         </div>
-         </div>
-         <p className="text-[12px]">www.dowellresearch.sg</p>
+        <div className="w-full flex flex-col justify-between items-center gap-4 h-screen p-4">
+        <img 
+          src='https://i0.wp.com/dowellresearch.de/wp-content/uploads/2023/04/true-moments-logo-1-1-442919954-1538479590775-1.webp?w=382&ssl=1' 
+          alt='dowelllogo'
+          className="lg:w-[380px] md:w-[300px] w-[200px]" 
+        />
+        <div className="w-full flex flex-col justify-center items-center flex-grow">
+          <div className="w-full sm:w-max bg-[#c5e8c2] p-4 flex flex-col justify-center items-center gap-5 py-8 h-full md:px-10">
+            <img 
+              className="md:w-max w-[230px]" 
+              src={classImage} 
+              alt="class image"
+            />
+            <div className="w-full flex flex-col justify-center items-center">
+            <p className="text-[12px] sm:text-[14px] md:text-[18px] font-bold text-center mb-4">
+              HOW WOULD YOU EVALUATE TODAY'S LEARNING?
+            </p>
+            <div className="flex justify-center gap-1 sm:gap-2 items-center bg-white p-1 sm:p-2 border-2 border-[#bfbfbf] w-max py-2">
+              {buttons.map((score, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleButtonClick(index)}
+                  className="text-[10px] sm:text-[16px] font-bold py-1 px-[6px] sm:py-2 sm:px-3 rounded bg-[#0097b2] text-white"
+                >
+                  {score}
+                </button>
+              ))}
+            </div>
+            </div>
+          </div>
         </div>
+        <p className="text-[12px]">www.dowellresearch.sg</p>
+      </div>
+      
+      
     )
 }

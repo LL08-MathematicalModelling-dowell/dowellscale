@@ -249,7 +249,7 @@ const App = () => {
         "https://100035.pythonanywhere.com/addons/get-response/?scale_id=66556a7ff11edcfcfb8b0d54"
       );
       const data = response.data.data;
-
+console.log(data)
       const uniqueChannels = Array.from(
         new Set(data.map((item) => item.channel_name))
       );
@@ -328,7 +328,7 @@ const App = () => {
     setScores(scorePercentages);
     setTotalCount(totalCount);
   };
-
+console.log(scores)
   if (loading) {
     return <CircularProgress />;
   }
