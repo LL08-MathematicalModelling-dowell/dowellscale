@@ -21,7 +21,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-
+import { Line } from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,
@@ -32,32 +32,25 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-import LineChart from "../../Components/LineChart"
+
+
+
+
+
 const instanceNames = {
   instance_1: "Student feedback",
-
+  instance_2:"Example1",
+  instance_3:"Example2"
 };
 
-// const allChannelsNameTag = "channel_all_x";
+ const allChannelsNameTag = "channel_all_x";
 
 const channelNames = {
-//   [`${allChannelsNameTag}`]: "All Channels",
+   [`${allChannelsNameTag}`]: "All Channels",
   channel_1: "Classroom",
 };
 
-const options = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: {
-      position: "top",
-    },
-    title: {
-      display: true,
-      text: "Responses Insights by Day",
-    },
-  },
-};
+
 
 
 
@@ -68,8 +61,104 @@ const initialScoreData = {
     Evaluating: { count: 0, percentage: 0 },
     Applying: { count: 0, percentage: 0 }
 };
+const extractLabelsAndDatasetsInfo = (data = []) => {
+
+  let length=data.length;
+  let arr=data
+  if(length>5){
+    let x=Math.floor(length/5);
+     arr=[]
+     for(let i=0;i<length;i+=x){
+ 
+      arr.push(data[i])
+     }
+     if (!arr.includes(data[length - 1])) {
+      arr.push(data[length - 1]);
+    }
+  }
+
+  let labelsForCharts = [
+    ...new Set(
+      arr
+        .map(
+          (item) =>
+            item?.learning_index_data ?.control_group_size
+            
+        )
+    ),
+  ];
+
+  if (!labelsForCharts.includes(0)) {
+    labelsForCharts = [0, ...labelsForCharts];
+  }
+  let datasetsForCharts = {
+    indexData: [],
+
+  };
+
+  
+arr.forEach((data)=>{
+  datasetsForCharts.indexData.push(data.learning_index_data ?.learning_level_index)
+})
+ 
+if (!datasetsForCharts.indexData.includes(0)) {
+  datasetsForCharts.indexData = [0, ...datasetsForCharts.indexData];
+}
+
+
+    const options = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: "top",
+        },
+        title: {
+          display: true,
+          text: "Learning Indexes",
+        },
+      },
+      scales: {
+        y: {
+          min: 0,
+          max: 5,
+          ticks: {
+            stepSize: 1,
+          },
+          beginAtZero: true,
+        },
+        x: {
+          type: 'linear',
+          position: 'bottom',
+          ticks: {
+            stepSize:Math.floor(arr[arr.length-1].learning_index_data.control_group_size/5),
+            min: 0,
+            max:arr[arr.length-1].learning_index_data.control_group_size,
+          },
+          beginAtZero: true
+        },
+      },
+    };
+
+  return {
+    labels: labelsForCharts,
+    datasetsInfo: datasetsForCharts,
+    options
+  };
+};
+
+
 
 const App = () => {
+
+const[options,setOptions]=useState({})
+  const [responseData, setResponseData] = useState([]);
+  const[learningIndexData,setLearningIndexData]=useState({})
+  const[learningLevelIndex,setLearningLevelIndex]=useState(0)
+  const[learningStage,setLearningStage]=useState("")
+  const[indexes,setIndexes]=useState([])
+  const[counts,setCounts]=useState([])
+
   const [channels, setChannels] = useState([]);
   const [instances, setInstances] = useState([]);
   const [selectedChannel, setSelectedChannel] = useState("");
@@ -77,45 +166,173 @@ const App = () => {
   const [scores, setScores] = useState(initialScoreData);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [responseData, setResponseData] = useState([]);
-  const[learningIndexData,setLearningIndexData]=useState({})
-  const[learningLevelIndex,setLearningLevelIndex]=useState(0)
-  const[learningStage,setLearningStage]=useState("")
-  const[indexes,setIndexes]=useState([])
-  const[counts,setCounts]=useState([])
-useEffect(()=>{
-  fetchData()
-},[])
+  // const [data, setData] = useState([]);
+  const [learningIndexDataForChart, setLearningIndexDataForChart] = useState({
+    labels: [],
+    datasets: [],
+  });
+  const [displayDataForAllSelection, setDisplayDataForAllSelection] = useState(
+    []
+  );
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (selectedChannel.length < 1 || selectedInstance.length < 1) return;
+
+    const { labels, datasetsInfo,options } = extractLabelsAndDatasetsInfo(
+      responseData.filter(
+        (item) =>
+          item.channel === selectedChannel &&
+          item.instance.trim() === selectedInstance
+      )
+    );
+
+setOptions(options)
+    setLearningIndexDataForChart({
+      labels: labels,
+      datasets: [
+        {
+          label: "Index Data",
+          data: datasetsInfo.indexData,
+          borderColor: "red",
+          backgroundColor: "red",
+        },
+       
+      ],
+    });
+  }, [selectedChannel, selectedInstance, responseData]);
+
+  useEffect(() => {
+    if (selectedChannel !== allChannelsNameTag)
+      return setDisplayDataForAllSelection([]);
+
+    const allData = instances.map((instance) => {
+      const dataForInstance = responseData.filter(
+        (item) => item.instance.trim() === instance
+      );
+ 
+      const scoreCounts = dataForInstance[dataForInstance.length-1].learning_index_data.learning_level_count;
+      const percentages = dataForInstance[dataForInstance.length-1].learning_index_data.learning_level_percentages;
+  
+  
+  
+      const scorePercentages = {
+        Reading: {
+          count: scoreCounts["reading"],
+          percentage: percentages["reading"],
+        },
+        Understanding: {
+          count: scoreCounts["understanding"],
+          percentage: percentages["understanding"],
+        },
+        Explaining: {
+          count: scoreCounts["explaining"],
+          percentage: percentages["explaining"],
+        },
+        Evaluating: {
+          count: scoreCounts["evaluating"],
+          percentage: percentages["evaluating"],
+        },
+        Applying: {
+          count: scoreCounts["applying"],
+          percentage: percentages["applying"],
+        },
+      };
+  //     setLearningIndexData(filteredData[filteredData.length-1].learning_index_data)
+  //     const totalCount = filteredData.length;
+  //     setTotalCount(totalCount);
+  // setLearningStage(responseData[responseData.length-1].learning_index_data.learning_stage)
+      setScores(scorePercentages);
+     // setLearningLevelIndex(filteredData[filteredData.length-1].learning_index_data.learning_level_index.toFixed(2));
+      
+
+      const { labels, datasetsInfo, options } = extractLabelsAndDatasetsInfo(
+        dataForInstance
+      );
+
+   setOptions(options)
+
+      return {
+        instanceName: instance,
+        totalResponses: dataForInstance.length,
+        scoreCounts:scorePercentages,
+        chartData: {
+          labels: labels,
+          datasets: [
+            {
+              label: "Index Data",
+              data: datasetsInfo.indexData,
+              borderColor: "red",
+              backgroundColor: "red",
+            },
+           
+          ],
+        },
+      };
+    });
+
+    setDisplayDataForAllSelection(allData);
+  }, [selectedChannel, responseData, instances]);
 
   const fetchData = async () => {
+
+     
+      setChannels(["channel_1"]);
+      setInstances(["instance_1"]);
+     
+   
     try {
       const response = await axios.get(
-        "https://100035.pythonanywhere.com/addons/learning-index-report/?scale_id=66581beae29ef8faa980b1c2"
+        "https://100035.pythonanywhere.com/addons/learning-index-report/?scale_id=665866e4e29ef8faa980b1d1"
       );
       const data = response.data.data;
 
-      setChannels(["channel_1"]);
-      setInstances(["instance_1"]);
+
+      const uniqueChannels = Array.from(
+        new Set(data.map((item) => item.channel))
+      );
+      const uniqueInstances = Array.from(
+        new Set(data.map((item) => item.instance.trim()))
+      );
+
+      setChannels([allChannelsNameTag, ...uniqueChannels]);
+      setInstances(uniqueInstances);
       setResponseData(data);
-      setLearningIndexData(data[data.length - 1].learning_index_data);
-   
+      setLoading(false);
+    
     } catch (error) {
       console.error("Error fetching data:", error);
-    } finally {
-      setLoading(false);
+      setLoading(false); // Set loading to false even in case of error
     }
   };
 
   const handleChannelSelect = (event) => {
     setSelectedChannel(event.target.value);
+
+    if (event.target.value === allChannelsNameTag) {
+      setSelectedInstance("");
+      setScores(initialScoreData);
+      setTotalCount(0);
+    }
   };
 
   const handleInstanceSelect = (event) => {
     setSelectedInstance(event.target.value);
-    const scoreCounts = learningIndexData.learning_level_count;
-    const percentages = learningIndexData.learning_level_percentages;
 
-    setTotalCount(learningIndexData.control_group_size);
+    // Filter data based on the selected instance and channel
+    const filteredData = responseData.filter(
+      (item) =>
+        item.instance.trim() === event.target.value &&
+        item.channel === selectedChannel
+    );
+
+    const scoreCounts = filteredData[filteredData.length-1].learning_index_data.learning_level_count;
+    const percentages = filteredData[filteredData.length-1].learning_index_data.learning_level_percentages;
+
+
 
     const scorePercentages = {
       Reading: {
@@ -139,37 +356,19 @@ useEffect(()=>{
         percentage: percentages["applying"],
       },
     };
+    setLearningIndexData(filteredData[filteredData.length-1].learning_index_data)
+    const totalCount = filteredData.length;
+    setTotalCount(totalCount);
 setLearningStage(responseData[responseData.length-1].learning_index_data.learning_stage)
     setScores(scorePercentages);
-    setLearningLevelIndex(learningIndexData.learning_level_index.toFixed(2));
-    getChartDetails();
-  };
-
-  const getChartDetails = () => {
-    const lengthOfResponses = responseData.length;
-    if (lengthOfResponses < 5) {
-      const newIndexes = [];
-      const newCounts = [];
-      responseData.forEach((obj) => {
-        newIndexes.push(obj.learning_index_data.learning_level_index);
-        newCounts.push(obj.learning_index_data.control_group_size);
-      });
-      setIndexes(newIndexes);
-      setCounts(newCounts);
-    } else {
-      const increment = Math.floor(lengthOfResponses / 5);
-      const newIndexes = [0];
-      const newCounts = [0];
-      for (let i = increment - 1; i < lengthOfResponses; i += increment) {
-        newIndexes.push(responseData[i].learning_index_data.learning_level_index.toFixed(2));
-        newCounts.push(responseData[i].learning_index_data.control_group_size);
-      }
-      setIndexes(newIndexes);
-      setCounts(newCounts);
-    }
+    setLearningLevelIndex(filteredData[filteredData.length-1].learning_index_data.learning_level_index.toFixed(2));
+    
   };
 
 
+
+
+  
 
   if (loading) {
     return <CircularProgress />;
@@ -177,68 +376,155 @@ setLearningStage(responseData[responseData.length-1].learning_index_data.learnin
 
   return (
     <Box p={3}>
-    <Typography variant="h4" align="center" gutterBottom>
-      Feedback Analysis Dashboard
-    </Typography>
-    <Grid container spacing={3} alignItems="center" justifyContent="center">
-      <Grid item xs={12} md={6}>
-        <Select
-          value={selectedChannel}
-          onChange={handleChannelSelect}
-          displayEmpty
-          fullWidth
-        >
-          <MenuItem value="" disabled>
-            Select Channel
-          </MenuItem>
-          {channels.map((channel) => (
-            <MenuItem key={channel} value={channel}>
-              {channelNames[channel]}
+      <Typography variant="h4" align="center" gutterBottom>
+        Feedback Analysis Dashboard
+      </Typography>
+      <Grid container spacing={3} alignItems="center" justifyContent="center">
+        <Grid item xs={12} md={6}>
+          <Select
+            value={selectedChannel}
+            onChange={handleChannelSelect}
+            displayEmpty
+            fullWidth
+          >
+            <MenuItem value="" disabled>
+              Select Channel
             </MenuItem>
-          ))}
-        </Select>
-      </Grid>
-      <Grid item xs={12} md={6}>
-        <Select
-          value={selectedInstance}
-          onChange={handleInstanceSelect}
-          displayEmpty
-          fullWidth
-        >
-          <MenuItem value="" disabled>
-            Select Instance
-          </MenuItem>
-          {instances.map((instance) => (
-            <MenuItem key={instance} value={instance}>
-              {instanceNames[instance]}
+            {channels.map((channel) => (
+              <MenuItem key={channel} value={channel}>
+                {channelNames[channel]}
+              </MenuItem>
+            ))}
+          </Select>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Select
+            value={selectedInstance}
+            onChange={handleInstanceSelect}
+            displayEmpty
+            fullWidth
+            disabled={selectedChannel === allChannelsNameTag}
+          >
+            <MenuItem value="" disabled>
+              Select Instance
             </MenuItem>
-          ))}
-        </Select>
+            {instances.map((instance) => (
+              <MenuItem key={instance} value={instance}>
+                {instanceNames[instance]}
+              </MenuItem>
+            ))}
+          </Select>
+        </Grid>
       </Grid>
-    </Grid>
-    
-    <>
-    <div className="flex justify-center items-center gap-2 sm:gap-6 mt-10 flex-wrap">
-  <Typography variant="body1" align="center" gutterBottom >
-    Total Responses: {totalCount}
-  </Typography>
-  <Typography variant="body1" align="center" gutterBottom >
-    Learning Index: {learningLevelIndex}
-  </Typography>
-  <Typography variant="body1" align="center" gutterBottom >
-   Learning Stage: {learningStage}
-  </Typography>
-</div>
+      {selectedChannel === allChannelsNameTag ? (
+        <>
+          {React.Children.toArray(
+            displayDataForAllSelection.map((item, index) => {
+              return (
+                <>
+                  <Typography
+                    variant="h6"
+                    align="left"
+                    style={{ marginTop: "32px", marginBottom: "10px" }}
+                  >
+                    {index + 1}. {instanceNames[item?.instanceName.trim()]}
+                  </Typography>
 
-<Typography 
-  variant="body1" 
-  align="center" 
-  gutterBottom 
+                  <Typography
+                    variant="body1"
+                    align="center"
+                    gutterBottom
+                    style={{ marginTop: "16px" }}
+                  >
+                    Total Responses: {item?.totalResponses}
+                  </Typography>
+                  <Typography variant="body1" align="center" gutterBottom>
+                    Scores:
+                  </Typography>
+                  <Grid
+                    container
+                    spacing={3}
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    {Object.entries(item?.scoreCounts).map(
+                      ([score, data]) => (
+                        <Grid item xs={12} key={score}>
+                              <Box
+                                sx={{
+                                  maxWidth: { xs: "100%", sm: "80%", md: "70%", lg: "60%" },
+                                  mx: "auto",
+                                  textAlign: "center",
+                                }}
+                              >
+                              {`${score}: ${data.count} (${data.percentage.toFixed(
+                                2
+                              ) || 0}%)`}
+                          
+                            <LinearProgress
+                            variant="determinate"
+                            value={data.percentage || 0}
+                            sx={{
+                              height: "10px",
+                              borderRadius: "10px",
+                              "& .MuiLinearProgress-bar": {
+                                borderRadius: "10px",
+                                backgroundColor: (() => {
+                                  if (score === "Reading") return "#FF0000"; // Red
+                                  if (score === "Understanding") return "#FF7F00"; // Orange
+                                  if (score === "Explaining") return "#FFFF00"; // Yellow
+                                  if (score === "Evaluating") return "#7FFF00"; // Light Green
+                                  return "#00FF00"; // Green
+                                })(),
+                              },
+                            }}
+                          />  
+                          </Box>
+                        </Grid>
+                      )
+                    )}
+                  </Grid>
+                  <>
+                    <Box
+                      sx={{
+                        mt: 4,
+                        width: "100%",
+                        height: { xs: "300px", sm: "400px" },
+                        maxWidth: "900px",
+                        mx: "auto",
+                      }}
+                    >
+                      <Line options={options} data={item?.chartData} />
+                    </Box>
+                  </>
+                </>
+              );
+            })
+          )}
+        </>
+      ) : (
+        <>
+         <div className="flex justify-center items-center gap-2 sm:gap-6 mt-10 flex-wrap">
+        <Typography variant="body1" align="center" gutterBottom >
+          Total Responses: {totalCount}
+        </Typography>
+        <Typography variant="body1" align="center" gutterBottom >
+          Learning Index: {learningLevelIndex}
+        </Typography>
+        <Typography variant="body1" align="center" gutterBottom >
+        Learning Stage: {learningStage}
+        </Typography>
+      </div>
 
-  style={{ color: 'orange',fontWeight:"bold" }}
->
-  Scores:
-</Typography>
+      <Typography 
+        variant="body1" 
+        align="center" 
+        gutterBottom 
+
+        style={{ color: 'orange',fontWeight:"bold" }}
+      >
+        Scores:
+  </Typography>
 
       <Grid container spacing={3} justifyContent="center">
   {Object.entries(scores).map(([score, data]) => (
@@ -275,25 +561,332 @@ setLearningStage(responseData[responseData.length-1].learning_index_data.learnin
     </Grid>
   ))}
 </Grid>
-
-      {selectedChannel.length < 1 || selectedInstance.length < 1 ? null : (
-        <>
-          <Box
-            sx={{
-              mt: 4,
-              width: "100%",
-              height: { xs: "300px", sm: "400px" },
-              maxWidth: "900px",
-              mx: "auto",
-            }}
-          >
-            {totalCount !== 0 && <LineChart indexes={indexes} total={counts} stepSize={Math.floor(responseData.length / 5)} />}
-          </Box>
+         
+         
+          {selectedChannel.length < 1 || selectedInstance.length < 1 ? null : (
+            <>
+              <Box
+                sx={{
+                  mt: 4,
+                  width: "100%",
+                  height: { xs: "300px", sm: "400px" },
+                  maxWidth: "900px",
+                  mx: "auto",
+                }}
+              >
+                <Line options={options} data={learningIndexDataForChart} />
+              </Box>
+            </>
+          )}
         </>
       )}
-    </>
-  </Box>
+    </Box>
   );
 };
 
-export default App;
+export default App
+// import React, { useState, useEffect } from "react";
+// import {
+//   Select,
+//   MenuItem,
+//   CircularProgress,
+//   LinearProgress,
+//   Grid,
+//   Typography,
+//   Box,
+// } from "@mui/material";
+// import axios from "axios";
+// import {
+//   Chart as ChartJS,
+//   CategoryScale,
+//   LinearScale,
+//   LineElement,
+//   PointElement,
+//   Title,
+//   Tooltip,
+//   Legend,
+// } from "chart.js";
+
+
+// ChartJS.register(
+//   CategoryScale,
+//   LinearScale,
+//   LineElement,
+//   PointElement,
+//   Title,
+//   Tooltip,
+//   Legend
+// );
+// import LineChart from "../../Components/LineChart"
+// const instanceNames = {
+//   instance_1: "Student feedback",
+
+// };
+
+// // const allChannelsNameTag = "channel_all_x";
+
+// const channelNames = {
+// //   [`${allChannelsNameTag}`]: "All Channels",
+//   channel_1: "Classroom",
+// };
+
+// const options = {
+//   responsive: true,
+//   maintainAspectRatio: false,
+//   plugins: {
+//     legend: {
+//       position: "top",
+//     },
+//     title: {
+//       display: true,
+//       text: "Responses Insights by Day",
+//     },
+//   },
+// };
+
+
+
+// const initialScoreData = {
+//     Reading: { count: 0, percentage: 0 },
+//     Understanding: { count: 0, percentage: 0 },
+//     Explaining: { count: 0, percentage: 0 },
+//     Evaluating: { count: 0, percentage: 0 },
+//     Applying: { count: 0, percentage: 0 }
+// };
+
+// const App = () => {
+//   const [channels, setChannels] = useState([]);
+//   const [instances, setInstances] = useState([]);
+//   const [selectedChannel, setSelectedChannel] = useState("");
+//   const [selectedInstance, setSelectedInstance] = useState("");
+//   const [scores, setScores] = useState(initialScoreData);
+//   const [totalCount, setTotalCount] = useState(0);
+//   const [loading, setLoading] = useState(true);
+//   const [responseData, setResponseData] = useState([]);
+//   const[learningIndexData,setLearningIndexData]=useState({})
+//   const[learningLevelIndex,setLearningLevelIndex]=useState(0)
+//   const[learningStage,setLearningStage]=useState("")
+//   const[indexes,setIndexes]=useState([])
+//   const[counts,setCounts]=useState([])
+//   const[responseForChannles,setResponseForChannels]=useState([{
+//     channelName:"",
+//     instances:[{
+//       instanceNames
+//     }]
+//   }])
+
+
+// useEffect(()=>{
+//   fetchData()
+// },[])
+
+//   const fetchData = async () => {
+//     try {
+//       const response = await axios.get(
+//         "https://100035.pythonanywhere.com/addons/learning-index-report/?scale_id=66581beae29ef8faa980b1c2"
+//       );
+//       const data = response.data.data;
+
+//       setChannels(["channel_1"]);
+//       setInstances(["instance_1"]);
+//       setResponseData(data);
+//       setLearningIndexData(data[data.length - 1].learning_index_data);
+   
+//     } catch (error) {
+//       console.error("Error fetching data:", error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const handleChannelSelect = (event) => {
+//     setSelectedChannel(event.target.value);
+//   };
+
+//   const handleInstanceSelect = (event) => {
+//     setSelectedInstance(event.target.value);
+//     const scoreCounts = learningIndexData.learning_level_count;
+//     const percentages = learningIndexData.learning_level_percentages;
+
+//     setTotalCount(learningIndexData.control_group_size);
+
+//     const scorePercentages = {
+//       Reading: {
+//         count: scoreCounts["reading"],
+//         percentage: percentages["reading"],
+//       },
+//       Understanding: {
+//         count: scoreCounts["understanding"],
+//         percentage: percentages["understanding"],
+//       },
+//       Explaining: {
+//         count: scoreCounts["explaining"],
+//         percentage: percentages["explaining"],
+//       },
+//       Evaluating: {
+//         count: scoreCounts["evaluating"],
+//         percentage: percentages["evaluating"],
+//       },
+//       Applying: {
+//         count: scoreCounts["applying"],
+//         percentage: percentages["applying"],
+//       },
+//     };
+// setLearningStage(responseData[responseData.length-1].learning_index_data.learning_stage)
+//     setScores(scorePercentages);
+//     setLearningLevelIndex(learningIndexData.learning_level_index.toFixed(2));
+//     getChartDetails();
+//   };
+
+//   const getChartDetails = () => {
+//     const lengthOfResponses = responseData.length;
+//     if (lengthOfResponses < 5) {
+//       const newIndexes = [];
+//       const newCounts = [];
+//       responseData.forEach((obj) => {
+//         newIndexes.push(obj.learning_index_data.learning_level_index);
+//         newCounts.push(obj.learning_index_data.control_group_size);
+//       });
+//       setIndexes(newIndexes);
+//       setCounts(newCounts);
+//     } else {
+//       const increment = Math.floor(lengthOfResponses / 5);
+//       const newIndexes = [0];
+//       const newCounts = [0];
+//       for (let i = increment - 1; i < lengthOfResponses; i += increment) {
+//         newIndexes.push(responseData[i].learning_index_data.learning_level_index.toFixed(2));
+//         newCounts.push(responseData[i].learning_index_data.control_group_size);
+//       }
+//       setIndexes(newIndexes);
+//       setCounts(newCounts);
+//     }
+//   };
+
+
+
+//   if (loading) {
+//     return <CircularProgress />;
+//   }
+
+//   return (
+//     <Box p={3}>
+//     <Typography variant="h4" align="center" gutterBottom>
+//       Feedback Analysis Dashboard
+//     </Typography>
+//     <Grid container spacing={3} alignItems="center" justifyContent="center">
+//       <Grid item xs={12} md={6}>
+//         <Select
+//           value={selectedChannel}
+//           onChange={handleChannelSelect}
+//           displayEmpty
+//           fullWidth
+//         >
+//           <MenuItem value="" disabled>
+//             Select Channel
+//           </MenuItem>
+//           {channels.map((channel) => (
+//             <MenuItem key={channel} value={channel}>
+//               {channelNames[channel]}
+//             </MenuItem>
+//           ))}
+//         </Select>
+//       </Grid>
+//       <Grid item xs={12} md={6}>
+//         <Select
+//           value={selectedInstance}
+//           onChange={handleInstanceSelect}
+//           displayEmpty
+//           fullWidth
+//         >
+//           <MenuItem value="" disabled>
+//             Select Instance
+//           </MenuItem>
+//           {instances.map((instance) => (
+//             <MenuItem key={instance} value={instance}>
+//               {instanceNames[instance]}
+//             </MenuItem>
+//           ))}
+//         </Select>
+//       </Grid>
+//     </Grid>
+    
+//     <>
+//     <div className="flex justify-center items-center gap-2 sm:gap-6 mt-10 flex-wrap">
+//   <Typography variant="body1" align="center" gutterBottom >
+//     Total Responses: {totalCount}
+//   </Typography>
+//   <Typography variant="body1" align="center" gutterBottom >
+//     Learning Index: {learningLevelIndex}
+//   </Typography>
+//   <Typography variant="body1" align="center" gutterBottom >
+//    Learning Stage: {learningStage}
+//   </Typography>
+// </div>
+
+// <Typography 
+//   variant="body1" 
+//   align="center" 
+//   gutterBottom 
+
+//   style={{ color: 'orange',fontWeight:"bold" }}
+// >
+//   Scores:
+// </Typography>
+
+//       <Grid container spacing={3} justifyContent="center">
+//   {Object.entries(scores).map(([score, data]) => (
+//     <Grid item xs={12} key={score}>
+//       <Box
+//         sx={{
+//           maxWidth: { xs: "100%", sm: "80%", md: "70%", lg: "60%" },
+//           mx: "auto",
+//           textAlign: "center",
+//         }}
+//       >
+//         <Typography variant="subtitle1" gutterBottom>
+//           {`${score}: ${data.count} (${data.percentage.toFixed(2)}%)`}
+//         </Typography>
+//         <LinearProgress
+//           variant="determinate"
+//           value={data.percentage || 0}
+//           sx={{
+//             height: "10px",
+//             borderRadius: "10px",
+//             "& .MuiLinearProgress-bar": {
+//               borderRadius: "10px",
+//               backgroundColor: (() => {
+//                 if (score === "Reading") return "#FF0000"; // Red
+//                 if (score === "Understanding") return "#FF7F00"; // Orange
+//                 if (score === "Explaining") return "#FFFF00"; // Yellow
+//                 if (score === "Evaluating") return "#7FFF00"; // Light Green
+//                 return "#00FF00"; // Green
+//               })(),
+//             },
+//           }}
+//         />
+//       </Box>
+//     </Grid>
+//   ))}
+// </Grid>
+
+//       {selectedChannel.length < 1 || selectedInstance.length < 1 ? null : (
+//         <>
+//           <Box
+//             sx={{
+//               mt: 4,
+//               width: "100%",
+//               height: { xs: "300px", sm: "400px" },
+//               maxWidth: "900px",
+//               mx: "auto",
+//             }}
+//           >
+//             {totalCount !== 0 && <LineChart indexes={indexes} total={counts} stepSize={Math.floor(responseData.length / 5)} />}
+//           </Box>
+//         </>
+//       )}
+//     </>
+//   </Box>
+//   );
+// };
+
+// export default App;

@@ -4,7 +4,7 @@ const buttons=[0,1,2,3,4,5,6,7,8,9,10]
 export default function Evaluate(){
 
     function handleButtonClick(index){
-          window.location.href=`https://100035.pythonanywhere.com/addons/create-response/v3/?user=True&scale_type=nps&channel=channel_1&instance=instance_1&workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=66581beae29ef8faa980b1c2&item=${index}`
+          window.location.href=`https://100035.pythonanywhere.com/addons/create-response/v3/?user=True&scale_type=nps&channel=channel_1&instance=instance_1&workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=665866e4e29ef8faa980b1d1&item=${index}`
     }
 
     return(
