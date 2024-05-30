@@ -97,6 +97,7 @@ useEffect(()=>{
       setInstances(["instance_1"]);
       setResponseData(data);
       setLearningIndexData(data[data.length - 1].learning_index_data);
+      setLearningLevelIndex(data[data.length - 1].learning_index_data.learning_level_index.toFixed(2))
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -216,17 +217,25 @@ useEffect(()=>{
     </Grid>
     
     <>
-      <Typography
-        variant="body1"
-        align="center"
-        gutterBottom
-        style={{ marginTop: "16px" }}
-      >
-        Total Responses: {totalCount}
-      </Typography>
-      <Typography variant="body1" align="center" gutterBottom>
-        Scores:
-      </Typography>
+    <div className="flex justify-center items-center gap-2 sm:gap-6 mt-10 flex-wrap">
+  <Typography variant="body1" align="center" gutterBottom >
+    Total Responses: {totalCount}
+  </Typography>
+  <Typography variant="body1" align="center" gutterBottom >
+    Learning Index: {learningLevelIndex}
+  </Typography>
+</div>
+
+<Typography 
+  variant="body1" 
+  align="center" 
+  gutterBottom 
+
+  style={{ color: 'orange',fontWeight:"bold" }}
+>
+  Scores:
+</Typography>
+
       <Grid container spacing={3} justifyContent="center">
   {Object.entries(scores).map(([score, data]) => (
     <Grid item xs={12} key={score}>
