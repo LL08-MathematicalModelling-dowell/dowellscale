@@ -9,6 +9,7 @@ import DowellScaleNew from "./pages/DowellScaleNew";
 import Evaluate from "./pages/Evaluate";
 import TeacherReport from "./pages/teacher/TeacherReport";
 import MVJReport from "./pages/MVJReport"
+import ExhibitionPage from "./pages/ExhibitionPage";
 function App() {
   return (
     <>
@@ -29,6 +30,7 @@ function App() {
         {/* routes for 0-10 ratings */}
         <Route path="/dowellscale/teacherevaluation" Component={Evaluate} />
         <Route path="/dowellscale/teacherevaluationreport" Component={TeacherReport} />
+        <Route path="/dowellscale/plex-exhibition" Component={ExhibitionPage}/>
       </Routes>
     </>
   );
