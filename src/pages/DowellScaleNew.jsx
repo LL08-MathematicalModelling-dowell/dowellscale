@@ -24,7 +24,7 @@ export default function DowellScaleForCollege() {
     const [clicked, setClicked] = useState([false, false, false, false, false]);
     const[disabled,setDisabled]=useState([false, false, false, false, false]);
     const[answered,setAnswered]=useState(0)
-
+    const[submitted,setSubmitted]=useState(-1)
     const handleButtonClick = async(index) => {
   
         let newClicked = [...clicked];
@@ -42,7 +42,7 @@ export default function DowellScaleForCollege() {
 
         if(answered!=index+1){
         setAnswered(index+1)
-     
+        setSubmitted(i)
         window.location.href=`https://100035.pythonanywhere.com/addons/create-response/v3/?user=True&scale_type=nps_lite&channel=channel_1&instance=instance_${index+1}&workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=66556a7ff11edcfcfb8b0d54&item=${i}`
     
     }else{
@@ -126,12 +126,36 @@ export default function DowellScaleForCollege() {
                             </button>
                             {clicked[index]  && (
                             <div className="flex justify-center items-center gap-[2px] sm:gap-2  mt-2">
+                                <style>
+                                        {`
+                                    @keyframes spin {
+                                        to {
+                                        transform: rotate(360deg);
+                                        }
+                                    }
+                                    
+                                    .loader {
+                                        display: inline-block;
+                                        width: 20px;
+                                        height: 20px;
+                                        border: 3px solid rgba(255, 255, 255, 0.3);
+                                        border-radius: 50%;
+                                        border-top-color: #fff;
+                                        animation: spin 1s linear infinite;
+                                    }
+                                    
+                                    
+                                        
+                                        `}
+                    </style>
                                 {buttons.map((data,i)=>(
                                      <button key={i} onClick={()=>{
                                         handleSubmission(index,i)
                                        
                                     }}
-                                      className="bg-green-500 font-medium border-none relative rounded-full cursor-pointer text-[9px] sm:text-[10px] md:text-[12px] lg:text-[16px] py-[8px] px-[6px] sm:px-[12px] md:p-2 md:px-4">{data} </button>
+                                      className={`font-medium border-none relative rounded-full cursor-pointer text-[9px] sm:text-[10px] md:text-[12px] lg:text-[16px] py-[8px] px-[6px] sm:px-[12px] md:p-2 md:px-4
+                                      ${submitted==i ? "bg-blue-600 text-white flex justify-center items-center p-[1px] px-[4px]" : "bg-green-500 "}`}>
+                                        {submitted==i ? <div className="loader"></div> : data}</button>
                                 ))}
                              
                             </div>
