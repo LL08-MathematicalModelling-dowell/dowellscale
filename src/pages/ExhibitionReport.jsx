@@ -33,8 +33,8 @@ ChartJS.register(
 
 const instanceNames = {
   instance_1: "Student feedback",
-
 };
+
 
 const allChannelsNameTag = "channel_all_x";
 
@@ -112,7 +112,7 @@ const extractLabelsAndDatasetsInfo = (data = []) => {
         scales: {
           y: {
             beginAtZero: true,
-            max: stepSize * 5,
+            max: stepSize * 6,
             ticks: {
               stepSize: stepSize,
             },
