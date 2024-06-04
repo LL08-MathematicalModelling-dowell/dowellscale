@@ -5,7 +5,7 @@ export default function Evaluate(){
 
     async function handleButtonClick(index){
       
-        const response=await axios.get(`https://100035.pythonanywhere.com/addons/create-response/v3/?user=True&scale_type=learning_index&channel=channel_1&instance=instance_1&workspace_id=6385c0e48eca0fb652c9447b&username=HeenaK&scale_id=665ed9b87db9a73b55dd515f&item=${index}`)
+        window.location.href=`https://100035.pythonanywhere.com/addons/create-response/v3/?user=True&scale_type=learning_index&channel=channel_1&instance=instance_1&workspace_id=6385c0e48eca0fb652c9447b&username=HeenaK&scale_id=665ed9b87db9a73b55dd515f&item=${index}`
     console.log(response.data)
       }
 
