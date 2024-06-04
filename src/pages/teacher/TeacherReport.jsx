@@ -286,7 +286,7 @@ setOptions(options)
    
     try {
       const response = await axios.get(
-        "https://100035.pythonanywhere.com/addons/learning-index-report/?scale_id=665866e4e29ef8faa980b1d1"
+        "https://100035.pythonanywhere.com/addons/learning-index-report/?scale_id=665ed9b87db9a73b55dd515f"
       );
       const data = response.data.data;
 

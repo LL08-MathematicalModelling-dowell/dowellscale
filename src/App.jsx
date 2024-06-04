@@ -30,7 +30,7 @@ function App() {
 
         {/* routes for 0-10 ratings */}
         <Route path="/dowellscale/teacherevaluation" Component={Evaluate} />
-        <Route path="/dowellscale/teacherevaluationreport" Component={TeacherReport} />
+        <Route path="/dowellscale/teacherevaluation/report" Component={TeacherReport} />
         <Route path="/dowellscale/plex-exhibition" Component={ExhibitionPage}/>
         <Route path="/dowellscale/plex-exhibition/report" Component={ExhibitionReport}/>
       </Routes>

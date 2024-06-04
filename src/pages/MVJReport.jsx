@@ -248,8 +248,7 @@ const App = () => {
       const response = await axios.get(
         "https://100035.pythonanywhere.com/addons/get-response/?scale_id=66556a7ff11edcfcfb8b0d54"
       );
-      const data = response.data.data;
-console.log(data)
+
       const uniqueChannels = Array.from(
         new Set(data.map((item) => item.channel_name))
       );
@@ -257,8 +256,10 @@ console.log(data)
         new Set(data.map((item) => item.instance_name.trim()))
       );
 
+      let instancesArray=uniqueInstances.filter((inst)=>inst!="instance_${index 1}")
+  
       setChannels([allChannelsNameTag, ...uniqueChannels]);
-      setInstances(uniqueInstances);
+      setInstances(instancesArray);
       setData(data);
       setLoading(false);
     
@@ -328,7 +329,7 @@ console.log(data)
     setScores(scorePercentages);
     setTotalCount(totalCount);
   };
-console.log(scores)
+
   if (loading) {
     return <CircularProgress />;
   }

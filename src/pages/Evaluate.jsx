@@ -1,11 +1,13 @@
 import classImage from "../../src/assets/images/class.png"
-
+import axios from "axios"
 const buttons=[0,1,2,3,4,5,6,7,8,9,10]
 export default function Evaluate(){
 
-    function handleButtonClick(index){
-          window.location.href=`https://100035.pythonanywhere.com/addons/create-response/v3/?user=True&scale_type=nps&channel=channel_1&instance=instance_1&workspace_id=653637a4950d738c6249aa9a&username=CustomerSupport&scale_id=665866e4e29ef8faa980b1d1&item=${index}`
-    }
+    async function handleButtonClick(index){
+      
+        const response=await axios.get(`https://100035.pythonanywhere.com/addons/create-response/v3/?user=True&scale_type=learning_index&channel=channel_1&instance=instance_1&workspace_id=6385c0e48eca0fb652c9447b&username=HeenaK&scale_id=665ed9b87db9a73b55dd515f&item=${index}`)
+    console.log(response.data)
+      }
 
     return(
         <div className="w-full flex flex-col justify-between items-center gap-4 h-screen p-4">
