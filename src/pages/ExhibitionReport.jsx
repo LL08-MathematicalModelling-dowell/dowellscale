@@ -32,7 +32,7 @@ ChartJS.register(
 );
 
 const instanceNames = {
-  instance_1: "Student feedback",
+  instance_1: "Exhibition Feedback",
 };
 
 
@@ -40,7 +40,7 @@ const allChannelsNameTag = "channel_all_x";
 
 const channelNames = {
   [`${allChannelsNameTag}`]: "All Channels",
-  channel_1: "Class Asessment",
+  channel_1: "Exhibition Hall",
 };
 
 
