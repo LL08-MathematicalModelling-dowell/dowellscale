@@ -17,7 +17,7 @@ export default function Evaluate(){
           className="lg:w-[380px] md:w-[300px] w-[200px]" 
         />
         <div className="w-full flex flex-col justify-center items-center flex-grow">
-          <div className="w-full sm:w-max bg-[#c5e8c2] p-4 flex flex-col justify-center items-center gap-5 py-8 h-full md:px-10">
+          <div className="w-full sm:w-max bg-[#c5e8c2] p-4 flex flex-col justify-center items-center gap-5  md:py-8 h-[80%] sm:h-full md:px-10">
             <img 
               className="md:w-max w-[230px]" 
               src={classImage} 
@@ -40,8 +40,9 @@ export default function Evaluate(){
             </div>
             </div>
           </div>
+          <p className="text-[12px]">www.dowellresearch.sg</p>
         </div>
-        <p className="text-[12px]">www.dowellresearch.sg</p>
+      
       </div>
       
       

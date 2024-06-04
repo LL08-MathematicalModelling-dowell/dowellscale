@@ -60,11 +60,13 @@ const[submitted,setSubmitted]=useState(-1)
                 ))}
              </div>
      
-            <div className=" absolute bottom-5 right-[37%] sm:right-[45%] flex flex-col ">
+            <div className=" absolute bottom-15 right-[27%] sm:right-[45%] md:mt-10 flex flex-col justify-center items-center">
                 <img src={QR} alt="qr code" className="w-[80px] "/>
+                <p className="sm:right-[43%] text-[14px]">Powered by uxlivinglab</p>
+               
                 
             </div>
-            <p className="absolute bottom-0  right-[25%] sm:right-[43%] text-[14px]">Powered by uxlivinglab</p>
+           
           
         </div>
     )
