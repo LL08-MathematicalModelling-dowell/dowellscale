@@ -1,12 +1,16 @@
 import classImage from "../../src/assets/images/class.png"
 import axios from "axios"
+import { useState } from "react"
 const buttons=[0,1,2,3,4,5,6,7,8,9,10]
 export default function Evaluate(){
+   const[submitted,setSubmitted]=useState(-1)
 
-    async function handleButtonClick(index){
-      
+
+   
+     function handleButtonClick(index){
+      setSubmitted(index)
         window.location.href=`https://100035.pythonanywhere.com/addons/create-response/v3/?user=True&scale_type=learning_index&channel=channel_1&instance=instance_1&workspace_id=6385c0e48eca0fb652c9447b&username=HeenaK&scale_id=665ed9b87db9a73b55dd515f&item=${index}`
-    console.log(response.data)
+   
       }
 
     return(
@@ -28,13 +32,35 @@ export default function Evaluate(){
               HOW WOULD YOU EVALUATE TODAY'S LEARNING?
             </p>
             <div className="flex justify-center gap-1 sm:gap-2 items-center bg-white p-1 sm:p-2 border-2 border-[#bfbfbf] w-max py-2">
+            <style>
+                        {`
+                       @keyframes spin {
+                        to {
+                          transform: rotate(360deg);
+                        }
+                      }
+                      
+                      .loader {
+                        display: inline-block;
+                        width: 20px;
+                        height: 20px;
+                        border: 3px solid rgba(255, 255, 255, 0.3);
+                        border-radius: 50%;
+                        border-top-color: #fff;
+                        animation: spin 1s linear infinite;
+                      }
+                      
+                      
+                          
+                        `}
+                    </style>
               {buttons.map((score, index) => (
                 <button
                   key={index}
                   onClick={() => handleButtonClick(index)}
                   className="text-[10px] sm:text-[16px] font-bold py-1 px-[6px] sm:py-2 sm:px-3 rounded bg-[#0097b2] text-white"
                 >
-                  {score}
+                  {submitted==index ? <div className="loader"></div> : score}
                 </button>
               ))}
             </div>
