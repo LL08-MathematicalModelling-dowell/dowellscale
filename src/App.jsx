@@ -11,6 +11,12 @@ import TeacherReport from "./pages/teacher/TeacherReport";
 import MVJReport from "./pages/MVJReport"
 import ExhibitionPage from "./pages/ExhibitionPage";
 import ExhibitionReport from "./pages/ExhibitionReport";
+import NpxLite from "./templates/NpxLite"
+import Nps from "./templates/Nps"
+import Likert from "./templates/Likert"
+import Stapel from "./templates/Stapel"
+import Llx from "./templates/Llx"
+import RegistrationPage from "./pages/RegistrationPage";
 function App() {
   return (
     <>
@@ -33,6 +39,15 @@ function App() {
         <Route path="/dowellscale/teacherevaluation/report" Component={TeacherReport} />
         <Route path="/dowellscale/plex-exhibition" Component={ExhibitionPage}/>
         <Route path="/dowellscale/plex-exhibition/report" Component={ExhibitionReport}/>
+
+        <Route path="/dowellscale/shop/registration" Component={RegistrationPage}/>
+
+          {/* templates */}
+        <Route path="/dowellscale/templates/npslite" Component={NpxLite}/>
+        <Route path="/dowellscale/templates/nps" Component={Nps}/>
+        <Route path="/dowellscale/templates/likert" Component={Likert}/>
+        <Route path="/dowellscale/templates/stapel" Component={Stapel}/>
+        <Route path="/dowellscale/templates/llx" Component={Llx}/>
       </Routes>
     </>
   );
