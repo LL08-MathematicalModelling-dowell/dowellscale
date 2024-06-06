@@ -1,8 +1,8 @@
 import logo from "../../src/assets/images/dowellLogo.png"
-import Map from "../../src/assets/images/map.png"
-import QR from "../../src/assets/images/RegisQr.png"
+
 import { useState } from "react"
 import axios from "axios"
+import MapComponent from "../Components/MapComponent"
 export default function RegistrationPage(){
     const[shopNumber,setShopNumber]=useState("")
     const[instituteName,setInstituteName]=useState("")
@@ -140,7 +140,10 @@ export default function RegistrationPage(){
            {err.emailErr && <p className="text-red-500 text-[12px] sm:text-[14px]">**Email is not valid**</p>}
                 </div>
           </div>
-          <img src={Map} alt="map" className="w-[300px] sm:w-[500px]"/>
+          <div className="w-[300px] sm:w-[500px] h-[250px]">
+          <MapComponent lat="17.473221" lng="78.417702"/>
+         </div>
+        
           <div className=" w-full">
           <p className="w-full flex justify-center items-center">My location</p>
          
@@ -171,6 +174,7 @@ export default function RegistrationPage(){
           </div>
          
           </div>
+        
           
         </div>
     )
