@@ -2,14 +2,59 @@ import logo from "../../src/assets/images/dowellLogo.png"
 import Map from "../../src/assets/images/map.png"
 import QR from "../../src/assets/images/RegisQr.png"
 import { useState } from "react"
-
+import axios from "axios"
 export default function RegistrationPage(){
     const[shopNumber,setShopNumber]=useState("")
     const[shopName,setShopName]=useState("")
     const[shopEmail,setShopEmail]=useState("")
-
-    function handleClick(){
-        console.log(shopEmail,shopName,shopNumber)
+    const[err,setErr]=useState({
+      numErr:false,
+      nameErr:false,
+      emailErr:false
+    })
+    const[success,setSuccess]=useState(0)
+   
+    async function handleClick(){
+      let error=false
+      if(shopNumber === '' || isNaN(shopNumber)){
+        setErr((prev)=>({
+          ...prev,numErr:true
+        }))
+       error=true
+      }
+       if(shopName.length==0){
+        setErr((prev)=>({
+          ...prev,nameErr:true
+        }))
+        error=true
+      }
+       if(shopEmail.length==0 || !shopEmail.endsWith("@gmail.com")){
+        setErr((prev)=>({
+          ...prev,emailErr:true
+        }))
+        error=true
+      }
+      if(error){
+        return
+      }
+      else{
+      const body={
+        toname: shopName,
+        toemail:shopEmail,
+        subject: "Helloo",
+        email_content: "welcome-testing"
+      }
+        const response=await axios.post("https://100085.pythonanywhere.com/api/email/",body,{
+          headers:{
+            "Content-Type":"application/json"
+          }
+        })
+        if(response.data.success==true)
+          setSuccess(1)
+        else
+        setSuccess(-1)
+        console.log(response.data)
+      }
     }
     return(
         <div className="flex flex-col justify-center items-center relative">
@@ -22,21 +67,40 @@ export default function RegistrationPage(){
           const value = e.target.value;
           if (value === '' || !isNaN(value)) {
             setShopNumber(value);
+            setErr((prev)=>({
+              ...prev,numErr:false
+            }))
+            setSuccess(0)
           }
         }}
           className="border rounded-full p-2 px-6 sm:text-base text-sm "/>
+          {err.numErr && <p className="text-red-500 text-[12px] sm:text-[14px]">**Number should not be empty**</p>}
           <div className="grid sm:flex justify-center items-center sm:gap-8 gap-2 m-4">
             <div className="flex flex-col gap-2"> 
             <label htmlFor="name" className=" self-center text-[14px] sm:text-[16px] font-medium">Name of Stand/Shop in charge</label>
           <input id="name" name="name" value={shopName} type="text"
-            placeholder="enter shop/stand name" onChange={(e)=>setShopName(e.target.value)}
+            placeholder="enter shop/stand name" onChange={(e)=>{
+              setShopName(e.target.value)
+              setErr((prev)=>({
+                ...prev,nameErr:false
+              }))
+              setSuccess(0)
+            }}
            className="border rounded-full p-2 sm:px-10 px-6 sm:text-base text-sm"/>
+           {err.nameErr && <p className="text-red-500 text-[12px] sm:text-[14px]">**Name should not be empty**</p>}
             </div>
             <div className="flex flex-col gap-2">
             <label htmlFor="email" className=" self-center text-[14px] sm:text-[16px] font-medium">Email to share report link</label>
           <input id="email" name="email" value={shopEmail} type="email"
-            placeholder="enter shop/stand email" onChange={(e)=>setShopEmail(e.target.value)}
+            placeholder="enter shop/stand email" onChange={(e)=>{
+              setShopEmail(e.target.value)
+              setErr((prev)=>({
+                ...prev,emailErr:false
+              }))
+              setSuccess(0)
+            }}
            className="border rounded-full p-2 sm:px-10 px-6 sm:text-base text-sm"/>
+           {err.emailErr && <p className="text-red-500 text-[12px] sm:text-[14px]">**Email is not valid**</p>}
                 </div>
           </div>
           <img src={Map} alt="map" className="w-[300px] sm:w-[500px]"/>
@@ -44,8 +108,27 @@ export default function RegistrationPage(){
           <p className="w-full flex justify-center items-center">My location</p>
          
             <div className=" flex justify-center items-center sm:gap-3 gap-1 mt-1">
-          <button className="text-[16px] sm:text-[22px] bg-green-400 sm:px-20 px-8 p-2 rounded-full font-medium" 
+         
+         {success==1 ? (
+         <>
+          <p className="text-green-600 text-[12px] sm:text-[14px]">Registration successful </p>
+         </>
+        ):(
+        <>
+        {success==-1 ? (
+        <div className="flex flex-col justify-center items-center gap-2">
+        <p className="text-red-600 text-[12px] sm:text-[14px]">Registration failed</p>
+         <button className="text-[16px] sm:text-[22px] bg-green-400 sm:px-20 px-8 p-2 rounded-full font-medium
+           hover:bg-green-700" 
           onClick={handleClick}>Register</button>
+        </div>
+      ):(
+        <button className="text-[16px] sm:text-[22px] bg-green-400 sm:px-20 px-8 p-2 rounded-full font-medium
+        hover:bg-green-700" 
+       onClick={handleClick}>Register</button>
+    )}
+        </>
+      )}
           <img src={QR} alt="QR" className="w-[100px]"/>
           </div>
          
