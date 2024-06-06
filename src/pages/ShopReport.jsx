@@ -137,6 +137,8 @@ const[searchParams,setsearchParams]=useSearchParams({})
 const scaleId=searchParams.get("scale_id")
 const channelName=searchParams.get("channel")
 const instanceName=searchParams.get("instance")
+
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -234,10 +236,11 @@ const instanceName=searchParams.get("instance")
 
   return (
     <Box p={3}>
-      <Typography variant="h4" align="center" gutterBottom>
+      <Typography variant="h6" align="center" gutterBottom >
         Feedback Analysis Dashboard
       </Typography>
-
+      {totalCount==0 && <p className="text-red-500 self-center w-full flex justify-center">Provide feedback to check report</p>}
+        <div className="flex justify-between sm:justify-center sm:gap-8">
           <Typography
             variant="body1"
             align="center"
@@ -246,6 +249,15 @@ const instanceName=searchParams.get("instance")
           >
             Total Responses: {totalCount}
           </Typography>
+          <Typography
+            variant="body1"
+            align="center"
+            gutterBottom
+            style={{ marginTop: "16px" }}
+          >
+           Nps Score: {scores.Promoter.percentage-scores.Detractor.percentage}%
+          </Typography>
+          </div>
           <Typography variant="body1" align="center" gutterBottom>
             Scores:
           </Typography>

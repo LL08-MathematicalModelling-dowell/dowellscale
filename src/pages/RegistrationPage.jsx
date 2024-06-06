@@ -5,12 +5,14 @@ import { useState } from "react"
 import axios from "axios"
 export default function RegistrationPage(){
     const[shopNumber,setShopNumber]=useState("")
+    const[instituteName,setInstituteName]=useState("")
     const[shopName,setShopName]=useState("")
     const[shopEmail,setShopEmail]=useState("")
     const[err,setErr]=useState({
       numErr:false,
       nameErr:false,
-      emailErr:false
+      emailErr:false,
+      instituteErr:false
     })
     const[success,setSuccess]=useState(0)
    
@@ -49,7 +51,7 @@ export default function RegistrationPage(){
 
                   <p style="font-family:Arial, sans-serif; font-size:14px;">Please click on the link below to get the customer feedback report:</p>
 
-                  <p>Feedback report link: https://uxlive.me/?scale_id=66616df20f116021b739bcdd&channel=channel_1&instance=instance_${shopNumber} </p>
+                  <p>Feedback report link: https://www.uxlive.me/dowellscale/shop/report/?scale_id=66616df20f116021b739bcdd&channel=channel_1&instance=instance_${shopNumber} </p>
 
                   <p style="font-family:Arial, sans-serif; font-size:14px;">Best Regards,</p>
 
@@ -74,7 +76,9 @@ export default function RegistrationPage(){
           <img src={logo} alt="dowell logo" className=""/>
           <p className="mt-1 text-[24px] sm:text-[32px] font-bold">Voice of Customers</p>
           <p className="mt-1 text-[18px] sm:text-[24px] font-bold text-orange-600">Register Stand/Shop</p>
-          <label htmlFor="number" className="m-2 text-[14px] sm:text-[16px] font-medium">Stand/Shop Number</label>
+          <div className="grid sm:flex justify-center items-center sm:gap-8 gap-2 mt-4">
+          <div className="flex flex-col gap-2"> 
+          <label htmlFor="number" className=" text-[14px] sm:text-[16px] font-medium self-center">Stand/Shop Number</label>
           <input id="number" name="number" value={shopNumber}
           placeholder="enter shop/stand number"  onChange={(e) => {
           const value = e.target.value;
@@ -88,7 +92,24 @@ export default function RegistrationPage(){
         }}
         disabled={success==1}
           className={`border rounded-full p-2 px-6 sm:text-base text-sm ${success==1 ? "bg-gray-300" : ""}`}/>
+          </div>
           {err.numErr && <p className="text-red-500 text-[12px] sm:text-[14px]">**Number should not be empty**</p>}
+          <div className="flex flex-col gap-2"> 
+          <label htmlFor="institute" className="text-[14px] sm:text-[16px] font-medium self-center">Name of Institute</label>
+          <input id="institute" name="institute" value={instituteName} type="text"
+          placeholder="enter shop/stand number"  onChange={(e) => {
+            setInstituteName(e.target.value);
+            setErr((prev)=>({
+              ...prev,instituteErr:false
+            }))
+            setSuccess(0)
+          }
+        }
+        disabled={success==1}
+          className={`border rounded-full p-2 px-6 sm:text-base text-sm ${success==1 ? "bg-gray-300" : ""}`}/>
+          </div>
+          {err.instituteErr && <p className="text-red-500 text-[12px] sm:text-[14px]">**Institute should not be empty**</p>}
+          </div>
           <div className="grid sm:flex justify-center items-center sm:gap-8 gap-2 m-4">
             <div className="flex flex-col gap-2"> 
             <label htmlFor="name" className=" self-center text-[14px] sm:text-[16px] font-medium">Name of Stand/Shop in charge</label>
@@ -126,9 +147,10 @@ export default function RegistrationPage(){
             <div className=" flex justify-center items-center sm:gap-3 gap-1 mt-1">
          
          {success==1 ? (
-         <>
+         <div className="flex flex-col gap-1 justify-center items-center">
           <p className="text-green-600 text-[12px] sm:text-[14px]">Registration successful </p>
-         </>
+          <p className="text-red-600 text-[12px] sm:text-[16px]">Please check your email for report. </p>
+         </div>
         ):(
         <>
         {success==-1 ? (
@@ -145,7 +167,7 @@ export default function RegistrationPage(){
     )}
         </>
       )}
-          <img src={QR} alt="QR" className="w-[100px]"/>
+       
           </div>
          
           </div>
