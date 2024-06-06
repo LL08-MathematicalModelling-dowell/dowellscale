@@ -2,7 +2,7 @@ import logo from "../../src/assets/images/dowellLogo.png"
 import Map from  "../../src/assets/images/map.png"
 import { useState } from "react"
 import axios from "axios"
-import MapComponent from "../Components/MapComponent"
+import MapComponent from "./MapComponent"
 export default function RegistrationPage(){
     const[shopNumber,setShopNumber]=useState("")
     const[instituteName,setInstituteName]=useState("")
@@ -141,7 +141,7 @@ export default function RegistrationPage(){
                 </div>
           </div>
           <div className="w-[300px] sm:w-[500px] h-[250px]">
-          <MapComponent lat="17.473221" lng="78.417702"/>
+          <MapComponent lat="17.466681" lng="78.39518"/>
          </div>
         {/* <img src={Map} alt="deowell logo" className="w-[300px] sm:w-[500px]"/> */}
           <div className=" w-full">
