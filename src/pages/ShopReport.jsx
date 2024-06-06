@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
-  Select,
-  MenuItem,
+
   CircularProgress,
   LinearProgress,
   Grid,
@@ -133,9 +132,7 @@ const App = () => {
     labels: [],
     datasets: [],
   });
-  const [displayDataForAllSelection, setDisplayDataForAllSelection] = useState(
-    []
-  );
+
 const[searchParams,setsearchParams]=useSearchParams({})
 const scaleId=searchParams.get("scale_id")
 const channelName=searchParams.get("channel")
@@ -216,7 +213,7 @@ const instanceName=searchParams.get("instance")
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("https://100035.pythonanywhere.com/addons/get-response/?scale_id=66616df20f116021b739bcdd&channel=channel_1&instance=instance_1");
+      const response = await axios.get(`https://100035.pythonanywhere.com/addons/get-response/?scale_id=${scaleId}&channel=${channelName}&instance=${instanceName}`);
       const data = response.data.data;
     
 

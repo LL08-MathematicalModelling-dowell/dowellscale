@@ -49,7 +49,7 @@ export default function RegistrationPage(){
 
                   <p style="font-family:Arial, sans-serif; font-size:14px;">Please click on the link below to get the customer feedback report:</p>
 
-                  <p>Feedback report link: https://uxlive.me/?scale_id&channle&instance </p>
+                  <p>Feedback report link: https://uxlive.me/?scale_id=66616df20f116021b739bcdd&channel=channel_1&instance=instance_${shopNumber} </p>
 
                   <p style="font-family:Arial, sans-serif; font-size:14px;">Best Regards,</p>
 
@@ -66,7 +66,7 @@ export default function RegistrationPage(){
           setSuccess(1)
         else
         setSuccess(-1)
-        console.log(response.data)
+      
       }
     }
     return(
