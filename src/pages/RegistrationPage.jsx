@@ -140,10 +140,10 @@ export default function RegistrationPage(){
            {err.emailErr && <p className="text-red-500 text-[12px] sm:text-[14px]">**Email is not valid**</p>}
                 </div>
           </div>
-          {/* <div className="w-[300px] sm:w-[500px] h-[250px]">
+          <div className="w-[300px] sm:w-[500px] h-[250px]">
           <MapComponent lat="17.473221" lng="78.417702"/>
-         </div> */}
-        <img src={Map} alt="deowell logo" className="w-[300px] sm:w-[500px]"/>
+         </div>
+        {/* <img src={Map} alt="deowell logo" className="w-[300px] sm:w-[500px]"/> */}
           <div className=" w-full">
           <p className="w-full flex justify-center items-center">My location</p>
          
