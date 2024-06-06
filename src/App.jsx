@@ -17,6 +17,7 @@ import Likert from "./templates/Likert"
 import Stapel from "./templates/Stapel"
 import Llx from "./templates/Llx"
 import RegistrationPage from "./pages/RegistrationPage";
+import ShopReport from "./pages/ShopReport";
 function App() {
   return (
     <>
@@ -41,6 +42,7 @@ function App() {
         <Route path="/dowellscale/plex-exhibition/report" Component={ExhibitionReport}/>
 
         <Route path="/dowellscale/shop/registration" Component={RegistrationPage}/>
+        <Route path="/dowellscale/shop/report" Component={ShopReport}/>
 
           {/* templates */}
         <Route path="/dowellscale/templates/npslite" Component={NpxLite}/>

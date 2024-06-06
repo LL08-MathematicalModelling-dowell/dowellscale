@@ -86,7 +86,8 @@ export default function RegistrationPage(){
             setSuccess(0)
           }
         }}
-          className="border rounded-full p-2 px-6 sm:text-base text-sm "/>
+        disabled={success==1}
+          className={`border rounded-full p-2 px-6 sm:text-base text-sm ${success==1 ? "bg-gray-300" : ""}`}/>
           {err.numErr && <p className="text-red-500 text-[12px] sm:text-[14px]">**Number should not be empty**</p>}
           <div className="grid sm:flex justify-center items-center sm:gap-8 gap-2 m-4">
             <div className="flex flex-col gap-2"> 
@@ -99,7 +100,8 @@ export default function RegistrationPage(){
               }))
               setSuccess(0)
             }}
-           className="border rounded-full p-2 sm:px-10 px-6 sm:text-base text-sm"/>
+            disabled={success==1}
+            className={`border rounded-full p-2 px-6 sm:text-base text-sm ${success==1 ? "bg-gray-300" : ""}`}/>
            {err.nameErr && <p className="text-red-500 text-[12px] sm:text-[14px]">**Name should not be empty**</p>}
             </div>
             <div className="flex flex-col gap-2">
@@ -112,7 +114,8 @@ export default function RegistrationPage(){
               }))
               setSuccess(0)
             }}
-           className="border rounded-full p-2 sm:px-10 px-6 sm:text-base text-sm"/>
+            disabled={success==1}
+            className={`border rounded-full p-2 px-6 sm:text-base text-sm ${success==1 ? "bg-gray-300" : ""}`}/>
            {err.emailErr && <p className="text-red-500 text-[12px] sm:text-[14px]">**Email is not valid**</p>}
                 </div>
           </div>
