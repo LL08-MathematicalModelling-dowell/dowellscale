@@ -41,8 +41,21 @@ export default function RegistrationPage(){
       const body={
         toname: shopName,
         toemail:shopEmail,
-        subject: "Helloo",
-        email_content: "welcome-testing"
+        subject: "Registration successful for Living Lab Scales",
+        email_content: `
+                  <p style="font-family:Arial, sans-serif; font-size:14px;">Dear Exhibitor,</p>
+
+                  <p style="font-family:Arial, sans-serif; font-size:14px;">Your registration for the Living Lab Scales Feedback has been successfully completed.</p>
+
+                  <p style="font-family:Arial, sans-serif; font-size:14px;">Please click on the link below to get the customer feedback report:</p>
+
+                  <p>Feedback report link: https://uxlive.me/?scale_id&channle&instance </p>
+
+                  <p style="font-family:Arial, sans-serif; font-size:14px;">Best Regards,</p>
+
+                  <p style="font-family:Arial, sans-serif; font-size:14px;">DoWell UX Living Lab</p>
+                                                                                               `
+     
       }
         const response=await axios.post("https://100085.pythonanywhere.com/api/email/",body,{
           headers:{
