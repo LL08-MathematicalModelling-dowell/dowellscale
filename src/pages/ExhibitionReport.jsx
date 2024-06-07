@@ -288,7 +288,7 @@ setOptions(options)
       );
       
       
-     console.log(uniqueChannels)
+    
       setChannels([allChannelsNameTag, ...uniqueChannels]);
       setInstances(uniqueInstances);
       setData(data);
@@ -364,7 +364,7 @@ setOptions(options)
   if (loading) {
     return <CircularProgress />;
   }
-console.log(scores)
+
   return (
     <Box p={3}>
     <Typography variant="h6" align="center" gutterBottom >
@@ -425,7 +425,7 @@ console.log(scores)
                   {item?.totalResponses==0 && <p className="text-red-500 self-center w-full flex justify-center">Provide feedback to check report</p>}
         
                  
-                  <div className="flex justify-center sm:gap-8 gap-4 text-[14px] sm:text-[18px] font-medium text-orange-600">
+                  <div className="flex justify-center sm:gap-8 gap-4 text-[14px] sm:text-[18px] font-medium my-5">
                       <p>
                         Total Responses: {item?.totalResponses}
                       </p>

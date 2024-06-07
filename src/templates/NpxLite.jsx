@@ -241,7 +241,7 @@ const App = () => {
         "https://100035.pythonanywhere.com/addons/get-response/?scale_id=665d95ae7ee426d671222a7b"
       );
 const data=response.data.data
-console.log(data)
+
 let uniqueInstanceNames = {};
 let uniqueInstances = new Set();
 let uniqueChannelNames = {};
@@ -256,8 +256,8 @@ data.forEach((item) => {
 });
 setInstanceNames(uniqueInstanceNames)
 data.forEach((item) => {
-  console.log(item)
-  const trimmedName = item.channel.trim();
+
+  const trimmedName = item.channel_name.trim();
   if (!uniqueChannels.has(trimmedName)) {
     uniqueChannelNames[trimmedName] = item.channel_display_name;
     uniqueChannels.add(trimmedName);
@@ -343,7 +343,7 @@ setChannelNames(uniqueChannelNames)
 
   return (
     <Box p={3}>
-      <Typography variant="h4" align="center" gutterBottom>
+      <Typography variant="h6" align="center" gutterBottom>
         Feedback Analysis Dashboard
       </Typography>
       <Grid container spacing={3} alignItems="center" justifyContent="center">
@@ -370,7 +370,7 @@ setChannelNames(uniqueChannelNames)
             onChange={handleInstanceSelect}
             displayEmpty
             fullWidth
-            disabled={selectedChannel === allChannelsNameTag}
+            disabled={selectedChannel === allChannelsNameTag || selectedChannel.length==0}
           >
             <MenuItem value="" disabled>
               Select Instance
@@ -397,14 +397,17 @@ setChannelNames(uniqueChannelNames)
                     {index + 1}. {instanceNames[item?.instanceName.trim()]}
                   </Typography>
 
-                  <Typography
-                    variant="body1"
-                    align="center"
-                    gutterBottom
-                    style={{ marginTop: "16px" }}
-                  >
-                    Total Responses: {item?.totalResponses}
-                  </Typography>
+                 
+                  {item?.totalResponses==0 && <p className="text-red-500 self-center w-full flex justify-center">Provide feedback to check report</p>}
+                
+              <div className="flex justify-center sm:gap-8 gap-4 text-[14px] sm:text-[18px] font-medium my-5">
+            <p>
+              Total Responses: {item?.totalResponses}
+            </p>
+            {/* <p>
+            Nps Score: {((item?.scoreCounts.Promoter.percentage || 0) - (item?.scoreCounts.Detractor.percentage || 0)).toFixed(2)}%
+            </p> */}
+       </div>
                   <Typography variant="body1" align="center" gutterBottom>
                     Scores:
                   </Typography>
@@ -468,14 +471,15 @@ setChannelNames(uniqueChannelNames)
         </>
       ) : (
         <>
-          <Typography
-            variant="body1"
-            align="center"
-            gutterBottom
-            style={{ marginTop: "16px" }}
-          >
-            Total Responses: {totalCount}
-          </Typography>
+          {totalCount==0 && selectedInstance.length>1 && selectedChannel.length>1 && <p className="text-red-500 self-center w-full flex justify-center">Provide feedback to check report</p>}
+          <div className="flex justify-center sm:gap-8 gap-4 text-[14px] sm:text-[18px] font-medium  my-5">
+                      <p>
+                        Total Responses: {totalCount}
+                      </p>
+                      {/* <p>
+                      Nps Score: {((scores.Promoter.percentage || 0) - (scores.Detractor.percentage || 0)).toFixed(2)}%
+                      </p> */}
+                 </div>
           <Typography variant="body1" align="center" gutterBottom>
             Scores:
           </Typography>
