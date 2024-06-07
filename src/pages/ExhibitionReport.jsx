@@ -20,6 +20,7 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
+import { unclipArea } from "chart.js/helpers";
 
 ChartJS.register(
   CategoryScale,
@@ -271,12 +272,23 @@ setOptions(options)
       );
       const data = response.data.data;
       const uniqueChannels = Array.from(
-        new Set(data.map((item) => item.channel_name))
-      );
-      const uniqueInstances = Array.from(
-        new Set(data.map((item) => item.instance_name.trim()))
+        new Set(
+          data
+            .filter((item) => item.channel_name !== undefined) 
+            .map((item) => item.channel_name)
+        )
       );
 
+      const uniqueInstances = Array.from(
+        new Set(
+          data
+            .filter((item) =>item.instance_name !== undefined) 
+            .map((item) => item.instance_name.trim())
+        )
+      );
+      
+      
+     console.log(uniqueChannels)
       setChannels([allChannelsNameTag, ...uniqueChannels]);
       setInstances(uniqueInstances);
       setData(data);
@@ -352,12 +364,14 @@ setOptions(options)
   if (loading) {
     return <CircularProgress />;
   }
-
+console.log(scores)
   return (
     <Box p={3}>
-      <Typography variant="h4" align="center" gutterBottom>
+    <Typography variant="h6" align="center" gutterBottom >
         Feedback Analysis Dashboard
       </Typography>
+     
+      
       <Grid container spacing={3} alignItems="center" justifyContent="center">
         <Grid item xs={12} md={6}>
           <Select
@@ -369,8 +383,8 @@ setOptions(options)
             <MenuItem value="" disabled>
               Select Channel
             </MenuItem>
-            {channels.map((channel) => (
-              <MenuItem key={channel} value={channel}>
+            {channels.map((channel,index) => (
+              <MenuItem key={index} value={channel}>
                 {channelNames[channel]}
               </MenuItem>
             ))}
@@ -382,7 +396,7 @@ setOptions(options)
             onChange={handleInstanceSelect}
             displayEmpty
             fullWidth
-            disabled={selectedChannel === allChannelsNameTag}
+            disabled={selectedChannel === allChannelsNameTag || selectedChannel.length==0}
           >
             <MenuItem value="" disabled>
               Select Instance
@@ -408,15 +422,17 @@ setOptions(options)
                   >
                     {index + 1}. {instanceNames[item?.instanceName.trim()]}
                   </Typography>
-
-                  <Typography
-                    variant="body1"
-                    align="center"
-                    gutterBottom
-                    style={{ marginTop: "16px" }}
-                  >
-                    Total Responses: {item?.totalResponses}
-                  </Typography>
+                  {item?.totalResponses==0 && <p className="text-red-500 self-center w-full flex justify-center">Provide feedback to check report</p>}
+        
+                 
+                  <div className="flex justify-center sm:gap-8 gap-4 text-[14px] sm:text-[18px] font-medium text-orange-600">
+                      <p>
+                        Total Responses: {item?.totalResponses}
+                      </p>
+                      <p>
+                      Nps Score: {((item?.scoreCounts.Promoter.percentage || 0) - (item?.scoreCounts.Detractor.percentage || 0)).toFixed(2)}%
+                      </p>
+                 </div>
                   <Typography variant="body1" align="center" gutterBottom>
                     Scores:
                   </Typography>
@@ -480,14 +496,16 @@ setOptions(options)
         </>
       ) : (
         <>
-          <Typography
-            variant="body1"
-            align="center"
-            gutterBottom
-            style={{ marginTop: "16px" }}
-          >
-            Total Responses: {totalCount}
-          </Typography>
+            
+               <div className="flex justify-center sm:gap-8 gap-4 text-[14px] sm:text-[18px] font-medium  my-5">
+                      <p>
+                        Total Responses: {totalCount}
+                      </p>
+                      <p>
+                      Nps Score: {((scores.Promoter.percentage || 0) - (scores.Detractor.percentage || 0)).toFixed(2)}%
+                      </p>
+                 </div>
+                  {totalCount==0 && selectedInstance.length>1 && selectedChannel.length>1 && <p className="text-red-500 self-center w-full flex justify-center">Provide feedback to check report</p>}
           <Typography variant="body1" align="center" gutterBottom>
             Scores:
           </Typography>

@@ -336,9 +336,10 @@ const data=response.data.data
 
   return (
     <Box p={3}>
-      <Typography variant="h4" align="center" gutterBottom>
+      <Typography variant="h6" align="center" gutterBottom >
         Feedback Analysis Dashboard
       </Typography>
+     
       <Grid container spacing={3} alignItems="center" justifyContent="center">
         <Grid item xs={12} md={6}>
           <Select
@@ -363,7 +364,7 @@ const data=response.data.data
             onChange={handleInstanceSelect}
             displayEmpty
             fullWidth
-            disabled={selectedChannel === allChannelsNameTag}
+            disabled={selectedChannel === allChannelsNameTag || selectedChannel.length==0}
           >
             <MenuItem value="" disabled>
               Select Instance

@@ -235,28 +235,18 @@ const instanceName=searchParams.get("instance")
   }
 
   return (
-    <Box p={3}>
+    <Box p={1}>
       <Typography variant="h6" align="center" gutterBottom >
         Feedback Analysis Dashboard
       </Typography>
       {totalCount==0 && <p className="text-red-500 self-center w-full flex justify-center">Provide feedback to check report</p>}
-        <div className="flex justify-between sm:justify-center sm:gap-8">
-          <Typography
-            variant="body1"
-            align="center"
-            gutterBottom
-            style={{ marginTop: "16px" }}
-          >
-            Total Responses: {totalCount}
-          </Typography>
-          <Typography
-            variant="body1"
-            align="center"
-            gutterBottom
-            style={{ marginTop: "16px" }}
-          >
-           Nps Score: {scores.Promoter.percentage-scores.Detractor.percentage}%
-          </Typography>
+      <div className="flex justify-center sm:gap-8 gap-4 text-[14px] sm:text-[18px] font-medium  my-5">
+                      <p>
+                        Total Responses: {totalCount}
+                      </p>
+                      <p>
+                      Nps Score: {((scores.Promoter.percentage || 0) - (scores.Detractor.percentage || 0)).toFixed(2)}%
+                      </p>
           </div>
           <Typography variant="body1" align="center" gutterBottom>
             Scores:
