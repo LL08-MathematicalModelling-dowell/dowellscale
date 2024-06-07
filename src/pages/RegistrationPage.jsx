@@ -1,6 +1,6 @@
 import logo from "../../src/assets/images/dowellLogo.png"
 import Map from  "../../src/assets/images/map.png"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import axios from "axios"
 import MapComponent from "./MapComponent"
 export default function RegistrationPage(){
@@ -15,7 +15,12 @@ export default function RegistrationPage(){
       instituteErr:false
     })
     const[success,setSuccess]=useState(0)
-   
+   const[latitude,setLatitude]=useState("")
+   const[longitude,setLongitude]=useState("")
+   const[locationLoading,setLocationLoading]=useState(0)
+
+
+
     async function handleClick(){
       let error=false
       if(shopNumber === '' || isNaN(shopNumber)){
@@ -71,6 +76,28 @@ export default function RegistrationPage(){
       
       }
     }
+
+    useEffect(()=>{
+     fetchLocation()
+    },[])
+
+    async function fetchLocation(){
+         const response=await axios.get("https://www.qrcodereviews.uxlivinglab.online/api/v6/qrcode-data/22-d4234c7b-77c1-4ed6-8ea1-9417d9ad63d3/")
+         const detailedReport = response.data.response.detailed_report;
+
+    if (Array.isArray(detailedReport) && detailedReport.length > 0) {
+     
+        
+        setLatitude(detailedReport[detailedReport.length - 1].lat+"")
+        setLongitude(detailedReport[detailedReport.length - 1].long+"")
+        setLocationLoading(1)
+    } else {
+        console.log("detailed_report is either not an array or is empty");
+        setLocationLoading(-1)
+    }
+    }
+   
+
     return(
         <div className="flex flex-col justify-center items-center relative">
           <img src={logo} alt="dowell logo" className=""/>
@@ -141,7 +168,24 @@ export default function RegistrationPage(){
                 </div>
           </div>
           <div className="w-[300px] sm:w-[500px] h-[250px]">
-          <MapComponent lat="17.466681" lng="78.39518"/>
+            {locationLoading==0 ? (
+              <>
+              <p className="text-[18px] w-full h-full flex justify-center items-center bg-gray-100">Fetching location details...</p>
+            </>
+          ):(
+          <>
+          {locationLoading==1 ? (
+            <>
+            <MapComponent lat={latitude} lng={longitude}/>
+            </>
+          ):(
+          <>
+           <p className="text-[18px] w-full h-full flex justify-center items-center bg-gray-100">Failed to Load Location details</p>
+          </>
+        )}
+          </>
+        )}
+          
          </div>
         {/* <img src={Map} alt="deowell logo" className="w-[300px] sm:w-[500px]"/> */}
           <div className=" w-full">

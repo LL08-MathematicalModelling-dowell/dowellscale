@@ -18,7 +18,7 @@ const MapComponent = ({ lat, lng }) => {
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
-        zoom={15}
+        zoom={10}
       >
         <Marker position={center} />
       </GoogleMap>
