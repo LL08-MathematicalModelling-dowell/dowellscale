@@ -3,10 +3,13 @@ import Map from  "../../src/assets/images/map.png"
 import { useEffect, useState } from "react"
 import axios from "axios"
 import MapComponent from "./MapComponent"
+
+
+
 export default function RegistrationPage(){
     const[shopNumber,setShopNumber]=useState("")
     const[instituteName,setInstituteName]=useState("")
-    const[shopName,setShopName]=useState("")
+    const[inchargeName,setInchargeName]=useState("")
     const[shopEmail,setShopEmail]=useState("")
     const[err,setErr]=useState({
       numErr:false,
@@ -21,61 +24,76 @@ export default function RegistrationPage(){
 
 
 
-    async function handleClick(){
-      let error=false
-      if(shopNumber === '' || isNaN(shopNumber)){
-        setErr((prev)=>({
-          ...prev,numErr:true
-        }))
-       error=true
-      }
-       if(shopName.length==0){
-        setErr((prev)=>({
-          ...prev,nameErr:true
-        }))
-        error=true
-      }
-       if(shopEmail.length==0 || !shopEmail.endsWith("@gmail.com")){
-        setErr((prev)=>({
-          ...prev,emailErr:true
-        }))
-        error=true
-      }
-      if(error){
-        return
-      }
-      else{
-      const body={
-        toname: shopName,
-        toemail:shopEmail,
-        subject: "Registration successful for Living Lab Scales",
-        email_content: `
-                  <p style="font-family:Arial, sans-serif; font-size:14px;">Dear Exhibitor,</p>
-
-                  <p style="font-family:Arial, sans-serif; font-size:14px;">Your registration for the Living Lab Scales Feedback has been successfully completed.</p>
-
-                  <p style="font-family:Arial, sans-serif; font-size:14px;">Please click on the link below to get the customer feedback report:</p>
-
-                  <p>Feedback report link: https://www.uxlive.me/dowellscale/shop/report/?scale_id=66616df20f116021b739bcdd&channel=channel_1&instance=instance_${shopNumber} </p>
-
-                  <p style="font-family:Arial, sans-serif; font-size:14px;">Best Regards,</p>
-
-                  <p style="font-family:Arial, sans-serif; font-size:14px;">DoWell UX Living Lab</p>
-                                                                                               `
-     
-      }
-        const response=await axios.post("https://100085.pythonanywhere.com/api/email/",body,{
-          headers:{
-            "Content-Type":"application/json"
-          }
-        })
-        if(response.data.success==true)
-          setSuccess(1)
-        else
-        setSuccess(-1)
-      
-      }
+   async function handleClick() {
+    let error = false;
+    const errors = {
+      numErr: false,
+      nameErr: false,
+      emailErr: false,
+    };
+  
+    if (shopNumber === '' || isNaN(shopNumber)) {
+      errors.numErr = true;
+      error = true;
     }
+  
+    if (inchargeName.length === 0) {
+      errors.nameErr = true;
+      error = true;
+    }
+  
+    if (shopEmail.length === 0 || !shopEmail.endsWith("@gmail.com")) {
+      errors.emailErr = true;
+      error = true;
+    }
+  
+    setErr((prev) => ({ ...prev, ...errors }));
+  
+    if (error) return;
+  
+    const headers = {
+      "Content-Type": "application/json",
+    };
+  
+    const body = {
+      shop_number: shopNumber,
+      institution_name: instituteName,
+      incharge_person: inchargeName,
+      email_id: shopEmail,
+      shop_lat: latitude,
+      shop_long: longitude,
+    };
+  
+    try {
+      const response = await axios.post("https://100035.pythonanywhere.com/addons/register/", body, { headers });
+  
+      if (response.data.success) {
+        const bodyEmail = {
+          toname: inchargeName,
+          toemail: shopEmail,
+          subject: "Registration successful for Living Lab Scales",
+          email_content: `
+            <p style="font-family:Arial, sans-serif; font-size:14px;">Dear Exhibitor,</p>
+            <p style="font-family:Arial, sans-serif; font-size:14px;">Your registration for the Living Lab Scales Feedback has been successfully completed.</p>
+            <p style="font-family:Arial, sans-serif; font-size:14px;">Please click on the link below to get the customer feedback report:</p>
+            <p>Feedback report link: https://www.uxlive.me/dowellscale/shop/report/?scale_id=66616df20f116021b739bcdd&channel=channel_1&instance=instance_${shopNumber}</p>
+            <p style="font-family:Arial, sans-serif; font-size:14px;">Best Regards,</p>
+            <p style="font-family:Arial, sans-serif; font-size:14px;">DoWell UX Living Lab</p>
+          `,
+        };
+  
+        const responseEmail = await axios.post("https://100085.pythonanywhere.com/api/email/", bodyEmail, { headers });
+  
+        setSuccess(responseEmail.data.success === "true" ? 1 : -1);
+      } else {
+        setSuccess(-1);
+      }
+    } catch (error) {
+      console.log(error);
+      setSuccess(-1);
+    }
+  }
+  
 
     useEffect(()=>{
      fetchLocation()
@@ -88,8 +106,8 @@ export default function RegistrationPage(){
     if (Array.isArray(detailedReport) && detailedReport.length > 0) {
      
         
-        setLatitude(detailedReport[detailedReport.length - 1].lat+"")
-        setLongitude(detailedReport[detailedReport.length - 1].long+"")
+        setLatitude(detailedReport[detailedReport.length - 1].lat)
+        setLongitude(detailedReport[detailedReport.length - 1].long)
         setLocationLoading(1)
     } else {
         console.log("detailed_report is either not an array or is empty");
@@ -140,9 +158,9 @@ export default function RegistrationPage(){
           <div className="grid sm:flex justify-center items-center sm:gap-8 gap-2 m-4">
             <div className="flex flex-col gap-2"> 
             <label htmlFor="name" className=" self-center text-[14px] sm:text-[16px] font-medium">Name of Stand/Shop in charge</label>
-          <input id="name" name="name" value={shopName} type="text"
+          <input id="name" name="name" value={inchargeName} type="text"
             placeholder="enter shop/stand name" onChange={(e)=>{
-              setShopName(e.target.value)
+              setInchargeName(e.target.value)
               setErr((prev)=>({
                 ...prev,nameErr:false
               }))
