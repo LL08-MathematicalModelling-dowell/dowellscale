@@ -83,8 +83,8 @@ export default function RegistrationPage(){
         };
   
         const responseEmail = await axios.post("https://100085.pythonanywhere.com/api/email/", bodyEmail, { headers });
-  
-        setSuccess(responseEmail.data.success === "true" ? 1 : -1);
+  console.log(response.data,responseEmail.data)
+        setSuccess(responseEmail.data.success === true ? 1 : -1);
       } else {
         setSuccess(-1);
       }
@@ -100,9 +100,9 @@ export default function RegistrationPage(){
     },[])
 
     async function fetchLocation(){
-         const response=await axios.get("https://www.qrcodereviews.uxlivinglab.online/api/v6/qrcode-data/22-d4234c7b-77c1-4ed6-8ea1-9417d9ad63d3/")
+         const response=await axios.get("https://www.qrcodereviews.uxlivinglab.online/api/v6/qrcode-data/22-a5da59d5-de04-4a67-bfd9-07d019a6b5fb")
          const detailedReport = response.data.response.detailed_report;
-
+console.log(response.data)
     if (Array.isArray(detailedReport) && detailedReport.length > 0) {
      
         
