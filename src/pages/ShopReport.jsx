@@ -137,7 +137,7 @@ const[searchParams,setsearchParams]=useSearchParams({})
 const scaleId=searchParams.get("scale_id")
 const channelName=searchParams.get("channel_name")
 const instanceName=searchParams.get("instance_name")
-
+const[err,setErr]=useState(false)
 
   useEffect(() => {
     fetchData();
@@ -214,12 +214,18 @@ const instanceName=searchParams.get("instance_name")
   
 
   const fetchData = async () => {
+    
     try {
       const response = await axios.get(`https://100035.pythonanywhere.com/addons/get-response/?scale_id=${scaleId}&channel_name=${channelName}&instance_name=${instanceName}`);
       const data = response.data.data;
-    
+      if(data==undefined){
+        setErr(true)
+        return
+      }
+        
 
-      setData(data);
+const filteredData=data.filter((res)=>res.instance_name==instanceName)
+      setData(filteredData);
       setLoading(false);
 
     } catch (error) {
@@ -231,7 +237,13 @@ const instanceName=searchParams.get("instance_name")
   if (loading) {
     return <CircularProgress />;
   }
-
+if(err){
+  return(
+    <>
+    <p className="w-screen h-screen flex justify-center items-center p-2 text-red-600">Something went wrong contact admin!..</p>
+    </>
+  )
+}
   return (
     <Box p={1}>
       <Typography variant="h6" align="center" gutterBottom >
