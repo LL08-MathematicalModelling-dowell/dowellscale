@@ -64,7 +64,7 @@ const initialScoreData = {
 const extractLabelsAndDatasetsInfo = (data = []) => {
 
   let length=data.length;
-  let arr=data
+  let arr=data || []
   if(length>5){
     let x=Math.floor(length/5);
      arr=[]
@@ -104,7 +104,12 @@ arr.forEach((data)=>{
 if (!datasetsForCharts.indexData.includes(0)) {
   datasetsForCharts.indexData = [0, ...datasetsForCharts.indexData];
 }
-
+let stepSize, max
+if(arr.length==0)
+{
+  max=5
+  stepSize=0
+}
 
     const options = {
       responsive: true,
@@ -131,9 +136,9 @@ if (!datasetsForCharts.indexData.includes(0)) {
           type: 'linear',
           position: 'bottom',
           ticks: {
-            stepSize:Math.floor(arr[arr.length-1].learning_index_data.control_group_size/5),
+            stepSize:stepSize || Math.floor(arr[arr.length-1].learning_index_data.control_group_size/5),
             min: 0,
-            max:arr[arr.length-1].learning_index_data.control_group_size,
+            max:max || arr[arr.length-1].learning_index_data.control_group_size,
           },
           beginAtZero: true
         },
@@ -214,8 +219,8 @@ setOptions(options)
         (item) => item.instance.trim() === instance
       );
  
-      const scoreCounts = dataForInstance[dataForInstance.length-1].learning_index_data.learning_level_count;
-      const percentages = dataForInstance[dataForInstance.length-1].learning_index_data.learning_level_percentages;
+      const scoreCounts = filteredData[filteredData.length - 1]?.learning_index_data?.learning_level_count ?? [];
+    const percentages = filteredData[filteredData.length - 1]?.learning_index_data?.learning_level_percentages ?? [];
   
   
   
@@ -300,7 +305,7 @@ setOptions(options)
 
       setChannels([allChannelsNameTag, ...uniqueChannels]);
       setInstances(uniqueInstances);
-      setResponseData(data);
+      setResponseData([]);
       setLoading(false);
     
     } catch (error) {
@@ -328,10 +333,9 @@ setOptions(options)
         item.instance.trim() === event.target.value &&
         item.channel === selectedChannel
     );
-
-    const scoreCounts = filteredData[filteredData.length-1].learning_index_data.learning_level_count;
-    const percentages = filteredData[filteredData.length-1].learning_index_data.learning_level_percentages;
-
+    const scoreCounts = filteredData[filteredData.length - 1]?.learning_index_data?.learning_level_count ?? [];
+    const percentages = filteredData[filteredData.length - 1]?.learning_index_data?.learning_level_percentages ?? [];
+    
 
 
     const scorePercentages = {
@@ -376,7 +380,7 @@ setLearningStage(responseData[responseData.length-1].learning_index_data.learnin
 
   return (
     <Box p={3}>
-      <Typography variant="h4" align="center" gutterBottom>
+      <Typography variant="h6" align="center" gutterBottom>
         Feedback Analysis Dashboard
       </Typography>
       <Grid container spacing={3} alignItems="center" justifyContent="center">
@@ -403,7 +407,7 @@ setLearningStage(responseData[responseData.length-1].learning_index_data.learnin
             onChange={handleInstanceSelect}
             displayEmpty
             fullWidth
-            disabled={selectedChannel === allChannelsNameTag}
+            disabled={selectedChannel === allChannelsNameTag || selectedChannel.length==0}
           >
             <MenuItem value="" disabled>
               Select Instance

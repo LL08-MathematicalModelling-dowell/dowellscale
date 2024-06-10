@@ -76,14 +76,14 @@ export default function RegistrationPage(){
             <p style="font-family:Arial, sans-serif; font-size:14px;">Dear Exhibitor,</p>
             <p style="font-family:Arial, sans-serif; font-size:14px;">Your registration for the Living Lab Scales Feedback has been successfully completed.</p>
             <p style="font-family:Arial, sans-serif; font-size:14px;">Please click on the link below to get the customer feedback report:</p>
-            <p>Feedback report link: https://www.uxlive.me/dowellscale/shop/report/?scale_id=66616df20f116021b739bcdd&channel=channel_1&instance=instance_${shopNumber}</p>
+            <p>Feedback report link: https://www.uxlive.me/dowellscale/shop/report/?scale_id=6666f29539d4ea63f76e7789&channel_name=channel_1&instance_name=instance_${shopNumber}</p>
             <p style="font-family:Arial, sans-serif; font-size:14px;">Best Regards,</p>
             <p style="font-family:Arial, sans-serif; font-size:14px;">DoWell UX Living Lab</p>
           `,
         };
   
         const responseEmail = await axios.post("https://100085.pythonanywhere.com/api/email/", bodyEmail, { headers });
-  console.log(response.data,responseEmail.data)
+ 
         setSuccess(responseEmail.data.success === true ? 1 : -1);
       } else {
         setSuccess(-1);
@@ -102,7 +102,7 @@ export default function RegistrationPage(){
     async function fetchLocation(){
          const response=await axios.get("https://www.qrcodereviews.uxlivinglab.online/api/v6/qrcode-data/22-a5da59d5-de04-4a67-bfd9-07d019a6b5fb")
          const detailedReport = response.data.response.detailed_report;
-console.log(response.data)
+
     if (Array.isArray(detailedReport) && detailedReport.length > 0) {
      
         

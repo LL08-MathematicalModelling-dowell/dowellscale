@@ -135,8 +135,8 @@ const App = () => {
 
 const[searchParams,setsearchParams]=useSearchParams({})
 const scaleId=searchParams.get("scale_id")
-const channelName=searchParams.get("channel")
-const instanceName=searchParams.get("instance")
+const channelName=searchParams.get("channel_name")
+const instanceName=searchParams.get("instance_name")
 
 
   useEffect(() => {
@@ -215,7 +215,7 @@ const instanceName=searchParams.get("instance")
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`https://100035.pythonanywhere.com/addons/get-response/?scale_id=${scaleId}&channel=${channelName}&instance=${instanceName}`);
+      const response = await axios.get(`https://100035.pythonanywhere.com/addons/get-response/?scale_id=${scaleId}&channel_name=${channelName}&instance_name=${instanceName}`);
       const data = response.data.data;
     
 
@@ -227,8 +227,6 @@ const instanceName=searchParams.get("instance")
       setLoading(false);
     }
   };
-
-
 
   if (loading) {
     return <CircularProgress />;
