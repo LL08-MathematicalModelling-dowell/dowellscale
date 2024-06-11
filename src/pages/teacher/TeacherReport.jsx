@@ -61,137 +61,293 @@ const initialScoreData = {
     Evaluating: { count: 0, percentage: 0 },
     Applying: { count: 0, percentage: 0 }
 };
-const extractLabelsAndDatasetsInfo = (data = []) => {
-if(data.length==0)
-  return {labels: [1,2,3,4,5],
-    datasetsInfo: [0,0,0,0,0],
-    options:{
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        y: {
-          min: 0,
-          max: 5,
-          ticks: {
-            stepSize: 1,
-          },
-          beginAtZero: true,
-        },
-        x: {
-          type: 'linear',
-          position: 'bottom',
-          min: 0,
-          max: 5,
-          ticks: {
-            stepSize: 1,
-          },
-          beginAtZero: true,
-        },
-      },
-    }
-    }
+// const extractLabelsAndDatasetsInfo = (data = []) => {
+// if(data.length==0)
+//   return {labels: [1,2,3,4,5],
+//     datasetsInfo: [0,0,0,0,0],
+//     options:{
+//       responsive: true,
+//       maintainAspectRatio: false,
+//       scales: {
+//         y: {
+//           min: 0,
+//           max: 5,
+//           ticks: {
+//             stepSize: 1,
+//           },
+//           beginAtZero: true,
+//         },
+//         x: {
+//           type: 'linear',
+//           position: 'bottom',
+//           min: 0,
+//           max: 5,
+//           ticks: {
+//             stepSize: 1,
+//           },
+//           beginAtZero: true,
+//         },
+//       },
+//     }
+//     }
   
-  let length=data.length;
-  let arr=data 
+//   let length=data.length;
+//   let arr=data 
   
-  if(length>5){
-    let x=Math.floor(length/5);
-     arr=[]
-     for(let i=0;i<length;i+=x){
+//   if(length>5){
+//     let x=Math.floor(length/5);
+//      arr=[]
+//      for(let i=0;i<length;i+=x){
  
-      arr.push(data[i])
-     }
-     if (!arr.includes(data[length - 1])) {
-      arr.push(data[length - 1]);
-    }
-  }
+//       arr.push(data[i])
+//      }
+//      if (!arr.includes(data[length - 1])) {
+//       arr.push(data[length - 1]);
+//     }
+//   }
 
-  let labelsForCharts = [
-    ...new Set(
-      arr
-        .map(
-          (item) =>
-            item?.learning_index_data ?.control_group_size
+//   let labelsForCharts = [
+//     ...new Set(
+//       arr
+//         .map(
+//           (item) =>
+//             item?.learning_index_data ?.control_group_size
             
-        )
-    ),
-  ];
+//         )
+//     ),
+//   ];
 
-  if (!labelsForCharts.includes(0)) {
-    labelsForCharts = [0, ...labelsForCharts];
-  }
-  let datasetsForCharts = {
-    indexData: [],
+//   if (!labelsForCharts.includes(0)) {
+//     labelsForCharts = [0, ...labelsForCharts];
+//   }
+//   let datasetsForCharts = {
+//     indexData: [],
 
-  };
+//   };
 
 
-arr.forEach((data)=>{
-  datasetsForCharts.indexData.push(data.learning_index_data ?.learning_level_index)
-})
+// arr.forEach((data)=>{
+//   datasetsForCharts.indexData.push(data.learning_index_data ?.learning_level_index)
+// })
  
 
-  datasetsForCharts.indexData = [0, ...datasetsForCharts.indexData];
+//   datasetsForCharts.indexData = [0, ...datasetsForCharts.indexData];
 
-  let stepSize, max, index;
-  if (arr.length === 0) {
-    max = 5;
-    stepSize = 0;
-  } else {
-    index = arr.reduce((initial, ele) => {
-      const currentIndex = ele?.learning_index_data?.learning_level_index;
-      if (currentIndex !== undefined && currentIndex > initial) {
-        return currentIndex;
-      } else {
-        return initial;
-      }
-    }, 0);
+//   let stepSize, max, index;
+//   if (arr.length === 0) {
+//     max = 5;
+//     stepSize = 0;
+//   } else {
+//     index = arr.reduce((initial, ele) => {
+//       const currentIndex = ele?.learning_index_data?.learning_level_index;
+//       if (currentIndex !== undefined && currentIndex > initial) {
+//         return currentIndex;
+//       } else {
+//         return initial;
+//       }
+//     }, 0);
    
-  }
+//   }
 
 
-    const options = {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: "top",
-        },
-        title: {
-          display: true,
-          text: "Learning Indexes",
-        },
-      },
-      scales: {
-        y: {
-          min: 0,
-          max:index+1,
-          ticks: {
-            stepSize:Math.ceil(index / 5) || 1
-          },
-          beginAtZero: true,
-        },
-        x: {
-          type: 'linear',
-          position: 'bottom',
-          max:max || arr[arr.length-1].learning_index_data.control_group_size+2,
-          ticks: {
-            stepSize:stepSize || Math.floor(arr[arr.length-1].learning_index_data.control_group_size/5),
-            min: 0,
+//     const options = {
+//       responsive: true,
+//       maintainAspectRatio: false,
+//       plugins: {
+//         legend: {
+//           position: "top",
+//         },
+//         title: {
+//           display: true,
+//           text: "Learning Indexes",
+//         },
+//       },
+//       scales: {
+//         y: {
+//           min: 0,
+//           max:index+1,
+//           ticks: {
+//             stepSize:Math.ceil(index / 5) || 1
+//           },
+//           beginAtZero: true,
+//         },
+//         x: {
+//           type: 'linear',
+//           position: 'bottom',
+//           max:max || arr[arr.length-1].learning_index_data.control_group_size+2,
+//           ticks: {
+//             stepSize:stepSize || Math.floor(arr[arr.length-1].learning_index_data.control_group_size/5),
+//             min: 0,
           
+//           },
+//           beginAtZero: true
+//         },
+//       },
+//     };
+
+//   return {
+//     labels: labelsForCharts,
+//     datasetsInfo: datasetsForCharts,
+//     options
+//   };
+// };
+
+
+const extractLabelsAndDatasetsInfo = (data = []) => {
+  if(data.length==0)
+    return {labels: [1,2,3,4,5],
+      datasetsInfo: [0,0,0,0,0],
+      options:{
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            min: 0,
+            max: 5,
+            ticks: {
+              stepSize: 1,
+            },
+            beginAtZero: true,
           },
-          beginAtZero: true
+          x: {
+            type: 'linear',
+            position: 'bottom',
+            min: 0,
+            max: 5,
+            ticks: {
+              stepSize: 1,
+            },
+            beginAtZero: true,
+          },
         },
-      },
+      }
+      }
+    
+    let length=data.length;
+    let arr=data 
+    
+    if(length>5){
+      let x=Math.floor(length/5);
+       arr=[]
+       for(let i=0;i<length;i+=x){
+   
+        arr.push(data[i])
+       }
+       if (!arr.includes(data[length - 1])) {
+        arr.push(data[length - 1]);
+      }
+    }
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toDateString();
+    }
+    
+  
+    
+    // Function to create the object pair
+    function createObjectPair(responses) {
+      const result = {};
+    
+      responses.forEach(response => {
+        const readableDate = formatDate(response.date_created);
+        const learningLevelIndex = response.learning_index_data.learning_level_index;
+    
+      
+          result[readableDate] = learningLevelIndex;
+       
+      });
+    
+      return result;
+    }
+    
+    // Function to get the last 7 days and fill in missing values
+    function getLastXDaysData(responses) {
+      const objectPair = createObjectPair(responses);
+  
+      const result = {};
+      const now = new Date();
+      
+      for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(now.getDate() - i);
+        const dateString = date.toDateString();
+    
+        if (objectPair.hasOwnProperty(dateString)) {
+          result[dateString] = objectPair[dateString];
+        } else {
+          if(i==6){
+            const values=Object.values(objectPair)
+            result[dateString]=values[0] || 0
+          }else{
+            const values=Object.values(result)
+            result[dateString]=values[values.length-1] || 0
+          }
+      
+        }
+      }
+      
+      return result;
+    }
+
+    // Create the object pair
+    const objectPair = getLastXDaysData(arr)
+
+    let labelsForCharts = [
+      ...new Set(
+        arr
+          .map(
+            (item) =>
+              item?.learning_index_data ?.control_group_size
+              
+          )
+      ),
+    ];
+  
+    if (!labelsForCharts.includes(0)) {
+      labelsForCharts = [0, ...labelsForCharts];
+    }
+    let datasetsForCharts = {
+      indexData: Object.values(objectPair),
+  
     };
-
-  return {
-    labels: labelsForCharts,
-    datasetsInfo: datasetsForCharts,
-    options
+  
+  const maxValue=Object.values(objectPair).reduce((val,ele)=>val>ele?val:ele,0)
+ 
+  
+  
+   
+  
+   
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+      title: {
+        display: true,
+        text: "Responses Insights by Day",
+      },
+    },
+    scales: {
+      y: {
+        min: 0,
+        max:Math.ceil(maxValue+2),
+        ticks: {
+          stepSize: Math.ceil(maxValue / 5),
+        },
+        beginAtZero: true,
+      },
+    },
   };
-};
-
+  
+    return {
+      labels: Object.keys(objectPair),
+      datasetsInfo: datasetsForCharts,
+      options
+    };
+  };
 
 
 const App = () => {
