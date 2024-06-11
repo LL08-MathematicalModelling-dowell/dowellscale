@@ -64,7 +64,8 @@ const initialScoreData = {
 const extractLabelsAndDatasetsInfo = (data = []) => {
 
   let length=data.length;
-  let arr=data || []
+  let arr=data 
+  
   if(length>5){
     let x=Math.floor(length/5);
      arr=[]
@@ -96,21 +97,21 @@ const extractLabelsAndDatasetsInfo = (data = []) => {
 
   };
 
-  
+  console.log(arr)
 arr.forEach((data)=>{
   datasetsForCharts.indexData.push(data.learning_index_data ?.learning_level_index)
 })
  
-if (!datasetsForCharts.indexData.includes(0)) {
+
   datasetsForCharts.indexData = [0, ...datasetsForCharts.indexData];
-}
+
 let stepSize, max
 if(arr.length==0)
 {
   max=5
   stepSize=0
 }
-
+console.log(arr.length,arr)
     const options = {
       responsive: true,
       maintainAspectRatio: false,
@@ -126,25 +127,26 @@ if(arr.length==0)
       scales: {
         y: {
           min: 0,
-          max: 5,
+          max:max || arr[arr.length-1].learning_index_data.learning_level_index+1,
           ticks: {
-            stepSize: 1,
+            stepSize:stepSize || Math.floor(arr[arr.length-1].learning_index_data.learning_level_index/5),
           },
           beginAtZero: true,
         },
         x: {
           type: 'linear',
           position: 'bottom',
+          max:max || arr[arr.length-1].learning_index_data.control_group_size+2,
           ticks: {
             stepSize:stepSize || Math.floor(arr[arr.length-1].learning_index_data.control_group_size/5),
             min: 0,
-            max:max || arr[arr.length-1].learning_index_data.control_group_size,
+          
           },
           beginAtZero: true
         },
       },
     };
-
+console.log(labelsForCharts,datasetsForCharts)
   return {
     labels: labelsForCharts,
     datasetsInfo: datasetsForCharts,
@@ -179,6 +181,8 @@ const[options,setOptions]=useState({})
   const [displayDataForAllSelection, setDisplayDataForAllSelection] = useState(
     []
   );
+  const[err,setErr]=useState(false)
+  const[msg,setMsg]=useState(false)
 
   useEffect(() => {
     fetchData();
@@ -186,14 +190,25 @@ const[options,setOptions]=useState({})
 
   useEffect(() => {
     if (selectedChannel.length < 1 || selectedInstance.length < 1) return;
-
-    const { labels, datasetsInfo,options } = extractLabelsAndDatasetsInfo(
-      responseData.filter(
+    
+      if(responseData.length==0){
+     
+        setMsg(true)
+        return
+      }
+   
+      const arr= responseData.filter(
         (item) =>
           item.channel === selectedChannel &&
           item.instance.trim() === selectedInstance
       )
-    );
+      if(arr.length==0){
+    
+        setMsg(true)
+        return
+      }
+      setMsg(false)
+    const { labels, datasetsInfo,options } = extractLabelsAndDatasetsInfo(arr);
 
 setOptions(options)
     setLearningIndexDataForChart({
@@ -209,18 +224,24 @@ setOptions(options)
       ],
     });
   }, [selectedChannel, selectedInstance, responseData]);
-
+console.log(responseData)
   useEffect(() => {
     if (selectedChannel !== allChannelsNameTag)
       return setDisplayDataForAllSelection([]);
 
+    if(responseData.length==0){
+      setMsg(true)
+      return
+    }
+    
     const allData = instances.map((instance) => {
       const dataForInstance = responseData.filter(
         (item) => item.instance.trim() === instance
       );
- 
-      const scoreCounts = filteredData[filteredData.length - 1]?.learning_index_data?.learning_level_count ?? [];
-    const percentages = filteredData[filteredData.length - 1]?.learning_index_data?.learning_level_percentages ?? [];
+
+  
+      const scoreCounts = dataForInstance[dataForInstance.length - 1]?.learning_index_data?.learning_level_count ?? [];
+    const percentages = dataForInstance[dataForInstance.length - 1]?.learning_index_data?.learning_level_percentages ?? [];
   
   
   
@@ -283,19 +304,17 @@ setOptions(options)
   }, [selectedChannel, responseData, instances]);
 
   const fetchData = async () => {
-
-     
-      setChannels(["channel_1"]);
-      setInstances(["instance_1"]);
-     
    
     try {
       const response = await axios.get(
         "https://100035.pythonanywhere.com/addons/learning-index-report/?scale_id=665ed9b87db9a73b55dd515f"
       );
-      const data = response.data.data;
-
-
+     const data=response.data.data
+    if(data==undefined){
+      setErr(true)
+      return
+    }
+setErr(false)
       const uniqueChannels = Array.from(
         new Set(data.map((item) => item.channel))
       );
@@ -305,11 +324,12 @@ setOptions(options)
 
       setChannels([allChannelsNameTag, ...uniqueChannels]);
       setInstances(uniqueInstances);
-      setResponseData([]);
+      setResponseData(data);
       setLoading(false);
     
     } catch (error) {
       console.error("Error fetching data:", error);
+      setErr(true)
       setLoading(false); // Set loading to false even in case of error
     }
   };
@@ -326,17 +346,21 @@ setOptions(options)
 
   const handleInstanceSelect = (event) => {
     setSelectedInstance(event.target.value);
-
+  
     // Filter data based on the selected instance and channel
     const filteredData = responseData.filter(
       (item) =>
         item.instance.trim() === event.target.value &&
         item.channel === selectedChannel
     );
+    
+    if(filteredData.length==0){
+      setMsg(true)
+      return
+    }
+    setMsg(false)
     const scoreCounts = filteredData[filteredData.length - 1]?.learning_index_data?.learning_level_count ?? [];
     const percentages = filteredData[filteredData.length - 1]?.learning_index_data?.learning_level_percentages ?? [];
-    
-
 
     const scorePercentages = {
       Reading: {
@@ -377,12 +401,20 @@ setLearningStage(responseData[responseData.length-1].learning_index_data.learnin
   if (loading) {
     return <CircularProgress />;
   }
+  if(err){
+    return(
+      <>
+      <p className="w-screen h-screen flex justify-center items-center p-2 text-red-600">Something went wrong contact admin!..</p>
+      </>
+    )
+  }
 
   return (
-    <Box p={3}>
+    <Box p={1}>
       <Typography variant="h6" align="center" gutterBottom>
         Feedback Analysis Dashboard
       </Typography>
+      {msg && <p className="text-red-500 self-center w-full flex justify-center">Provide feedback to check report</p>}
       <Grid container spacing={3} alignItems="center" justifyContent="center">
         <Grid item xs={12} md={6}>
           <Select

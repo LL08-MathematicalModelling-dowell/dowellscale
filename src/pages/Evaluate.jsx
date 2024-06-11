@@ -14,24 +14,24 @@ export default function Evaluate(){
       }
 
     return(
-        <div className="w-full flex flex-col justify-between items-center gap-4 h-screen p-4">
+        <div className="w-full flex flex-col justify-between items-center gap-4 h-screen sm:p-4">
         <img 
           src='https://i0.wp.com/dowellresearch.de/wp-content/uploads/2023/04/true-moments-logo-1-1-442919954-1538479590775-1.webp?w=382&ssl=1' 
           alt='dowelllogo'
-          className="lg:w-[380px] md:w-[300px] w-[200px]" 
+          className=" md:w-[300px] w-[200px] mt-16 sm:mt-6" 
         />
-        <div className="w-full flex flex-col justify-center items-center flex-grow">
-          <div className="w-full sm:w-max bg-[#c5e8c2] p-4 flex flex-col justify-center items-center gap-5  md:py-8 h-[80%] sm:h-full md:px-10">
+        <div className="w-full flex flex-col justify-center items-center flex-grow ">
+          <div className="w-full sm:w-max p-1 flex flex-col  items-center md:py-8 h-[80%] sm:h-full md:px-10 relative">
             <img 
-              className="md:w-max w-[230px]" 
+              className=" w-[150px] sm:w-[230px]" 
               src={classImage} 
               alt="class image"
             />
             <div className="w-full flex flex-col justify-center items-center">
-            <p className="text-[12px] sm:text-[14px] md:text-[18px] font-bold text-center mb-4">
+            <p className="text-[12px] sm:text-[14px] md:text-[18px] font-bold text-center mb-4 mt-14">
               HOW WOULD YOU EVALUATE TODAY'S LEARNING?
             </p>
-            <div className="flex justify-center gap-1 sm:gap-2 items-center bg-white p-1 sm:p-2 border-2 border-[#bfbfbf] w-max py-2">
+            <div className="flex justify-center gap-1 sm:gap-2 items-center bg-white p-1 sm:p-2  w-max py-2 mt-2">
             <style>
                         {`
                        @keyframes spin {
@@ -58,15 +58,17 @@ export default function Evaluate(){
                 <button
                   key={index}
                   onClick={() => handleButtonClick(index)}
-                  className="text-[10px] sm:text-[16px] font-bold py-1 px-[6px] sm:py-2 sm:px-3 rounded bg-[#0097b2] text-white"
+                  className="text-[14px] sm:text-[16px] font-bold py-1 px-[7px] sm:py-2 sm:px-3 rounded bg-[#0097b2] text-white"
                 >
                   {submitted==index ? <div className="loader"></div> : score}
                 </button>
               ))}
             </div>
+            <p className="text-[12px] mt-5">www.dowellresearch.sg</p>
             </div>
+          
           </div>
-          <p className="text-[12px]">www.dowellresearch.sg</p>
+         
         </div>
       
       </div>
