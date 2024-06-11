@@ -62,7 +62,35 @@ const initialScoreData = {
     Applying: { count: 0, percentage: 0 }
 };
 const extractLabelsAndDatasetsInfo = (data = []) => {
-
+if(data.length==0)
+  return {labels: [1,2,3,4,5],
+    datasetsInfo: [0,0,0,0,0],
+    options:{
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          min: 0,
+          max: 5,
+          ticks: {
+            stepSize: 1,
+          },
+          beginAtZero: true,
+        },
+        x: {
+          type: 'linear',
+          position: 'bottom',
+          min: 0,
+          max: 5,
+          ticks: {
+            stepSize: 1,
+          },
+          beginAtZero: true,
+        },
+      },
+    }
+    }
+  
   let length=data.length;
   let arr=data 
   
@@ -192,7 +220,6 @@ const[options,setOptions]=useState({})
     if (selectedChannel.length < 1 || selectedInstance.length < 1) return;
     
       if(responseData.length==0){
-     
         setMsg(true)
         return
       }
@@ -238,10 +265,25 @@ setOptions(options)
       const dataForInstance = responseData.filter(
         (item) => item.instance.trim() === instance
       );
-
+      let dummyCount={
+        reading: 0,
+         understanding: 0,
+          explaining: 0, 
+          evaluating: 0,applying: 0
+      }
+      let dummyPercentages={
+        reading: 0, understanding: 0, explaining: 0, evaluating: 0, applying: 0
+      }
   
-      const scoreCounts = dataForInstance[dataForInstance.length - 1]?.learning_index_data?.learning_level_count ?? [];
-    const percentages = dataForInstance[dataForInstance.length - 1]?.learning_index_data?.learning_level_percentages ?? [];
+let scoreCounts,percentages
+  if(dataForInstance.length==0 || !dataForInstance[dataForInstance.length - 1].learning_index_data ||  !dataForInstance[dataForInstance.length - 1].learning_index_data.learning_level_count){
+     scoreCounts=dummyCount
+     percentages=dummyPercentages
+  }else{
+    scoreCounts = dataForInstance[dataForInstance.length - 1].learning_index_data?.learning_level_count 
+    percentages = dataForInstance[dataForInstance.length - 1].learning_index_data?.learning_level_percentages
+  }
+
   
   
   
