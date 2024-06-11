@@ -28,7 +28,7 @@ export default function Evaluate(){
               alt="class image"
             />
             <div className="w-full flex flex-col justify-center items-center">
-            <p className="text-[12px] sm:text-[14px] md:text-[18px] font-bold text-center mb-4 mt-14">
+            <p className="text-[14px] md:text-[18px] font-bold text-center mb-4 mt-14">
                 How do you evaluate today's learning?
             </p>
             <div className="flex justify-center gap-1 sm:gap-2 items-center bg-white p-1 sm:p-2  w-max py-2 mt-2">
