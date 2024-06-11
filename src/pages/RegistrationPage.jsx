@@ -245,7 +245,7 @@ export default function RegistrationPage(){
           </div>
           {err.numErr && <p className="text-red-500 text-[12px] sm:text-[14px]">**Number should not be empty**</p>}
           <div className="flex flex-col gap-2"> 
-          <label htmlFor="institute" className="text-[14px] sm:text-[16px] font-medium self-center">Name of Institute</label>
+          <label htmlFor="institute" className="text-[14px] sm:text-[16px] font-medium self-center">Name of the institution</label>
           <input id="institute" name="institute" value={instituteName} type="text"
           placeholder="enter shop/stand number"  onChange={(e) => {
             setInstituteName(e.target.value);
