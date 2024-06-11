@@ -133,12 +133,22 @@ arr.forEach((data)=>{
 
   datasetsForCharts.indexData = [0, ...datasetsForCharts.indexData];
 
-let stepSize, max
-if(arr.length==0)
-{
-  max=5
-  stepSize=0
-}
+  let stepSize, max, index;
+  if (arr.length === 0) {
+    max = 5;
+    stepSize = 0;
+  } else {
+    index = arr.reduce((initial, ele) => {
+      const currentIndex = ele?.learning_index_data?.learning_level_index;
+      if (currentIndex !== undefined && currentIndex > initial) {
+        return currentIndex;
+      } else {
+        return initial;
+      }
+    }, 0);
+   
+  }
+
 
     const options = {
       responsive: true,
@@ -155,9 +165,9 @@ if(arr.length==0)
       scales: {
         y: {
           min: 0,
-          max:max || arr[arr.length-1].learning_index_data.learning_level_index+1,
+          max:index+1,
           ticks: {
-            stepSize:stepSize || Math.floor(arr[arr.length-1].learning_index_data.learning_level_index/5),
+            stepSize:Math.ceil(index / 5) || 1
           },
           beginAtZero: true,
         },
