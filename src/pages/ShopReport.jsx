@@ -34,36 +34,6 @@ ChartJS.register(
 
 
 const extractLabelsAndDatasetsInfo = (data = []) => {
-  if(data.length==0)
-    return {labels: [1,2,3,4,5],
-      datasetsInfo: [0,0,0,0,0],
-      options:{
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: {
-            min: 0,
-            max: 5,
-            ticks: {
-              stepSize: 1,
-            },
-            beginAtZero: true,
-          },
-          x: {
-            type: 'linear',
-            position: 'bottom',
-            min: 0,
-            max: 5,
-            ticks: {
-              stepSize: 1,
-            },
-            beginAtZero: true,
-          },
-        },
-      }
-      }
-
-      
   const labelsForCharts = [
     ...new Set(
       data
