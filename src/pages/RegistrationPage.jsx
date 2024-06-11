@@ -173,12 +173,13 @@ export default function RegistrationPage(){
         const response = await axios.get("https://www.qrcodereviews.uxlivinglab.online/api/v6/qrcode-data/22-a5da59d5-de04-4a67-bfd9-07d019a6b5fb");
         const detailedReport = response.data.response.detailed_report;
   
-        console.log(response.data);
+   
   
         if (Array.isArray(detailedReport) && detailedReport.length > 0) {
           // Find the closest coordinates in detailedReport to the browser's location
-          const closestReport = findClosestLocation(detailedReport, browserLatitude, browserLongitude);
-        console.log(closestReport,browserLatitude,browserLongitude)
+          const closestReport =  detailedReport[detailedReport.length-1]
+          //findClosestLocation(detailedReport, browserLatitude, browserLongitude);
+        
           setLatitude(closestReport.lat);
           setLongitude(closestReport.long);
           setLocationLoading(1);
