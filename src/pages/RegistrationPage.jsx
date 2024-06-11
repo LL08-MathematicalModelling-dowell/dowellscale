@@ -99,23 +99,128 @@ export default function RegistrationPage(){
      fetchLocation()
     },[])
 
-    async function fetchLocation(){
-         const response=await axios.get("https://www.qrcodereviews.uxlivinglab.online/api/v6/qrcode-data/22-a5da59d5-de04-4a67-bfd9-07d019a6b5fb")
-         const detailedReport = response.data.response.detailed_report;
 
-    if (Array.isArray(detailedReport) && detailedReport.length > 0) {
-     
-        
-        setLatitude(detailedReport[detailedReport.length - 1].lat)
-        setLongitude(detailedReport[detailedReport.length - 1].long)
-        setLocationLoading(1)
-    } else {
-        console.log("detailed_report is either not an array or is empty");
-        setLocationLoading(-1)
-    }
-    }
    
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const earthRadiusKm = 6371; // Radius of the Earth in kilometers
+      const dLat = degreesToRadians(lat2 - lat1);
+      const dLon = degreesToRadians(lon2 - lon1);
+  
+      const a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(degreesToRadians(lat1)) * Math.cos(degreesToRadians(lat2)) *
+          Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      const distance = earthRadiusKm * c * 1000; 
+      return distance;
+  }
+  
+  function degreesToRadians(degrees) {
+      return degrees * (Math.PI / 180);
+  }
+  
+  
+    const handleGoButton = async() =>{
+      setSubmitted(true)
+      if(boothInput<=0 || isNaN(boothInput))
+        {
+          setSubmitted(false)
+          setBoothErr(true)
+          return
+        }else{
+          try{
+       const response=await axios.get(`https://100035.pythonanywhere.com/addons/register/?shop_number=${boothInput}`)
+       const arr = response.data.data;
+  
+      
+       const lat = arr[arr.length - 1]?.shop_lat ? Number(arr[arr.length - 1].shop_lat) : 0;
+       const lng = arr[arr.length - 1]?.shop_long ? Number(arr[arr.length - 1].shop_long) : 0;
 
+   
+        
+        const distance=calculateDistance(latitude,longitude,lat,lng)
+   
+        if(distance<=3){
+        if(scaleType=="nps"){
+          window.location.href=`https://100035.pythonanywhere.com/nps/api/v5/nps-create-scale/?user=True&scale_type=nps&workspace_id=${workspaceId}&username=Paolo&scale_id=${scaleId}&channel_name=${channelName}&instance_id=${boothInput}`
+        }else if (scaleType=="nps_lite"){
+          window.location.href=`https://100035.pythonanywhere.com/nps-lite/api/v5/nps-lite-create-scale/?user=False&scale_type=${scaleType}&workspace_id=${workspaceId}&username=HeenaK&scale_id=${scaleId}&channel_name=${channelName}&instance_id=${boothInput}`
+        }else{
+          console.log("No valid endpoint")
+        }
+        }else{
+          setValid(-1)
+          setSubmitted(false)
+        }
+        } 
+        catch(error){
+          console.log(error)
+          setErr(true)
+        }
+      }
+     
+      
+    }
+  
+
+    
+
+     async function fetchLocation() {
+      const { browserLatitude, browserLongitude } = await getBrowserLocation();
+  
+      try {
+        const response = await axios.get("https://www.qrcodereviews.uxlivinglab.online/api/v6/qrcode-data/22-a5da59d5-de04-4a67-bfd9-07d019a6b5fb");
+        const detailedReport = response.data.response.detailed_report;
+  
+        console.log(response.data);
+  
+        if (Array.isArray(detailedReport) && detailedReport.length > 0) {
+          // Find the closest coordinates in detailedReport to the browser's location
+          const closestReport = findClosestLocation(detailedReport, browserLatitude, browserLongitude);
+        console.log(closestReport,browserLatitude,browserLongitude)
+          setLatitude(closestReport.lat);
+          setLongitude(closestReport.long);
+          setLocationLoading(1);
+        } else {
+          console.log("detailed_report is either not an array or is empty");
+          setLocationLoading(-1);
+        }
+      } catch (error) {
+        console.log(error);
+        setErr(true);
+      }
+    }
+  
+    function getBrowserLocation() {
+      return new Promise((resolve, reject) => {
+        if ("geolocation" in navigator) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              resolve({
+                browserLatitude: position.coords.latitude,
+                browserLongitude: position.coords.longitude,
+              });
+            },
+            (error) => {
+              reject(error);
+            }
+          );
+        } else {
+          reject(new Error("Geolocation is not supported by your browser."));
+        }
+      });
+    }
+  
+    function findClosestLocation(detailedReport, browserLatitude, browserLongitude) {
+      return detailedReport.reduce((closest, report) => {
+        const distance = calculateDistance(browserLatitude, browserLongitude, report.lat, report.long);
+        if (!closest || distance < closest.distance) {
+          return { ...report, distance };
+        }
+        return closest;
+      }, null);
+    }
     return(
         <div className="flex flex-col justify-center items-center relative">
           <img src={logo} alt="dowell logo" className=""/>
