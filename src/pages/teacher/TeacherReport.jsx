@@ -97,7 +97,7 @@ const extractLabelsAndDatasetsInfo = (data = []) => {
 
   };
 
-  console.log(arr)
+
 arr.forEach((data)=>{
   datasetsForCharts.indexData.push(data.learning_index_data ?.learning_level_index)
 })
@@ -111,7 +111,7 @@ if(arr.length==0)
   max=5
   stepSize=0
 }
-console.log(arr.length,arr)
+
     const options = {
       responsive: true,
       maintainAspectRatio: false,
@@ -146,7 +146,7 @@ console.log(arr.length,arr)
         },
       },
     };
-console.log(labelsForCharts,datasetsForCharts)
+
   return {
     labels: labelsForCharts,
     datasetsInfo: datasetsForCharts,
@@ -224,7 +224,7 @@ setOptions(options)
       ],
     });
   }, [selectedChannel, selectedInstance, responseData]);
-console.log(responseData)
+
   useEffect(() => {
     if (selectedChannel !== allChannelsNameTag)
       return setDisplayDataForAllSelection([]);
