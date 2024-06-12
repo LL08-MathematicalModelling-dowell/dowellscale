@@ -38,7 +38,7 @@ ChartJS.register(
 
 
 const instanceNames = {
-  instance_1: "Student feedback",
+  instance_1: "Select",
   instance_2:"Example1",
   instance_3:"Example2"
 };
@@ -46,7 +46,7 @@ const instanceNames = {
  const allChannelsNameTag = "channel_all_x";
 
 const channelNames = {
-   [`${allChannelsNameTag}`]: "All Channels",
+   [`${allChannelsNameTag}`]: "Entire Institution",
   channel_1: "Classroom",
 };
 
@@ -357,7 +357,7 @@ const extractLabelsAndDatasetsInfo = (data = [],days) => {
       },
       title: {
         display: true,
-        text: "Responses Insights by Day",
+        text: "Day-wise Insights",
       },
     },
     scales: {
@@ -438,7 +438,7 @@ setOptions(options)
       labels: labels,
       datasets: [
         {
-          label: "Index Data",
+          label: "Learning Level Index (below 1 = Learning, above 1 = Applying in a context) ",
           data: datasetsInfo.indexData,
           borderColor: "red",
           backgroundColor: "red",
@@ -650,7 +650,7 @@ setLearningStage(responseData[responseData.length-1].learning_index_data.learnin
   return (
     <Box p={1}>
       <Typography variant="h6" align="center" gutterBottom>
-        Feedback Analysis Dashboard
+      DoWell Learning Level Index
       </Typography>
       {msg && <p className="text-red-500 self-center w-full flex justify-center">Provide feedback to check report</p>}
       <Grid container spacing={3} alignItems="center" justifyContent="center">

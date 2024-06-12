@@ -255,7 +255,7 @@ if(err){
                         Total Responses: {totalCount}
                       </p>
                       <p>
-                      Nps Score: {((scores.Promoter.percentage || 0) - (scores.Detractor.percentage || 0)).toFixed(2)}%
+                      Nps Score: {((scores.Promoter.percentage || 0) - (scores.Detractor.percentage || 0)).toFixed(2)}
                       </p>
           </div>
           <Typography variant="body1" align="center" gutterBottom>
