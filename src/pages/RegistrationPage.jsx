@@ -42,7 +42,7 @@ export default function RegistrationPage(){
       error = true;
     }
   
-    if (shopEmail.length === 0 || !shopEmail.endsWith("@gmail.com")) {
+    if (shopEmail.length === 0 ) {
       errors.emailErr = true;
       error = true;
     }
