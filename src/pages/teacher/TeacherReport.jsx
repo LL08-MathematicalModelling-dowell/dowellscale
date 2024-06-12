@@ -193,7 +193,7 @@ const initialScoreData = {
 // };
 
 
-const extractLabelsAndDatasetsInfo = (data = []) => {
+const extractLabelsAndDatasetsInfo = (data = [],days) => {
   if(data.length==0)
     return {labels: [1,2,3,4,5],
       datasetsInfo: [0,0,0,0,0],
@@ -261,13 +261,13 @@ const extractLabelsAndDatasetsInfo = (data = []) => {
     }
     
     // Function to get the last 7 days and fill in missing values
-    function getLastXDaysData(responses) {
+    function getLastXDaysData(responses,days) {
       const objectPair = createObjectPair(responses);
   
       const result = {};
       const now = new Date();
-      
-      for (let i = 6; i >= 0; i--) {
+    
+      for (let i = days-1; i >= 0; i--) {
         const date = new Date();
         date.setDate(now.getDate() - i);
         const dateString = date.toDateString();
@@ -275,22 +275,52 @@ const extractLabelsAndDatasetsInfo = (data = []) => {
         if (objectPair.hasOwnProperty(dateString)) {
           result[dateString] = objectPair[dateString];
         } else {
-          if(i==6){
-            const values=Object.values(objectPair)
-            result[dateString]=values[0] || 0
+          let previousValue = 0;
+          let valueArray=Object.values(result)
+          if(valueArray.length>0){
+              previousValue=valueArray[valueArray.length-1]
           }else{
-            const values=Object.values(result)
-            result[dateString]=values[values.length-1] || 0
-          }
+         
+          for (let j = 1; j <= i; j++) {
+            const previousDate = new Date(date);
+            previousDate.setDate(date.getDate() - j);
+            const previousDateString = previousDate.toDateString();
+
+        if (objectPair.hasOwnProperty(previousDateString)) {
+          previousValue = objectPair[previousDateString];
+          break;
+        }
+      }
+      }
+
+      result[dateString] = previousValue;
       
         }
       }
+      const keys = Object.keys(result);
+  if (keys.length > 10) {
+    const step = Math.ceil((keys.length - 2) / 8); // 8 steps between the first and last
+    const selectedKeys = [keys[0]]; // Always include the first key
+    for (let i = step; i < keys.length - 1; i += step) {
+      selectedKeys.push(keys[i]);
+      if (selectedKeys.length === 9) break; // Ensure only 8 middle values are selected
+    }
+    selectedKeys.push(keys[keys.length - 1]); // Always include the last key
+
+    // Construct a new result object with only the selected keys
+    const selectedResult = {};
+    selectedKeys.forEach(key => {
+      selectedResult[key] = result[key];
+    });
+
+    return selectedResult;
+  }
       
       return result;
     }
 
     // Create the object pair
-    const objectPair = getLastXDaysData(arr)
+    const objectPair = getLastXDaysData(arr,days)
 
     let labelsForCharts = [
       ...new Set(
@@ -377,7 +407,7 @@ const[options,setOptions]=useState({})
   );
   const[err,setErr]=useState(false)
   const[msg,setMsg]=useState(false)
-
+const[selectedDays,setSelectedDays]=useState(7)
   useEffect(() => {
     fetchData();
   }, []);
@@ -401,7 +431,7 @@ const[options,setOptions]=useState({})
         return
       }
       setMsg(false)
-    const { labels, datasetsInfo,options } = extractLabelsAndDatasetsInfo(arr);
+    const { labels, datasetsInfo,options } = extractLabelsAndDatasetsInfo(arr,selectedDays);
 
 setOptions(options)
     setLearningIndexDataForChart({
@@ -416,7 +446,7 @@ setOptions(options)
        
       ],
     });
-  }, [selectedChannel, selectedInstance, responseData]);
+  }, [selectedChannel, selectedInstance, responseData,selectedDays]);
 
   useEffect(() => {
     if (selectedChannel !== allChannelsNameTag)
@@ -804,8 +834,16 @@ setLearningStage(responseData[responseData.length-1].learning_index_data.learnin
       </Box>
     </Grid>
   ))}
+   
 </Grid>
-         
+        <div className="w-full flex flex-col justify-end items-end sm:justify-center sm:items-center p-2 mt-5">
+        <label htmlFor="days " className="text-[12px] sm:text-[14px]">Select Days: </label>
+      <select id="days" value={selectedDays} onChange={(e)=>setSelectedDays(e.target.value)} className="mr-2  mt-1text-[12px] bg-gray-100 p-1 rounded-lg">
+        <option value={7}> 7</option>
+        <option value={30}> 30</option>
+        <option value={90}> 90</option>
+      </select>
+        </div>
          
           {selectedChannel.length < 1 || selectedInstance.length < 1 ? null : (
             <>
