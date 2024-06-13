@@ -167,7 +167,7 @@ export default function RegistrationPage(){
     
 
      async function fetchLocation() {
-      const { browserLatitude, browserLongitude } = await getBrowserLocation();
+      // const { browserLatitude, browserLongitude } = await getBrowserLocation();
   
       try {
         const response = await axios.get("https://www.qrcodereviews.uxlivinglab.online/api/v6/qrcode-data/22-a5da59d5-de04-4a67-bfd9-07d019a6b5fb/");

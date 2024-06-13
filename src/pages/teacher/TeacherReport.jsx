@@ -240,6 +240,7 @@ function processData(responseData) {
 
     // Update previousDateData for next iteration
     previousDateData = obj;
+
   });
 
   return dataByDate;
@@ -965,7 +966,7 @@ if(!objectPair || dataForInstance.length==0){
         max:Math.ceil(maxValue)+Math.ceil(maxValue / 5),
         ticks: {
           stepSize: Math.ceil(maxValue / 5),
-          align: 'start',
+          
         },
         beginAtZero: true,
       },
@@ -1005,7 +1006,7 @@ if(!objectPair || dataForInstance.length==0){
    
     try {
       const response = await axios.get(
-        "https://100035.pythonanywhere.com/addons/learning-index-report/?scale_id=6669b6d93e3d1f04792176c9"
+        "https://100035.pythonanywhere.com/addons/learning-index-report/?scale_id=665ed9b87db9a73b55dd515f"
       );
      const data=response.data.data
     if(data==undefined){
@@ -1240,7 +1241,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
                   mx: "auto",
                 }}
               >
-                <Line options={options} data={learningIndexDataForChart} />
+                <Line options={options} data={item.chartData} />
               </Box>
             </>
          
@@ -1277,9 +1278,9 @@ const questionData=["Do you need more reading or explanation on the topic?",
         }}
       >
         <div className="grid sm:flex ">
-        <span className="text-[12px]">{questionData[index]}</span>
+        <span className="text-[12px] sm:text-[14px] flex items-start justify-start">{questionData[index]}</span>
         <div className="flex">
-        <span className="text-[15px] mx-2">{smallText[index]}: </span>
+        <span className="text-[16px] mx-2">{smallText[index]}: </span>
         <span className="font-bold mx-2">{data.count}</span>
         <span className="font-medium">({(data.percentage ? data.percentage.toFixed(2) : 0)}%)</span>
         </div>
@@ -1397,7 +1398,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
       >
        
        <div className="grid sm:flex ">
-        <span className="text-[12px] sm:text-[14px]">{questionData[index]}</span>
+        <span className="text-[12px] sm:text-[14px] flex items-start justify-start">{questionData[index]}</span>
         <div className="flex">
         <span className="text-[16px] mx-2">{smallText[index]}: </span>
         <span className="font-bold mx-2">{data.count}</span>
