@@ -901,6 +901,7 @@ if(!objectPair || dataForInstance.length==0){
     responsive: true,
     maintainAspectRatio: false,
     scales: {
+    
       y: {
         min: 0,
         max: 5,
@@ -923,6 +924,7 @@ if(!objectPair || dataForInstance.length==0){
   }
   
 }else{
+  const isSmallScreen = window.innerWidth < 600;
    labels=Object.keys(objectPair)
    datasetsInfo=Object.values(objectPair)
    const maxValue=Object.values(objectPair).reduce((val,ele)=>Number(val)>ele?val:ele,0)
@@ -952,11 +954,18 @@ if(!objectPair || dataForInstance.length==0){
     },
     
     scales: {
+      x: {
+        ticks: {
+          maxRotation: isSmallScreen ? 90 : 0,  // Vertical on small screens
+          minRotation: isSmallScreen ? 90 : 0,  // Vertical on small screens
+        }
+      },
       y: {
         min: 0,
         max:Math.ceil(maxValue)+Math.ceil(maxValue / 5),
         ticks: {
           stepSize: Math.ceil(maxValue / 5),
+          align: 'start',
         },
         beginAtZero: true,
       },
@@ -1112,13 +1121,13 @@ setErr(false)
     
   };
 
-const questionData=["Do you need more reading or explanation on the topic? (Reading Phase)",
-  "Did you understand the topic well? (Understanding Phase)",
-  "Did you feel confident explaining the topic to your friends/classmates? (Explanation Phase)",
-  "Can you evaluate others explanation on the topic? (Evaluation Phase)",
-  "Can you apply what you understood from the topic in real life or role plays? (Applying Phase)"]
+const questionData=["Do you need more reading or explanation on the topic?",
+  "Did you understand the topic well?",
+  "Did you feel confident explaining the topic to your friends/classmates?",
+  "Can you evaluate others explanation on the topic?",
+  "Can you apply what you understood from the topic in real life or role plays?"]
 
-  
+  const smallText=["(Reading Phase)","(Understanding Phase)","(Explanation Phase)","(Evaluation Phase)","(Applying Phase)"]
 
   if (loading) {
     return <CircularProgress />;
@@ -1219,7 +1228,23 @@ const questionData=["Do you need more reading or explanation on the topic? (Read
                   >
                     Total Responses: {item?.totalResponses}
                   </Typography>
-                  
+                  <Grid item xs={12} md={0} className="block md:hidden">
+ 
+            <>
+              <Box
+                sx={{
+                  mt: 4,
+                  width: "100%",
+                  height: { xs: "300px", sm: "400px" },
+                  maxWidth: "900px",
+                  mx: "auto",
+                }}
+              >
+                <Line options={options} data={learningIndexDataForChart} />
+              </Box>
+            </>
+         
+  </Grid>
       <Typography 
         variant="body1" 
         align="start" 
@@ -1251,7 +1276,15 @@ const questionData=["Do you need more reading or explanation on the topic? (Read
           mb: 4,
         }}
       >
-        {`${questionData[index]}: ${data.count} (${data.percentage.toFixed(2) || 0}%)`}
+        <div className="grid sm:flex ">
+        <span className="text-[12px]">{questionData[index]}</span>
+        <div className="flex">
+        <span className="text-[15px] mx-2">{smallText[index]}: </span>
+        <span className="font-bold mx-2">{data.count}</span>
+        <span className="font-medium">({(data.percentage ? data.percentage.toFixed(2) : 0)}%)</span>
+        </div>
+        </div>
+        {/* {`${questionData[index]}: ${data.count} (${data.percentage.toFixed(2) || 0}%)`} */}
         <LinearProgress
           variant="determinate"
           className="mt-2"
@@ -1277,7 +1310,7 @@ const questionData=["Do you need more reading or explanation on the topic? (Read
   </Grid>
 
   {/* Right side with chart data */}
-  <Grid item xs={12} md={5}>
+  <Grid item xs={12} md={5} className="hidden md:block">
     <Box
       sx={{
          ml:"10px",
@@ -1363,7 +1396,14 @@ const questionData=["Do you need more reading or explanation on the topic? (Read
         }}
       >
        
-        {`${questionData[index]}: ${data.count} (${data.percentage.toFixed(2) || 0}%)`}
+       <div className="grid sm:flex ">
+        <span className="text-[12px] sm:text-[14px]">{questionData[index]}</span>
+        <div className="flex">
+        <span className="text-[16px] mx-2">{smallText[index]}: </span>
+        <span className="font-bold mx-2">{data.count}</span>
+        <span className="font-medium">({(data.percentage ? data.percentage.toFixed(2) : 0)}%)</span>
+        </div>
+        </div>
         <LinearProgress
           variant="determinate"
           value={data.percentage || 0}
