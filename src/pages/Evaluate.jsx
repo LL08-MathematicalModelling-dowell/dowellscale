@@ -32,7 +32,7 @@ export default function Evaluate(){
                 HOW DO YOU EVALUATE TODAY'S LEARNING?
             </p>
             <div className="flex flex-col">
-            <div className="flex justify-center gap-1 sm:gap-2 items-center bg-white p-1 sm:p-2  w-max py-2 mt-2">
+            <div className="flex justify-center gap-1 sm:gap-3 items-center bg-white p-1 sm:p-2  w-max py-2 mt-2">
             <style>
                         {`
                        @keyframes spin {
@@ -59,29 +59,30 @@ export default function Evaluate(){
                 <button
                   key={index}
                   onClick={() => handleButtonClick(index)}
-                  className="text-[14px] sm:text-[16px] font-bold py-1 px-[7px] sm:py-2 sm:px-3 rounded bg-[#0097b2] text-white"
+                  className="text-[14px] sm:text-[16px] font-bold py-1 px-[7px] sm:py-2 sm:px-4 rounded bg-[#0097b2] text-white"
                 >
                   {submitted==index ? <div className="loader"></div> : score}
                 </button>
               ))}
               </div>
-              {/* <div className="flex justify-center items-center mt-2 text-black font-medium ">
-  <div className="text-[10px] sm:text-[14px] px-[4px] py-4 sm:px-3  bg-[#FF0000] ">
+              <div className="flex items-center mt-2 text-black font-medium w-full pl-2">
+  <div className="text-[10px] sm:text-[14px] py-2 sm:py-4 w-[22%] sm:w-[26%] bg-[#FF0000] flex justify-center">
     Reading
   </div>
-  <div className="text-[10px] sm:text-[14px]  px-[4px] py-4 sm:px-3  bg-[#FF7F00] ">
+  <div className="text-[7px] sm:text-[14px] py-[10px] sm:py-4 w-[19%] sm:w-[22%] bg-[#FF7F00] flex justify-center">
     Understanding
   </div>
-  <div className="text-[10px] sm:text-[14px]  px-[4px] py-4 sm:px-3  bg-[#FFFF00] ">
+  <div className="text-[10px] sm:text-[14px] py-2 sm:py-4 w-[28%] sm:w-[32%] bg-[#FFFF00] flex justify-center">
     Explaining
   </div>
-  <div className="text-[10px] sm:text-[14px]   px-[4px] py-4 sm:px-3  bg-[#7FFF00] ">
+  <div className="text-[10px] sm:text-[14px] py-2 sm:py-4 w-[20%] bg-[#7FFF00] flex justify-center">
     Evaluating
   </div>
-  <div className="text-[10px] sm:text-[14px]   px-[4px] py-4 sm:px-3  bg-[#00FF00] ">
+  <div className="text-[10px] sm:text-[14px] py-2 sm:py-4  w-[18%] bg-[#3ba13b] flex justify-center">
     Applying
   </div>
-</div> */}
+</div>
+
             </div>
 
             <p className="text-[12px] mt-5">www.dowellresearch.sg</p>
