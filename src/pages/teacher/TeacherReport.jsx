@@ -47,7 +47,7 @@ const instanceNames = {
 
 const channelNames = {
    [`${allChannelsNameTag}`]: "Entire Institution",
-  channel_1: "Select",
+  channel_1: "Class room",
 };
 
 

@@ -31,6 +31,7 @@ export default function Evaluate(){
             <p className="text-[14px] md:text-[18px] font-bold text-center mb-4 mt-14">
                 HOW DO YOU EVALUATE TODAY'S LEARNING?
             </p>
+            <div className="flex flex-col">
             <div className="flex justify-center gap-1 sm:gap-2 items-center bg-white p-1 sm:p-2  w-max py-2 mt-2">
             <style>
                         {`
@@ -63,7 +64,26 @@ export default function Evaluate(){
                   {submitted==index ? <div className="loader"></div> : score}
                 </button>
               ))}
+              </div>
+              {/* <div className="flex justify-center items-center mt-2 text-black font-medium ">
+  <div className="text-[10px] sm:text-[14px] px-[4px] py-4 sm:px-3  bg-[#FF0000] ">
+    Reading
+  </div>
+  <div className="text-[10px] sm:text-[14px]  px-[4px] py-4 sm:px-3  bg-[#FF7F00] ">
+    Understanding
+  </div>
+  <div className="text-[10px] sm:text-[14px]  px-[4px] py-4 sm:px-3  bg-[#FFFF00] ">
+    Explaining
+  </div>
+  <div className="text-[10px] sm:text-[14px]   px-[4px] py-4 sm:px-3  bg-[#7FFF00] ">
+    Evaluating
+  </div>
+  <div className="text-[10px] sm:text-[14px]   px-[4px] py-4 sm:px-3  bg-[#00FF00] ">
+    Applying
+  </div>
+</div> */}
             </div>
+
             <p className="text-[12px] mt-5">www.dowellresearch.sg</p>
             </div>
           
