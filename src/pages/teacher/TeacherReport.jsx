@@ -199,7 +199,7 @@ function processData(responseData) {
   responseData.forEach((response) => {
     const dateCreated = formatDate(response.date_created);
     const category = response.category;
-    let count = 0;
+    let count = -1;
 
     if (category === "reading" || category === "understanding") {
       count = 1;
@@ -213,7 +213,7 @@ function processData(responseData) {
 
     if (count === 1) {
       dataByDate[dateCreated].readingUnderstandingCount++;
-    } else {
+    } else if(count==0) {
       dataByDate[dateCreated].evaluationCount++;
     }
 
