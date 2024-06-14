@@ -900,7 +900,7 @@ let scoreCounts,percentages,objectPair,totalResponses
   //     const totalCount = filteredData.length;
   //     setTotalCount(totalCount);
   // setLearningStage(responseData[responseData.length-1].learning_index_data.learning_stage)
-      setScores(scorePercentages);
+      // /setScores(scorePercentages);
      // setLearningLevelIndex(filteredData[filteredData.length-1].learning_index_data.learning_level_index.toFixed(2));
      let labels,datasetsInfo,options
 if(!objectPair || dataForInstance.length==0){

@@ -14,6 +14,8 @@ import ExhibitionReport from "./pages/ExhibitionReport";
 import NpxLite from "./templates/NpxLite"
 import Nps from "./templates/Nps"
 import Likert from "./templates/Likert"
+
+import Example from "./templates/Example"
 import Stapel from "./templates/Stapel"
 import Llx from "./templates/Llx"
 import RegistrationPage from "./pages/RegistrationPage";
@@ -46,6 +48,7 @@ function App() {
 
           {/* templates */}
         <Route path="/dowellscale/templates/npslite" Component={NpxLite}/>
+        <Route path="/dowellscale/templates/example" Component={Example}/>
         <Route path="/dowellscale/templates/nps" Component={Nps}/>
         <Route path="/dowellscale/templates/likert" Component={Likert}/>
         <Route path="/dowellscale/templates/stapel" Component={Stapel}/>
