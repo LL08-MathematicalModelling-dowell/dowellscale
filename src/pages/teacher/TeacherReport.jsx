@@ -549,7 +549,15 @@ const[options,setOptions]=useState({})
 const[selectedDays,setSelectedDays]=useState(7)
   useEffect(() => {
     fetchData();
+    const x=setInterval(()=>{
+      fetchData();
+    },60000)
+ return(()=>{
+ clearInterval(x)
+ })
   }, []);
+
+
 
 //   useEffect(() => {
 //     if (selectedChannel.length < 1 || selectedInstance.length < 1) return;
@@ -1003,7 +1011,7 @@ if(!objectPair || dataForInstance.length==0){
   }, [selectedChannel, responseData, instances,selectedDays]);
 
   const fetchData = async () => {
-   
+  
     try {
       const response = await axios.get(
         "https://100035.pythonanywhere.com/addons/learning-index-report/?scale_id=6669b6d93e3d1f04792176c9"
