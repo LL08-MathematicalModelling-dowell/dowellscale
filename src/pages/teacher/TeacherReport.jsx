@@ -363,7 +363,7 @@ const extractLabelsAndDatasetsInfo = (data = [],days) => {
     
     let length=data.length;
     let arr=data 
-    console.log(arr)
+
     if(length>5){
       let x=Math.floor(length/5);
        arr=[]
@@ -1246,17 +1246,14 @@ const questionData=["Do you need more reading or explanation on the topic?",
             </>
          
   </Grid>
-      <Typography 
-        variant="body1" 
-        align="start" 
-        gutterBottom 
-         marginTop={5}
-         marginLeft={5}
-        style={{ color: 'orange',fontWeight:"bold" }}
+      <p 
+     
+      
+        className="text-orange-600 font-bold text-[16px] ml-5 mt-5 mb-5 sm:mb-0"
       >
         Learning funnel:
-  </Typography>
-                  <Grid
+  </p>
+    <Grid
   container
   spacing={10}
   alignItems="center"
@@ -1277,10 +1274,10 @@ const questionData=["Do you need more reading or explanation on the topic?",
           mb: 4,
         }}
       >
-        <div className="grid sm:flex ">
-        <span className="text-[12px] sm:text-[14px] flex items-start justify-start">{questionData[index]}</span>
-        <div className="flex">
-        <span className="text-[16px] mx-2">{smallText[index]}: </span>
+        <div className="grid lg:flex lg:justify-between">
+        <span className="text-[12px] flex items-start justify-start">{questionData[index]}</span>
+        <div className="flex justify-center items-center">
+        <span className="md:text-[14px] xl:text-[16px] font-medium">{smallText[index]}: </span>
         <span className="font-bold mx-2">{data.count}</span>
         <span className="font-medium">({(data.percentage ? data.percentage.toFixed(2) : 0)}%)</span>
         </div>
@@ -1362,16 +1359,13 @@ const questionData=["Do you need more reading or explanation on the topic?",
             </>
           )}
   </Grid>
-      <Typography 
-        variant="body1" 
-        align="start" 
-        gutterBottom 
-         marginTop={5}
-         marginLeft={5}
-        style={{ color: 'orange',fontWeight:"bold" }}
-      >
-        Learning funnel:
-  </Typography>
+  <p 
+     
+      
+     className="text-orange-600 font-bold text-[16px] ml-5 mt-5 mb-5 sm:mb-0"
+   >
+     Learning funnel:
+</p>
   <Grid
   container
   spacing={10}
@@ -1382,7 +1376,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
 
   <Grid item xs={12}   sx={{
       mt: { xs: 0, md: 5 },
-    }} md={7}
+    }} md={selectedChannel.length==0 || (selectedChannel=="channel_1" && selectedInstance.length==0) ? 11 : 7}
     lg={selectedInstance.length==0 ? 9 : 7}
     >
     {Object.entries(scores).map(([score, data], index) => (
@@ -1397,10 +1391,11 @@ const questionData=["Do you need more reading or explanation on the topic?",
         }}
       >
        
-       <div className="grid sm:flex ">
-        <span className="text-[12px] sm:text-[14px] flex items-start justify-start">{questionData[index]}</span>
-        <div className="flex">
-        <span className="text-[16px] mx-2">{smallText[index]}: </span>
+     
+        <div className="grid lg:flex lg:justify-between">
+        <span className="text-[12px] flex items-start justify-start">{questionData[index]}</span>
+        <div className="flex justify-center items-center">
+        <span className="md:text-[14px] xl:text-[16px] font-medium">{smallText[index]}: </span>
         <span className="font-bold mx-2">{data.count}</span>
         <span className="font-medium">({(data.percentage ? data.percentage.toFixed(2) : 0)}%)</span>
         </div>
