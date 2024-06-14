@@ -551,7 +551,7 @@ const[selectedDays,setSelectedDays]=useState(7)
     fetchData();
     const x=setInterval(()=>{
       fetchData();
-    },60000)
+    },6000)
  return(()=>{
  clearInterval(x)
  })
@@ -771,7 +771,7 @@ if(!objectPair || !arr || arr.length==0){
      
     ],
   });
-},[selectedDays,selectedInstance])
+},[selectedDays,selectedInstance,responseData])
 
 
 
@@ -1011,7 +1011,7 @@ if(!objectPair || dataForInstance.length==0){
   }, [selectedChannel, responseData, instances,selectedDays]);
 
   const fetchData = async () => {
-  
+  console.log(new Date())
     try {
       const response = await axios.get(
         "https://100035.pythonanywhere.com/addons/learning-index-report/?scale_id=6669b6d93e3d1f04792176c9"
@@ -1037,7 +1037,7 @@ setErr(false)
       setInstances(uniqueInstances);
       setResponseData(data);
       setLoading(false);
-    
+      console.log(new Date())
     } catch (error) {
       console.error("Error fetching data:", error);
       setErr(true)
