@@ -529,7 +529,8 @@ let scoreCounts,percentages,objectPair,totalResponses
   arr.forEach((res)=>{
     scoreCounts[res.category]+=1
   })
-  const totalResponses=arr.length
+  console.log(arr)
+   totalResponses=arr.length
 
    percentages={
     Detractor:((scoreCounts.detractor/totalResponses)*100),
@@ -635,9 +636,7 @@ if(!objectPair || dataForInstance.length==0){
     },
   };
 }
-     
    
-
    setOptions(options)
 
       return {
@@ -673,7 +672,7 @@ if(!objectPair || dataForInstance.length==0){
 
     setDisplayDataForAllSelection(allData);
   }, [selectedChannel, responseData, instances,selectedDays]);
-
+console.log(displayDataForAllSelection)
   const fetchData = async () => {
     try {
       const response = await axios.get(
@@ -751,7 +750,7 @@ setChannelNames(uniqueChannelNames)
     )
   }
   
-
+console.log(scores)
   return (
     <Box p={1}>
       <Typography variant="h6" align="center" gutterBottom>
@@ -831,15 +830,22 @@ setChannelNames(uniqueChannelNames)
                   >
                     {index + 1}. {instanceNames[item?.instanceName.trim()]}
                   </Typography>
-
+                  <div className="flex justify-center items-center gap-2 sm:gap-6 mt-10 flex-wrap">
                   <Typography
                     variant="body1"
                     align="center"
                     gutterBottom
-                    style={{ marginTop: "16px" }}
+                    
                   >
                     Total Responses: {item?.totalResponses}
                   </Typography>
+                  <Typography variant="body1" align="center" gutterBottom >
+          Total Score: {(item.scoreCounts.Promoter.count*2+item.scoreCounts.Passive.count)}/{(item.scoreCounts.Promoter.count+item.scoreCounts.Passive.count+scores.Detractor.count)*2}
+        </Typography>
+        <Typography variant="body1" align="center" gutterBottom >
+         Nps:  {(item.scoreCounts.Promoter.percentage-item.scoreCounts.Detractor.percentage).toFixed(2)}%
+        </Typography>
+        </div>
                   <Grid item xs={12} md={0} className="block md:hidden">
  
             <>
@@ -887,8 +893,8 @@ setChannelNames(uniqueChannelNames)
       >
         <div className="grid lg:flex lg:justify-between">
         {/* <span className="text-[12px] flex items-start justify-start">{questionData[index]}</span> */}
-        <div className="flex justify-center items-center">
-        <span className="text-[16px] font-medium">{smallText[index]}: </span>
+        <div className="flex justify-center items-center w-full">
+        <span className="text-[16px] md:text-[18px]">{smallText[index]}: </span>
         <span className="font-bold mx-2">{data.count}</span>
         <span className="font-medium">({(data.percentage ? data.percentage.toFixed(2) : 0)}%)</span>
         </div>
@@ -947,10 +953,10 @@ setChannelNames(uniqueChannelNames)
           Total Responses: {totalCount}
         </Typography>
         <Typography variant="body1" align="center" gutterBottom >
-          Learning Index: {learningLevelIndex}
+          Total Score: {(scores.Promoter.count*2+scores.Passive.count)}/{(scores.Promoter.count+scores.Passive.count+scores.Detractor.count)*2}
         </Typography>
         <Typography variant="body1" align="center" gutterBottom >
-        Learning Stage: {learningStage}
+         Nps:  {(scores.Promoter.percentage-scores.Detractor.percentage).toFixed(2)}%
         </Typography>
       </div>
       <Grid item xs={12} md={0} className="block md:hidden">
@@ -1005,8 +1011,8 @@ setChannelNames(uniqueChannelNames)
      
         <div className="grid lg:flex lg:justify-between">
         {/* <span className="text-[12px] flex items-start justify-start">{questionData[index]}</span> */}
-        <div className="flex justify-center items-center">
-        <span className="md:text-[16px]  ">{smallText[index]}: </span>
+        <div className="flex justify-center items-center w-full">
+        <span className="text-[14px] md:text-[18px]  ">{smallText[index]}: </span>
         <span className="font-bold mx-2">{data.count}</span>
         <span className="font-medium">({(data.percentage ? data.percentage.toFixed(2) : 0)}%)</span>
         </div>
