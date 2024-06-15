@@ -529,7 +529,7 @@ let scoreCounts,percentages,objectPair,totalResponses
   arr.forEach((res)=>{
     scoreCounts[res.category]+=1
   })
-  console.log(arr)
+
    totalResponses=arr.length
 
    percentages={
@@ -672,7 +672,7 @@ if(!objectPair || dataForInstance.length==0){
 
     setDisplayDataForAllSelection(allData);
   }, [selectedChannel, responseData, instances,selectedDays]);
-console.log(displayDataForAllSelection)
+
   const fetchData = async () => {
     try {
       const response = await axios.get(
@@ -750,7 +750,7 @@ setChannelNames(uniqueChannelNames)
     )
   }
   
-console.log(scores)
+
   return (
     <Box p={1}>
       <Typography variant="h6" align="center" gutterBottom>
