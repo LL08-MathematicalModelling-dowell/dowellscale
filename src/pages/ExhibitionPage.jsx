@@ -11,19 +11,19 @@ const[submitted,setSubmitted]=useState(-1)
         window.location.href=`https://100035.pythonanywhere.com/addons/create-response/v3/?user=True&scale_type=nps&channel=channel_1&instance=instance_1&workspace_id=6385c0e48eca0fb652c9447b&username=HeenaK&scale_id=665d95ae7ee426d671222a7b&item=${index}`
     }
     return(
-        <div className="h-screen w-screen bg-[#efecec] p-2 relative">
+        <div className="h-screen w-screen  relative">
           
-            <div className="w-full flex flex-col justify-end items-end  p-2 ">
+            <div className="w-full flex flex-col justify-center items-center  p-2 ">
                 <img className="w-[80px]  " src={dowellLogo} alt="dowell logo"/>
-                <p className="text-[12px] ">DoWell Research</p>
+               
             </div>
-            <div  className="flex flex-col justify-center items-center p-2 mt-10 sm:mt-0 gap-3 sm:gap-[1px]">
+            <div  className="flex flex-col justify-center items-center p-2 mt-10 sm:mt-0 gap-8 ">
                 <img src={npsScale} alt="nps-scale" className="w-[350px] sm:w-[450px]"/>
-                <p className="font-bold text-red-500 sm:text-[30px] text-[18px]">How do you like this exhibition?</p>
+                <p className="font-bold text-red-500 sm:text-[30px] text-[18px]">How do you rate this exhibition?</p>
                 <p className="sm:text-[18px] text-[14px]">Tell us what you think using the scale below!</p>
             </div>
            
-                 <div className="flex justify-center items-center gap-1 md:gap-3 m-7 sm:m-5">
+                 <div className="flex justify-center items-center gap-1 md:gap-3 mt-12 sm:m-5">
                     <style>
                         {`
                        @keyframes spin {
@@ -60,12 +60,12 @@ const[submitted,setSubmitted]=useState(-1)
                 ))}
              </div>
      
-            <div className=" absolute bottom-15 right-[27%] sm:right-[45%] md:mt-10 flex flex-col justify-center items-center">
-                <img src={QR} alt="qr code" className="w-[80px] "/>
-                <p className="sm:right-[43%] text-[14px]">Powered by uxlivinglab</p>
+            {/* <div className=" absolute bottom-15 right-[27%] sm:right-[45%] md:mt-10 flex flex-col justify-center items-center"> */}
+             
+                <p className="w-full absolute bottom-10 flex justify-center items-center  text-[14px]">Powered by uxlivinglab</p>
                
                 
-            </div>
+            {/* </div> */}
            
           
         </div>
