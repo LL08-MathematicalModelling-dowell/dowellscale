@@ -1041,7 +1041,7 @@ if(!objectPair || !arr || arr.length==0){
     plugins: {
       title: {
         display: true,
-        text: "Response Insights by Day",
+        text: "Daywise NPS",
       },
     },
     scales: {
@@ -1307,7 +1307,7 @@ const minNps = Math.min(...npsCounts);
   plugins: {
     title: {
       display: true,
-      text: "Response Insights by Day",
+      text: "Daywise NPS",
     },
   },
   scales: {
