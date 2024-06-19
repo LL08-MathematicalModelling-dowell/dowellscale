@@ -11,7 +11,7 @@ const[submitted,setSubmitted]=useState(-1)
         window.location.href=`https://100035.pythonanywhere.com/addons/create-response/v3/?user=True&scale_type=nps&channel=channel_1&instance=instance_1&workspace_id=6385c0e48eca0fb652c9447b&username=HeenaK&scale_id=665d95ae7ee426d671222a7b&item=${index}`
     }
     return(
-        <div className="h-screen w-screen  relative">
+        <div className=" h-full w-screen  relative pb-16">
           
             <div className="w-full flex flex-col justify-center items-center  p-2 ">
                 <img className="w-[80px]  " src={dowellLogo} alt="dowell logo"/>
@@ -62,7 +62,7 @@ const[submitted,setSubmitted]=useState(-1)
      
             {/* <div className=" absolute bottom-15 right-[27%] sm:right-[45%] md:mt-10 flex flex-col justify-center items-center"> */}
              
-                <p className="w-full absolute bottom-10 flex justify-center items-center  text-[14px]">Powered by uxlivinglab</p>
+                <p className="w-full absolute bottom-0 mt-4 flex justify-center items-center text-[12px] sm:text-[14px]">Powered by uxlivinglab</p>
                
                 
             {/* </div> */}
