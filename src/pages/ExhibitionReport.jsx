@@ -1335,7 +1335,7 @@ setInstances(Array.from(uniqueInstances));
   return (
     <Box p={1}>
       <Typography variant="h6" align="center" gutterBottom>
-      DoWell Learning Level Index
+      Net Promoter Score
       </Typography>
       {msg && <p className="text-red-500 self-center w-full flex justify-center">Provide feedback to check report</p>}
       <Grid container spacing={3} alignItems="center" justifyContent="center">
@@ -1444,13 +1444,13 @@ setInstances(Array.from(uniqueInstances));
             </>
          
   </Grid>
-      <p 
+      {/* <p 
      
       
         className="text-orange-600 font-bold text-[16px] ml-5 mt-5 mb-5 sm:mb-0"
       >
         Learning funnel:
-  </p>
+  </p> */}
     <Grid
   container
   spacing={10}
