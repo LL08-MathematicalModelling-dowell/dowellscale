@@ -797,10 +797,14 @@ const[options,setOptions]=useState({})
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
   // const [data, setData] = useState([]);
-  const [learningIndexDataForChart, setLearningIndexDataForChart] = useState({
+  const [dataForChart, setDataForChart] = useState({
     labels: [],
     datasets: [],
   });
+  const[npsDataForChart,setNpsDataForChart]=useState({
+    labels: [],
+    datasets: [],
+  })
   const [displayDataForAllSelection, setDisplayDataForAllSelection] = useState(
     []
   );
@@ -810,8 +814,8 @@ const[options,setOptions]=useState({})
   const[err,setErr]=useState(false)
   const[msg,setMsg]=useState(false)
 const[selectedDays,setSelectedDays]=useState(7)
-
-
+const[npsOptionData,setNpsOptionData]=useState({})
+const[totalScore,setTotalScore]=useState(0)
   useEffect(() => {
     fetchData();
     const x=setInterval(()=>{
@@ -855,7 +859,7 @@ useEffect(()=>{
 
 setScores(scorePercentages)
 setTotalCount(0)
-setLearningIndexDataForChart({
+setDataForChart({
   labels: [1,2,3,4,5],
   datasets: [
                 {
@@ -878,6 +882,18 @@ setLearningIndexDataForChart({
                 },
               ],
 });
+setNpsDataForChart({
+  labels: [1,2,3,4,5],
+  datasets: [
+                {
+                  label: "NPS",
+                  data:[0,0,0,0,0],
+                  borderColor: "red",
+                  backgroundColor: "red",
+                },
+               
+              ],
+});
     setMsg(true)
     return
   }
@@ -889,9 +905,13 @@ setLearningIndexDataForChart({
     promoter:0
    
   }
+  let score=0
   arr.forEach((res)=>{
     scoreCounts[res.category]+=1
+    score+=res.score
   })
+  setTotalScore(score)
+
   const totalResponses=arr.length
 
   let percentages={
@@ -936,12 +956,12 @@ setDateCountPair(objectPair)
   // else
   // setLearningStage("applying in context")
   
-  let labels,datasetsInfo,options
-  let detractorCounts=[], passiveCounts=[], promoterCounts=[]
+  let labels,datasetsInfo,options,npsOptions
+  let detractorCounts=[], passiveCounts=[], promoterCounts=[], npsCounts=[]
 if(!objectPair || !arr || arr.length==0){
   labels= [1,2,3,4,5],
   datasetsInfo= [0,0,0,0,0],
-  options={
+  options=npsOptions={
     responsive: true,
     maintainAspectRatio: false,
     scales: {
@@ -976,8 +996,15 @@ if(!objectPair || !arr || arr.length==0){
    promoterCounts=obj.promoterCounts
    passiveCounts=obj.passiveCounts
    const arr=[...detractorCounts,...passiveCounts,...promoterCounts]
+   for(let i=0;i<detractorCounts.length;i++){
+    const val=detractorCounts[i]+promoterCounts[i]+passiveCounts[i]
+    if(val==0)
+      npsCounts[i]=0
+    else
+    npsCounts[i]=(((promoterCounts[i]-detractorCounts[i])/val)*100).toFixed(2)
+   }
    const maxValue=arr.reduce((val,ele)=>Number(val)>ele?val:ele,0)
-
+   const minNps = Math.min(...npsCounts);
     options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -1008,11 +1035,40 @@ if(!objectPair || !arr || arr.length==0){
       },
     },
   };
+  npsOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      title: {
+        display: true,
+        text: "Response Insights by Day",
+      },
+    },
+    scales: {
+      x: {
+        ticks: {
+          maxRotation: isSmallScreen ? 90 : 0,
+          minRotation: isSmallScreen ? 90 : 0,
+        },
+      },
+      y: {
+        min:minNps<0 ? -100:minNps, // Set the minimum to half of the range in negative
+        max:100, // Set the maximum to half of the range in positive
+        ticks: {
+          stepSize: 25,
+          callback: function(value) {
+            return value; // Return the value as is, for negative and positive values
+          }
+        },
+        beginAtZero: true,
+      },
+    },
+  };
 }
 
-
+setNpsOptionData(npsOptions)
   setOptions(options)
-  setLearningIndexDataForChart({
+  setDataForChart({
     labels: labels,
     datasets: [
                   {
@@ -1035,6 +1091,16 @@ if(!objectPair || !arr || arr.length==0){
                   },
                 ],
   });
+  setNpsDataForChart({
+    labels: labels,
+    datasets: [
+                  {
+                    label: "NPS",
+                    data: npsCounts,
+                    borderColor: "red",
+                    backgroundColor: "red",
+                  },]
+  })
 },[selectedDays,selectedInstance,responseData,selectedChannel])
 
 
@@ -1085,7 +1151,7 @@ if(!objectPair || !arr || arr.length==0){
          promoter: 0, 
       }
   
-let scoreCounts,percentages,objectPair,totalResponses
+let scoreCounts,percentages,objectPair,totalResponses, score=0
   if(dataForInstance.length==0 ){
      scoreCounts=dummyCount
      percentages=dummyPercentages
@@ -1105,8 +1171,10 @@ let scoreCounts,percentages,objectPair,totalResponses
     promoter:0
    
   }
+
   arr.forEach((res)=>{
     scoreCounts[res.category]+=1
+    score+=res.score
   })
 
    totalResponses=arr.length
@@ -1118,7 +1186,7 @@ let scoreCounts,percentages,objectPair,totalResponses
    
   }
   const processedData = processData(arr);
-console.log(processedData)
+
   const transData=transformData(processedData,selectedDays)
    objectPair=pickSevenKeys(transData)
   }
@@ -1142,12 +1210,12 @@ console.log(processedData)
 
 
    
-     let labels,datasetsInfo,options
+     let labels,datasetsInfo,options,npsOptions
      let detractorCounts=[], passiveCounts=[], promoterCounts=[], npsCounts=[]
 if(!objectPair || dataForInstance.length==0){
   labels= [1,2,3,4,5],
   datasetsInfo= [0,0,0,0,0],
-  options={
+  options=npsOptions={
     responsive: true,
     maintainAspectRatio: false,
     scales: {
@@ -1182,7 +1250,7 @@ if(!objectPair || dataForInstance.length==0){
    detractorCounts=obj.detractorCounts
    promoterCounts=obj.promoterCounts
    passiveCounts=obj.passiveCounts
-   console.log(detractorCounts.length)
+
    for(let i=0;i<detractorCounts.length;i++){
     const val=detractorCounts[i]+promoterCounts[i]+passiveCounts[i]
     if(val==0)
@@ -1190,7 +1258,10 @@ if(!objectPair || dataForInstance.length==0){
     else
     npsCounts[i]=(((promoterCounts[i]-detractorCounts[i])/val)*100).toFixed(2)
    }
-   console.log(npsCounts,passiveCounts,detractorCounts,promoterCounts)
+  //  npsCounts[0]=-20
+  //  npsCounts[1]=-80
+  //  npsCounts[2]=-100
+
    const arr=[...detractorCounts,...passiveCounts,...promoterCounts]
    const maxValue=arr.reduce((val,ele)=>Number(val)>ele?val:ele,0)
 
@@ -1224,13 +1295,50 @@ if(!objectPair || dataForInstance.length==0){
       },
     },
   };
+  const maxNps = Math.max(...npsCounts);
+const minNps = Math.min(...npsCounts);
+
+
+
+
+ npsOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    title: {
+      display: true,
+      text: "Response Insights by Day",
+    },
+  },
+  scales: {
+    x: {
+      ticks: {
+        maxRotation: isSmallScreen ? 90 : 0,
+        minRotation: isSmallScreen ? 90 : 0,
+      },
+    },
+    y: {
+      min:minNps<0 ? -100:minNps, // Set the minimum to half of the range in negative
+      max:100, // Set the maximum to half of the range in positive
+      ticks: {
+        stepSize: 25,
+        callback: function(value) {
+          return value; // Return the value as is, for negative and positive values
+        }
+      },
+      beginAtZero: true,
+    },
+  },
+};
+
 }
    
    setOptions(options)
-
+setNpsOptionData(npsOptions)
       return {
         instanceName: instance,
         totalResponses: totalResponses,
+        totalScoreData:score,
         scoreCounts:scorePercentages,
         chartData: {
           labels: labels,
@@ -1259,7 +1367,7 @@ if(!objectPair || dataForInstance.length==0){
         npsData:{
           labels: labels,
           datasets: [{
-                          label: "Nps score",
+                          label: "NPS",
                           data:npsCounts,
                           borderColor: "red",
                           backgroundColor: "red",
@@ -1277,7 +1385,7 @@ if(!objectPair || dataForInstance.length==0){
         "https://100035.pythonanywhere.com/addons/get-response/?scale_id=665d95ae7ee426d671222a7b"
       );
 const data=response.data.data
-//console.log(data)
+
 let uniqueInstanceNames = {};
 let uniqueInstances = new Set();
 let uniqueChannelNames = {};
@@ -1421,16 +1529,17 @@ setInstances(Array.from(uniqueInstances));
         <>
           {React.Children.toArray(
             displayDataForAllSelection.map((item, index) => {
+         
               return (
                 <>
                   <Typography
                     variant="h6"
                     align="left"
-                    style={{ marginTop: "32px", marginBottom: "10px" }}
+                    style={{ marginTop: "16px"}}
                   >
                     {index + 1}. {instanceNames[item?.instanceName.trim()]}
                   </Typography>
-                  <div className="flex justify-center items-center gap-2 sm:gap-6 mt-10 mb-4 flex-wrap">
+                  <div className="flex justify-center items-center gap-2 sm:gap-6 mt-5 mb-4 flex-wrap">
                   <Typography
                     variant="body1"
                     align="center"
@@ -1440,13 +1549,13 @@ setInstances(Array.from(uniqueInstances));
                     Total Responses: {item?.totalResponses}
                   </Typography>
                   <Typography variant="body1" align="center" gutterBottom >
-          Total Score: {(item.scoreCounts.Promoter.count*2+item.scoreCounts.Passive.count)}/{(item.scoreCounts.Promoter.count+item.scoreCounts.Passive.count+scores.Detractor.count)*2}
+          Total Score: {item?.totalScoreData}/{item?.totalResponses*10}
         </Typography>
         <Typography variant="body1" align="center" gutterBottom >
-         Nps:  {(item.scoreCounts.Promoter.percentage-item.scoreCounts.Detractor.percentage).toFixed(2)}%
+         NPS:  {(item.scoreCounts.Promoter.percentage-item.scoreCounts.Detractor.percentage).toFixed(2)}
         </Typography>
         </div>
-                  <Grid item xs={12} md={0} className="block md:hidden">
+                  <Grid item xs={12} md={0} className="block mb-5 md:hidden " >
  
             <>
               <Box
@@ -1460,8 +1569,19 @@ setInstances(Array.from(uniqueInstances));
               >
                 <Line options={options} data={item.chartData} />
               </Box>
+              <Box
+                sx={{
+                  my: 4,
+                  width: "100%",
+                  height: { xs: "300px", sm: "400px" },
+                  maxWidth: "900px",
+                  mx: "auto",
+                }}
+              >
+                 <Line options={npsOptionData} data={item?.npsData} />
+              </Box>
             </>
-         
+   
   </Grid>
       {/* <p 
      
@@ -1477,7 +1597,7 @@ setInstances(Array.from(uniqueInstances));
                     spacing={3}
                     alignItems="center"
                     justifyContent="center"
-                    className="my-8"
+                    className="my-8 mt-20"
                   >
                     {Object.entries(item?.scoreCounts).map(
                       ([score, data]) => (
@@ -1513,7 +1633,7 @@ setInstances(Array.from(uniqueInstances));
                       )
                     )}
                   </Grid>
-                  <div className="flex justify-center items-center mt-10 gap-12 flex-wrap" >
+                  <div className="hidden md:flex justify-center items-center mt-10 gap-12 flex-wrap" >
   <Grid item xs={12} md={5}>
     <Box sx={{ width: '600px', height: { xs: '300px', sm: '380px' } }}>
       <Line options={options} data={item?.chartData} />
@@ -1521,7 +1641,7 @@ setInstances(Array.from(uniqueInstances));
   </Grid>
   <Grid item xs={12} md={5}>
     <Box sx={{ width: '600px', height: { xs: '300px', sm: '380px' } }}>
-      <Line options={options} data={item?.npsData} />
+      <Line options={npsOptionData} data={item?.npsData} />
     </Box>
   </Grid>
 </div>
@@ -1564,15 +1684,15 @@ setInstances(Array.from(uniqueInstances));
         </>
       ) : (
         <>
-         <div className="flex justify-center items-center gap-2 sm:gap-6 mt-10 flex-wrap">
+         <div className="flex justify-center items-center gap-2 sm:gap-6 mt-10 flex-wrap mb-6">
         <Typography variant="body1" align="center" gutterBottom >
           Total Responses: {totalCount}
         </Typography>
         <Typography variant="body1" align="center" gutterBottom >
-          Total Score: {(scores.Promoter.count*2+scores.Passive.count)}/{(scores.Promoter.count+scores.Passive.count+scores.Detractor.count)*2}
+          Total Score: {totalScore}/{totalCount*10}
         </Typography>
         <Typography variant="body1" align="center" gutterBottom >
-         Nps:  {(scores.Promoter.percentage-scores.Detractor.percentage).toFixed(2)}%
+         NPS:  {(scores.Promoter.percentage-scores.Detractor.percentage).toFixed(2)}
         </Typography>
       </div>
       <Grid item xs={12} md={0} className="block md:hidden">
@@ -1587,7 +1707,18 @@ setInstances(Array.from(uniqueInstances));
                   mx: "auto",
                 }}
               >
-                <Line options={options} data={learningIndexDataForChart} />
+                <Line options={options} data={dataForChart} />
+              </Box>
+              <Box
+                sx={{
+                  my: 4,
+                  width: "100%",
+                  height: { xs: "300px", sm: "400px" },
+                  maxWidth: "900px",
+                  mx: "auto",
+                }}
+              >
+                <Line options={npsOptionData} data={npsDataForChart} />
               </Box>
             </>
           )}
@@ -1599,82 +1730,71 @@ setInstances(Array.from(uniqueInstances));
    >
      Learning funnel:
 </p> */}
-  <Grid
-  container
-  spacing={10}
-  alignItems="center"
-  justifyContent="center"
->
+
   {/* Left side with score counts */}
 
-  <Grid item xs={12}   sx={{
-      mt: { xs: 0, md: 5 },
-    }} md={selectedChannel.length==0 || (selectedChannel=="channel_1" && selectedInstance.length==0) ? 11 : 7}
-    lg={selectedInstance.length==0 ? 9 : 7}
-    >
-    {Object.entries(scores).map(([score, data], index) => (
-      <Box
-        key={score}
-        sx={{
-          maxWidth: { xs: "100%", sm: "90%", md: "85%", lg: "100%" },
-          mx: "10px",
-        
-          textAlign: "center",
-          mb: 4,
-        }}
-      >
-       
-     
-        <div className="grid lg:flex lg:justify-between">
-        {/* <span className="text-[12px] flex items-start justify-start">{questionData[index]}</span> */}
-        <div className="flex justify-center items-center w-full">
-        <span className="text-[14px] md:text-[18px]  ">{smallText[index]}: </span>
-        <span className="font-bold mx-2">{data.count}</span>
-        <span className="font-medium">({(data.percentage ? data.percentage.toFixed(2) : 0)}%)</span>
-        </div>
-        </div>
-        <LinearProgress
-          variant="determinate"
-          value={data.percentage || 0}
-          className="mt-2"
-          sx={{
-            height: "10px",
-            
-            borderRadius: "10px",
-            "& .MuiLinearProgress-bar": {
-              borderRadius: "10px",
-              backgroundColor: (() => {
-                if (score === "Detractor") return "#FF0000"; // Red
-                if (score === "Passive") return "#FFFF00"; // Yellow
-                 return "#00FF00"; // Green
-              })(),
-            },
-          }}
-        />
-      </Box>
-    ))}
-  </Grid>
-
+ 
+  <Grid
+                    container
+                    spacing={3}
+                    alignItems="center"
+                    justifyContent="center"
+                    className="my-8 mt-20"
+                  >
+                    {Object.entries(scores).map(([score, data], index) => (
+                     
+                        <Grid item xs={12} sm={4} key={score}>
+                          <Box textAlign="center">
+                            <Typography
+                              variant="subtitle1"
+                              gutterBottom
+                            >
+                              {`${score}: ${data.count} (${data.percentage.toFixed(
+                                2
+                              ) || 0}%)`}
+                            </Typography>
+                            <LinearProgress
+                              variant="determinate"
+                              value={data.percentage}
+                              sx={{
+                                height: "10px",
+                                borderRadius: "10px",
+                                "& .MuiLinearProgress-bar": {
+                                  borderRadius: "10px",
+                                  backgroundColor:
+                                    score === "Detractor"
+                                      ? "red"
+                                      : score === "Passive"
+                                      ? "yellow"
+                                      : "green",
+                                },
+                              }}
+                            />
+                          </Box>
+                        </Grid>
+                      )
+                    )}
+                  </Grid>
   {/* Right side with chart data */}
-  <Grid item md={5} className="hidden md:block">
-  {selectedChannel.length < 1 || selectedInstance.length < 1 ? null : (
-            <>
-              <Box
-                sx={{
-                  mt: 4,
-                  width: "100%",
-                  height: { xs: "300px", sm: "400px" },
-                  maxWidth: "900px",
-                  mx: "auto",
-                }}
-              >
-                <Line options={options} data={learningIndexDataForChart} />
-              </Box>
-            </>
-          )}
-  </Grid>
-</Grid>
 
+
+
+<div className="hidden md:flex justify-center items-center mt-10 gap-12 flex-wrap" >
+  {selectedChannel.length < 1 || selectedInstance.length < 1 ? null : (
+    <>
+  <Grid item xs={12} md={5}>
+    <Box sx={{ width: '600px', height: { xs: '300px', sm: '380px' } }}>
+      <Line options={options} data={dataForChart} />
+    </Box>
+  </Grid>
+  <Grid item xs={12} md={5}>
+    <Box sx={{ width: '600px', height: { xs: '300px', sm: '380px' } }}>
+      <Line options={npsOptionData} data={npsDataForChart} />
+    </Box>
+  </Grid>
+  </>
+  )}
+</div>
         
           
         </>
