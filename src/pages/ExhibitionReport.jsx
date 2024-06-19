@@ -1118,10 +1118,11 @@ let scoreCounts,percentages,objectPair,totalResponses
    
   }
   const processedData = processData(arr);
-
+console.log(processedData)
   const transData=transformData(processedData,selectedDays)
    objectPair=pickSevenKeys(transData)
   }
+  
    const scorePercentages = {
     Detractor: {
       count: scoreCounts["detractor"],
@@ -1142,7 +1143,7 @@ let scoreCounts,percentages,objectPair,totalResponses
 
    
      let labels,datasetsInfo,options
-     let detractorCounts=[], passiveCounts=[], promoterCounts=[]
+     let detractorCounts=[], passiveCounts=[], promoterCounts=[], npsCounts=[]
 if(!objectPair || dataForInstance.length==0){
   labels= [1,2,3,4,5],
   datasetsInfo= [0,0,0,0,0],
@@ -1181,6 +1182,15 @@ if(!objectPair || dataForInstance.length==0){
    detractorCounts=obj.detractorCounts
    promoterCounts=obj.promoterCounts
    passiveCounts=obj.passiveCounts
+   console.log(detractorCounts.length)
+   for(let i=0;i<detractorCounts.length;i++){
+    const val=detractorCounts[i]+promoterCounts[i]+passiveCounts[i]
+    if(val==0)
+      npsCounts[i]=0
+    else
+    npsCounts[i]=(((promoterCounts[i]-detractorCounts[i])/val)*100).toFixed(2)
+   }
+   console.log(npsCounts,passiveCounts,detractorCounts,promoterCounts)
    const arr=[...detractorCounts,...passiveCounts,...promoterCounts]
    const maxValue=arr.reduce((val,ele)=>Number(val)>ele?val:ele,0)
 
@@ -1246,6 +1256,15 @@ if(!objectPair || dataForInstance.length==0){
                       ],
        
         },
+        npsData:{
+          labels: labels,
+          datasets: [{
+                          label: "Nps score",
+                          data:npsCounts,
+                          borderColor: "red",
+                          backgroundColor: "red",
+                        }]
+        }
       };
     });
 
@@ -1411,7 +1430,7 @@ setInstances(Array.from(uniqueInstances));
                   >
                     {index + 1}. {instanceNames[item?.instanceName.trim()]}
                   </Typography>
-                  <div className="flex justify-center items-center gap-2 sm:gap-6 mt-10 flex-wrap">
+                  <div className="flex justify-center items-center gap-2 sm:gap-6 mt-10 mb-4 flex-wrap">
                   <Typography
                     variant="body1"
                     align="center"
@@ -1451,61 +1470,79 @@ setInstances(Array.from(uniqueInstances));
       >
         Learning funnel:
   </p> */}
-    <Grid
-  container
-  spacing={10}
-  alignItems="center"
-  justifyContent="center"
->
-  {/* Left side with score counts */}
-  <Grid item xs={12} md={7}  sx={{
-      mt: { xs: 0, md: 5 },
-    }}>
-    {Object.entries(item?.scoreCounts).map(([score, data], index) => (
-      <Box
-        key={score}
-        sx={{
-          maxWidth: { xs: "100%", sm: "90%", md: "85%", lg: "100%" },
-          mx: "10px",
-        
-          textAlign: "center",
-          mb: 4,
-        }}
-      >
-        <div className="grid lg:flex lg:justify-between">
-        {/* <span className="text-[12px] flex items-start justify-start">{questionData[index]}</span> */}
-        <div className="flex justify-center items-center w-full">
-        <span className="text-[16px] md:text-[18px]">{smallText[index]}: </span>
-        <span className="font-bold mx-2">{data.count}</span>
-        <span className="font-medium">({(data.percentage ? data.percentage.toFixed(2) : 0)}%)</span>
-        </div>
-        </div>
-        {/* {`${questionData[index]}: ${data.count} (${data.percentage.toFixed(2) || 0}%)`} */}
-        <LinearProgress
-          variant="determinate"
-          className="mt-2"
-          value={data.percentage || 0}
-          sx={{
-            height: "10px",
-            
-            borderRadius: "10px",
-            "& .MuiLinearProgress-bar": {
-              borderRadius: "10px",
-              backgroundColor: (() => {
-                if (score === "Detractor") return "#FF0000"; // Red
-        
-                if (score === "Passive") return "#FFFF00"; // Yellow
-               
-                return "#00FF00"; // Green
-              })(),
-            },
-          }}
-        />
-      </Box>
-    ))}
-  </Grid>
+ 
 
-  {/* Right side with chart data */}
+<Grid
+                    container
+                    spacing={3}
+                    alignItems="center"
+                    justifyContent="center"
+                    className="my-8"
+                  >
+                    {Object.entries(item?.scoreCounts).map(
+                      ([score, data]) => (
+                        <Grid item xs={12} sm={4} key={score}>
+                          <Box textAlign="center">
+                            <Typography
+                              variant="subtitle1"
+                              gutterBottom
+                            >
+                              {`${score}: ${data.count} (${data.percentage.toFixed(
+                                2
+                              ) || 0}%)`}
+                            </Typography>
+                            <LinearProgress
+                              variant="determinate"
+                              value={data.percentage}
+                              sx={{
+                                height: "10px",
+                                borderRadius: "10px",
+                                "& .MuiLinearProgress-bar": {
+                                  borderRadius: "10px",
+                                  backgroundColor:
+                                    score === "Detractor"
+                                      ? "red"
+                                      : score === "Passive"
+                                      ? "yellow"
+                                      : "green",
+                                },
+                              }}
+                            />
+                          </Box>
+                        </Grid>
+                      )
+                    )}
+                  </Grid>
+                  <div className="flex justify-center items-center mt-10 gap-12 flex-wrap" >
+  <Grid item xs={12} md={5}>
+    <Box sx={{ width: '600px', height: { xs: '300px', sm: '380px' } }}>
+      <Line options={options} data={item?.chartData} />
+    </Box>
+  </Grid>
+  <Grid item xs={12} md={5}>
+    <Box sx={{ width: '600px', height: { xs: '300px', sm: '380px' } }}>
+      <Line options={options} data={item?.npsData} />
+    </Box>
+  </Grid>
+</div>
+
+
+  {/* <Grid item xs={12} md={7}  sx={{
+    mt: { xs: 0, md: 5 },
+  }}>
+<Grid item xs={12} md={5} className="hidden md:block">
+    <Box
+      sx={{
+         ml:"10px",
+        width: "100%",
+        height: { xs: "300px", sm: "380px" },
+        maxWidth: "900px",
+        mx: "auto",
+      }}
+    >
+      <Line options={options} data={item?.chartData} />
+    </Box>
+  </Grid>
   <Grid item xs={12} md={5} className="hidden md:block">
     <Box
       sx={{
@@ -1519,9 +1556,7 @@ setInstances(Array.from(uniqueInstances));
       <Line options={options} data={item?.chartData} />
     </Box>
   </Grid>
-</Grid>
-
-
+  </Grid> */}
                 </>
               );
             })
@@ -1557,13 +1592,13 @@ setInstances(Array.from(uniqueInstances));
             </>
           )}
   </Grid>
-  <p 
+  {/* <p 
      
       
      className="text-orange-600 font-bold text-[16px] ml-5 mt-5 mb-5 sm:mb-0"
    >
      Learning funnel:
-</p>
+</p> */}
   <Grid
   container
   spacing={10}
@@ -1651,3 +1686,72 @@ setInstances(Array.from(uniqueInstances));
 export default App
 
 
+{/* <Grid
+container
+spacing={10}
+alignItems="center"
+justifyContent="center"
+>
+{/* Left side with score counts */}
+{/* <Grid item xs={12} md={7}  sx={{
+    mt: { xs: 0, md: 5 },
+  }}>
+  {Object.entries(item?.scoreCounts).map(([score, data], index) => (
+    <Box
+      key={score}
+      sx={{
+        maxWidth: { xs: "100%", sm: "90%", md: "85%", lg: "100%" },
+        mx: "10px",
+      
+        textAlign: "center",
+        mb: 4,
+      }}
+    //> */}
+      //<div className="grid lg:flex lg:justify-between">
+      {/* <span className="text-[12px] flex items-start justify-start">{questionData[index]}</span> */}
+      //<div className="flex justify-center items-center w-full">
+      //<span className="text-[16px] md:text-[18px]">{smallText[index]}: </span>
+//<span className="font-bold mx-2">{data.count}</span>
+      //<span className="font-medium">({(data.percentage ? data.percentage.toFixed(2) : 0)}%)</span>
+//</div>
+      //</div>
+      {/* {`${questionData[index]}: ${data.count} (${data.percentage.toFixed(2) || 0}%)`} */}
+     // <LinearProgress
+      //  variant="determinate"
+       // className="mt-2"
+       // value={data.percentage || 0}
+       // sx={{
+         // height: "10px",
+          
+        //  borderRadius: "10px",
+         // "& .MuiLinearProgress-bar": {
+            // borderRadius: "10px",
+            // backgroundColor: (() => {
+            //   if (score === "Detractor") return "#FF0000"; // Red
+      
+            //   if (score === "Passive") return "#FFFF00"; // Yellow
+             
+            //   return "#00FF00"; // Green
+            // })(),
+  //         },
+  //       }}
+  //     />
+  //   </Box>
+  // ))}
+// </Grid>
+
+{/* Right side with chart data */}
+{/* <Grid item xs={12} md={5} className="hidden md:block">
+  <Box
+    sx={{
+       ml:"10px",
+      width: "100%",
+      height: { xs: "300px", sm: "380px" },
+      maxWidth: "900px",
+      mx: "auto",
+    }}
+  >
+    <Line options={options} data={item?.chartData} />
+  </Box>
+</Grid> */}
+//</Grid> */}
