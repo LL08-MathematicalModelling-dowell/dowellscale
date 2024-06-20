@@ -14,12 +14,12 @@ const[submitted,setSubmitted]=useState(-1)
         <div className=" h-full w-screen  relative pb-16 pt-5">
           
             <div className="w-full flex flex-col justify-center items-center  p-2 ">
-                <img className="w-[80px]  " src={dowellLogo} alt="dowell logo"/>
+                <img className="w-[100px]  " src="https://dowellfileuploader.uxlivinglab.online/hr/logo-2-min-min.png" alt="dowell logo"/>
                
             </div>
             <div  className="flex flex-col justify-center items-center p-2 mt-10 sm:mt-0 gap-8 ">
                 <img src={npsScale} alt="nps-scale" className="w-[350px] sm:w-[450px]"/>
-                <p className="font-bold text-red-500 sm:text-[30px] text-[18px]">How do you rate this exhibition?</p>
+                <p className="font-bold text-red-500 sm:text-[30px] text-[18px]">How do you rate this event?</p>
                 <p className="sm:text-[18px] text-[14px]">Tell us what you think using the scale below!</p>
             </div>
            
