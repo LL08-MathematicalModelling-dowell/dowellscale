@@ -1558,7 +1558,7 @@ setInstances(Array.from(uniqueInstances));
                   <Grid item xs={12} md={0} className="block mb-5 md:hidden " >
  
             <>
-              <Box
+            <Box
                 sx={{
                   mt: 4,
                   width: "100%",
@@ -1567,7 +1567,7 @@ setInstances(Array.from(uniqueInstances));
                   mx: "auto",
                 }}
               >
-                <Line options={options} data={item.chartData} />
+                 <Line options={npsOptionData} data={item?.npsData} />
               </Box>
               <Box
                 sx={{
@@ -1578,8 +1578,9 @@ setInstances(Array.from(uniqueInstances));
                   mx: "auto",
                 }}
               >
-                 <Line options={npsOptionData} data={item?.npsData} />
+                <Line options={options} data={item.chartData} />
               </Box>
+             
             </>
    
   </Grid>
@@ -1698,7 +1699,7 @@ setInstances(Array.from(uniqueInstances));
       <Grid item xs={12} md={0} className="block md:hidden">
   {selectedChannel.length < 1 || selectedInstance.length < 1 ? null : (
             <>
-              <Box
+                 <Box
                 sx={{
                   mt: 4,
                   width: "100%",
@@ -1707,7 +1708,7 @@ setInstances(Array.from(uniqueInstances));
                   mx: "auto",
                 }}
               >
-                <Line options={options} data={dataForChart} />
+                <Line options={npsOptionData} data={npsDataForChart} />
               </Box>
               <Box
                 sx={{
@@ -1718,8 +1719,9 @@ setInstances(Array.from(uniqueInstances));
                   mx: "auto",
                 }}
               >
-                <Line options={npsOptionData} data={npsDataForChart} />
+                <Line options={options} data={dataForChart} />
               </Box>
+         
             </>
           )}
   </Grid>
