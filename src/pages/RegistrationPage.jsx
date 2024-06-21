@@ -248,7 +248,7 @@ export default function RegistrationPage(){
           <div className="flex flex-col gap-2"> 
           <label htmlFor="institute" className="text-[14px] sm:text-[16px] font-medium self-center">Name of the institution</label>
           <input id="institute" name="institute" value={instituteName} type="text"
-          placeholder="enter shop/stand number"  onChange={(e) => {
+          placeholder="enter shop/stand name"  onChange={(e) => {
             setInstituteName(e.target.value);
             setErr((prev)=>({
               ...prev,instituteErr:false
@@ -263,9 +263,9 @@ export default function RegistrationPage(){
           </div>
           <div className="grid sm:flex justify-center items-center sm:gap-8 gap-2 m-4">
             <div className="flex flex-col gap-2"> 
-            <label htmlFor="name" className=" self-center text-[14px] sm:text-[16px] font-medium">Name of Stand/Shop in charge</label>
+            <label htmlFor="name" className=" self-center text-[14px] sm:text-[16px] font-medium">Name of Stand/Shop incharge</label>
           <input id="name" name="name" value={inchargeName} type="text"
-            placeholder="enter shop/stand name" onChange={(e)=>{
+            placeholder="enter shop/stand incharge" onChange={(e)=>{
               setInchargeName(e.target.value)
               setErr((prev)=>({
                 ...prev,nameErr:false
