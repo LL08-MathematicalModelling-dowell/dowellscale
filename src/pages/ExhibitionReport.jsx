@@ -1562,7 +1562,7 @@ setInstances(Array.from(uniqueInstances));
     <div
       style={{
         width: `${(item?.totalScoreData / (item?.totalResponses * 10)) * 100 || 0}%`,
-        backgroundColor: 'orange',
+        backgroundColor: 'blue',
         height: '20px',
         transition: 'width 0.5s ease-in-out',
         position: 'relative',
@@ -1598,26 +1598,30 @@ setInstances(Array.from(uniqueInstances));
  <Box position="relative" height="24px" width="100%" maxWidth="600px" margin="0 auto" borderRadius="12px" overflow="hidden" border="1px solid #ddd" text="black">
       {Object.entries(item?.scoreCounts).map(([score, data], index) => (
         <Box
-          key={score}
-          position="absolute"
-          left={`${Object.entries(item?.scoreCounts).slice(0, index).reduce((acc, [_, val]) => acc + val.percentage, 0)}%`}
-          width={`${data.percentage}%`}
-          height="100%"
-          bgcolor={
-            score === "Detractor"
-              ? "red"
-              : score === "Passive"
-              ? "yellow"
-              : "green"
-          }
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          style={{ color: 'black', fontSize: '12px', fontWeight: 'bold', whiteSpace: 'nowrap' }}
-        >
-           {data.count>0 ?  data.count  :""}
-          {/* (${data.percentage.toFixed(2)}%) */}
-        </Box>
+        key={score}
+        position="absolute"
+        left={`${Object.entries(item?.scoreCounts).slice(0, index).reduce((acc, [_, val]) => acc + val.percentage, 0)}%`}
+        width={`${data.percentage}%`}
+        height="100%"
+        bgcolor={
+          score === "Detractor"
+            ? "red"
+            : score === "Passive"
+            ? "yellow"
+            : "green"
+        }
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        style={{ color: 'black', fontSize: '10px', fontWeight: 'bold', whiteSpace: 'nowrap' }}
+      >
+   
+       
+          {data.percentage.toFixed(1)}%
+       
+      </Box>
+      
       ))}
     </Box>
     </div>
@@ -1695,7 +1699,7 @@ setInstances(Array.from(uniqueInstances));
     <div
       style={{
         width: `${(totalScore/ (totalCount * 10)) * 100 || 0}%`,
-        backgroundColor:totalCount==0 ?"white":'orange',
+        backgroundColor:totalCount==0 ?"white":'blue',
         height: '20px',
         transition: 'width 0.5s ease-in-out',
         position: 'relative',
@@ -1750,9 +1754,9 @@ setInstances(Array.from(uniqueInstances));
           justifyContent="center"
           style={{ color: 'black', fontSize: '12px', fontWeight: 'bold', whiteSpace: 'nowrap' }}
         >
-          {data.count>0 ?  data.count  :""}
+          {/* {data.count>0 ?  data.count  :""} */}
      
-          {/* (${data.percentage.toFixed(2)}%) */}
+          {data.percentage.toFixed(1)}%
         </Box>
       ))}
     </Box>
