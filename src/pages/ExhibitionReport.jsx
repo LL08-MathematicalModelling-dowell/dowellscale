@@ -830,8 +830,11 @@ const[totalScore,setTotalScore]=useState(0)
 
 
 useEffect(()=>{
-  if(selectedChannel.length==0 || selectedInstance.length==0 || selectedChannel == allChannelsNameTag)
+  if(selectedChannel.length==0 || selectedInstance.length==0 || selectedChannel == allChannelsNameTag){
+    if(selectedInstance.length==0 && selectedChannel == allChannelsNameTag)
+    setTotalScore(0)
     return
+}
 
     const filteredData = responseData.filter(
       (item) =>
@@ -1535,26 +1538,92 @@ setInstances(Array.from(uniqueInstances));
                   <Typography
                     variant="h6"
                     align="left"
-                    style={{ marginTop: "16px"}}
+                    style={{ marginTop: "26px"}}
                   >
                     {index + 1}. {instanceNames[item?.instanceName.trim()]}
                   </Typography>
-                  <div className="flex justify-center items-center gap-2 sm:gap-6 mt-5 mb-4 flex-wrap">
-                  <Typography
-                    variant="body1"
-                    align="center"
-                    gutterBottom
-                    
-                  >
-                    Total Responses: {item?.totalResponses}
-                  </Typography>
-                  <Typography variant="body1" align="center" gutterBottom >
-          Total Score: {item?.totalScoreData}/{item?.totalResponses*10}
-        </Typography>
-        <Typography variant="body1" align="center" gutterBottom >
-         NPS:  {(item.scoreCounts.Promoter.percentage-item.scoreCounts.Detractor.percentage).toFixed(2)}
-        </Typography>
+                  <div className="flex justify-center items-center gap-6 sm:gap-12 mt-10 flex-wrap">
+                
+               
+
+                  <p className="text-[20px] font-bold text-blue-600 mb-2" >
+                  Total Responses: {item?.totalResponses}
+        </p>
+      
+        <p className="text-[20px] font-bold text-blue-600 mb-2" >
+         NPS:  {(scores.Promoter.percentage-scores.Detractor.percentage).toFixed(2)}
+        </p>
         </div>
+        <div className="flex flex-col lg:flex-row justify-center md:gap-3 items-center w-[100%]">
+          <div className="w-[90%] md:w-1/2 flex flex-col justify-start items-start">
+        <p className="text-center font-medium p-2 w-full mt-2">Total Score:</p>
+        <div style={{ width: '100%', maxWidth: '600px', margin: '0 auto', position: 'relative', paddingBottom: '20px' }} className="mb-">
+  <div style={{ border: '1px solid #ddd', borderRadius: '12px', overflow: 'hidden', width: '100%', position: 'relative' }}>
+    <div
+      style={{
+        width: `${(item?.totalScoreData / (item?.totalResponses * 10)) * 100 || 0}%`,
+        backgroundColor: 'orange',
+        height: '20px',
+        transition: 'width 0.5s ease-in-out',
+        position: 'relative',
+      }}
+    >
+     
+    </div>
+  </div>
+  <div style={{
+        width: `${(item?.totalScoreData / (item?.totalResponses * 10)) * 100 || 0}%`,
+       
+        position: 'relative',
+      }}>
+  <span
+        className={`absolute font-bold text-[12px] text-blue-600 ${item?.totalResponses==0 && "hidden"}`}
+        style={{
+          right: 0,
+          bottom: '-20px',
+          transform: 'translateX(50%)',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        {item?.totalScoreData}
+      </span>
+      </div>
+  <div style={{ position: 'absolute', left: 0, top: '20px', fontSize: '12px' }}>0</div>
+  <div style={{ position: 'absolute', right: 0, top: '20px', fontSize: '12px' }}  className={` ${item?.totalResponses==0 && "hidden"}`}>{item?.totalResponses * 10}</div>
+</div>
+</div>
+<div className="w-[90%] md:w-1/2 flex flex-col justify-start items-start mb-[10px]">
+
+<p className="text-center font-medium p-2 w-full">Response Bar:</p>
+ <Box position="relative" height="24px" width="100%" maxWidth="600px" margin="0 auto" borderRadius="12px" overflow="hidden" border="1px solid #ddd" text="black">
+      {Object.entries(item?.scoreCounts).map(([score, data], index) => (
+        <Box
+          key={score}
+          position="absolute"
+          left={`${Object.entries(item?.scoreCounts).slice(0, index).reduce((acc, [_, val]) => acc + val.percentage, 0)}%`}
+          width={`${data.percentage}%`}
+          height="100%"
+          bgcolor={
+            score === "Detractor"
+              ? "red"
+              : score === "Passive"
+              ? "yellow"
+              : "green"
+          }
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          style={{ color: 'black', fontSize: '12px', fontWeight: 'bold', whiteSpace: 'nowrap' }}
+        >
+           {data.count>0 ?  data.count  :""}
+          {/* (${data.percentage.toFixed(2)}%) */}
+        </Box>
+      ))}
+    </Box>
+    </div>
+    </div>
+
+
                   <Grid item xs={12} md={0} className="block mb-5 md:hidden " >
  
             <>
@@ -1584,56 +1653,7 @@ setInstances(Array.from(uniqueInstances));
             </>
    
   </Grid>
-      {/* <p 
-     
-      
-        className="text-orange-600 font-bold text-[16px] ml-5 mt-5 mb-5 sm:mb-0"
-      >
-        Learning funnel:
-  </p> */}
- 
-
-<Grid
-                    container
-                    spacing={3}
-                    alignItems="center"
-                    justifyContent="center"
-                    className="my-8 mt-20"
-                  >
-                    {Object.entries(item?.scoreCounts).map(
-                      ([score, data]) => (
-                        <Grid item xs={12} sm={4} key={score}>
-                          <Box textAlign="center">
-                            <Typography
-                              variant="subtitle1"
-                              gutterBottom
-                            >
-                              {`${score}: ${data.count} (${data.percentage.toFixed(
-                                2
-                              ) || 0}%)`}
-                            </Typography>
-                            <LinearProgress
-                              variant="determinate"
-                              value={data.percentage}
-                              sx={{
-                                height: "10px",
-                                borderRadius: "10px",
-                                "& .MuiLinearProgress-bar": {
-                                  borderRadius: "10px",
-                                  backgroundColor:
-                                    score === "Detractor"
-                                      ? "red"
-                                      : score === "Passive"
-                                      ? "yellow"
-                                      : "green",
-                                },
-                              }}
-                            />
-                          </Box>
-                        </Grid>
-                      )
-                    )}
-                  </Grid>
+   
                   <div className="hidden md:flex justify-center items-center mt-10 gap-12 flex-wrap" >
   <Grid item xs={12} md={5}>
     <Box sx={{ width: '600px', height: { xs: '300px', sm: '380px' } }}>
@@ -1647,55 +1667,98 @@ setInstances(Array.from(uniqueInstances));
   </Grid>
 </div>
 
-
-  {/* <Grid item xs={12} md={7}  sx={{
-    mt: { xs: 0, md: 5 },
-  }}>
-<Grid item xs={12} md={5} className="hidden md:block">
-    <Box
-      sx={{
-         ml:"10px",
-        width: "100%",
-        height: { xs: "300px", sm: "380px" },
-        maxWidth: "900px",
-        mx: "auto",
-      }}
-    >
-      <Line options={options} data={item?.chartData} />
-    </Box>
-  </Grid>
-  <Grid item xs={12} md={5} className="hidden md:block">
-    <Box
-      sx={{
-         ml:"10px",
-        width: "100%",
-        height: { xs: "300px", sm: "380px" },
-        maxWidth: "900px",
-        mx: "auto",
-      }}
-    >
-      <Line options={options} data={item?.chartData} />
-    </Box>
-  </Grid>
-  </Grid> */}
-                </>
+    </>
               );
             })
           )}
         </>
       ) : (
         <>
-         <div className="flex justify-center items-center gap-2 sm:gap-6 mt-10 flex-wrap mb-6">
-        <Typography variant="body1" align="center" gutterBottom >
-          Total Responses: {totalCount}
-        </Typography>
-        <Typography variant="body1" align="center" gutterBottom >
-          Total Score: {totalScore}/{totalCount*10}
-        </Typography>
-        <Typography variant="body1" align="center" gutterBottom >
+     
+      <div className="flex justify-center items-center gap-6 sm:gap-12 mt-10  flex-wrap ">
+                
+               
+
+                  <p className="text-[20px] font-bold text-blue-600 mb-2" >
+                  Total Responses: {totalCount}
+        </p>
+      
+        <p className="text-[20px] font-bold text-blue-600 mb-2" >
          NPS:  {(scores.Promoter.percentage-scores.Detractor.percentage).toFixed(2)}
-        </Typography>
+        </p>
+        </div>
+      <div className="flex flex-col lg:flex-row justify-center md:gap-3 items-center w-[100%]">
+          <div className="w-[90%] md:w-1/2 flex flex-col justify-start items-start">
+        <p className="text-center font-medium p-2 w-full mt-2">Total Score:</p>
+        <div style={{ width: '100%', maxWidth: '600px', margin: '0 auto', position: 'relative', paddingBottom: '20px'}} className="mb-">
+  <div style={{ border: '1px solid #ddd', overflow: 'hidden', width: '100%', position: 'relative', borderRadius:"12px"  }}>
+    <div
+      style={{
+        width: `${(totalScore/ (totalCount * 10)) * 100 || 0}%`,
+        backgroundColor:totalCount==0 ?"white":'orange',
+        height: '20px',
+        transition: 'width 0.5s ease-in-out',
+        position: 'relative',
+      }}
+    >
+     
+    </div>
+  </div>
+  <div style={{
+        width: `${(totalScore / (totalCount * 10)) * 100 || 0}%`,
+       
+        position: 'relative',
+      }}>
+  <span
+        className={`absolute font-bold text-[12px] text-blue-600 ${totalCount==0 && "hidden"}`}
+        style={{
+          right: 0,
+          bottom: '-20px',
+          transform: 'translateX(50%)',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        {totalScore}
+      </span>
       </div>
+  <div style={{ position: 'absolute', left: 0, top: '20px', fontSize: '12px' }}>0</div>
+  <div style={{ position: 'absolute', right: 0, top: '20px', fontSize: '12px' }} className={` ${totalCount==0 && "hidden"}`}>{totalCount * 10}</div>
+</div>
+</div>
+<div className="w-[90%] md:w-1/2 flex flex-col justify-start items-start mb-[10px]">
+
+<p className="text-center font-medium p-2 w-full">Response Bar:</p>
+ <Box position="relative" height="24px" width="100%" maxWidth="600px" margin="0 auto" borderRadius="12px" overflow="hidden" border="1px solid #ddd" text="black">
+      {Object.entries(scores).map(([score, data], index) => (
+        
+        <Box
+          key={score}
+          position="absolute"
+          left={`${Object.entries(scores).slice(0, index).reduce((acc, [_, val]) => acc + val.percentage, 0)}%`}
+          width={`${data.percentage}%`}
+          height="100%"
+          bgcolor={
+           
+            score === "Detractor"
+              ? "red"
+              : score === "Passive"
+              ? "yellow"
+              : "green"
+          }
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          style={{ color: 'black', fontSize: '12px', fontWeight: 'bold', whiteSpace: 'nowrap' }}
+        >
+          {data.count>0 ?  data.count  :""}
+     
+          {/* (${data.percentage.toFixed(2)}%) */}
+        </Box>
+      ))}
+    </Box>
+    </div>
+    </div>
+
       <Grid item xs={12} md={0} className="block md:hidden">
   {selectedChannel.length < 1 || selectedInstance.length < 1 ? null : (
             <>
@@ -1736,7 +1799,7 @@ setInstances(Array.from(uniqueInstances));
   {/* Left side with score counts */}
 
  
-  <Grid
+  {/* <Grid
                     container
                     spacing={3}
                     alignItems="center"
@@ -1776,7 +1839,7 @@ setInstances(Array.from(uniqueInstances));
                         </Grid>
                       )
                     )}
-                  </Grid>
+                  </Grid> */}
   {/* Right side with chart data */}
 
 
