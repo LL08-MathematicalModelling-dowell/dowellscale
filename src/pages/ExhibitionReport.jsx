@@ -1594,7 +1594,7 @@ setInstances(Array.from(uniqueInstances));
 </div>
 <div className="w-[90%] md:w-1/2 flex flex-col justify-start items-start mb-[10px]">
 
-<p className="text-center font-medium p-2 w-full">Response Bar:</p>
+<p className="text-center font-medium p-2 w-full">NPS Category Distribution</p>
  <Box position="relative" height="24px" width="100%" maxWidth="600px" margin="0 auto" borderRadius="12px" overflow="hidden" border="1px solid #ddd" text="black">
       {Object.entries(item?.scoreCounts).map(([score, data], index) => (
         <Box
@@ -1693,7 +1693,7 @@ setInstances(Array.from(uniqueInstances));
         </div>
       <div className="flex flex-col lg:flex-row justify-center md:gap-3 items-center w-[100%]">
           <div className="w-[90%] md:w-1/2 flex flex-col justify-start items-start">
-        <p className="text-center font-medium p-2 w-full mt-2">Total Score:</p>
+        <p className="text-center font-medium p-2 w-full mt-2">Total Score</p>
         <div style={{ width: '100%', maxWidth: '600px', margin: '0 auto', position: 'relative', paddingBottom: '20px'}} className="mb-">
   <div style={{ border: '1px solid #ddd', overflow: 'hidden', width: '100%', position: 'relative', borderRadius:"12px"  }}>
     <div
@@ -1731,7 +1731,7 @@ setInstances(Array.from(uniqueInstances));
 </div>
 <div className="w-[90%] md:w-1/2 flex flex-col justify-start items-start mb-[10px]">
 
-<p className="text-center font-medium p-2 w-full">Response Bar:</p>
+<p className="text-center font-medium p-2 w-full">NPS Category Distribution</p>
  <Box position="relative" height="24px" width="100%" maxWidth="600px" margin="0 auto" borderRadius="12px" overflow="hidden" border="1px solid #ddd" text="black">
       {Object.entries(scores).map(([score, data], index) => (
         
