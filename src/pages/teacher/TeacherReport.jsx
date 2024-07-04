@@ -1020,7 +1020,7 @@ if(!objectPair || dataForInstance.length==0){
 
     try {
       const response = await axios.get(
-        "https://100035.pythonanywhere.com/addons/learning-index-report/?scale_id=6669b6d93e3d1f04792176c9"
+        "https://100035.pythonanywhere.com/addons/learning-index-report/?scale_id=66867ea81640f70a85079d73"
       );
      const data=response.data.data
     if(data==undefined){
