@@ -816,6 +816,7 @@ if(!objectPair || !arr || arr.length==0){
       const dataForInstance = responseData.filter(
         (item) => item.instance.trim() === instance
       );
+    
       let dummyCount={
         reading: 0,
          understanding: 0,
@@ -826,13 +827,14 @@ if(!objectPair || !arr || arr.length==0){
         reading: 0, understanding: 0, explaining: 0, evaluating: 0, applying: 0
       }
   
-let scoreCounts,percentages,objectPair,totalResponses
+let scoreCounts,percentages,objectPair,totalResponses, learningLevelIndex, learningStage
   if(dataForInstance.length==0 || !dataForInstance[dataForInstance.length - 1].learning_index_data ||  !dataForInstance[dataForInstance.length - 1].learning_index_data.learning_level_count){
      scoreCounts=dummyCount
      percentages=dummyPercentages
   }else{
   
   const arr = filterDataWithinDays(dataForInstance,selectedDays)
+
   if(arr.length==0){
 
     setMsg(true)
@@ -847,6 +849,8 @@ let scoreCounts,percentages,objectPair,totalResponses
     evaluating:0,
     applying:0
   }
+  learningLevelIndex=arr[arr.length-1].learning_index_data.learning_level_index.toFixed(2)
+  learningStage=arr[arr.length-1].learning_index_data.learning_stage
   arr.forEach((res)=>{
     scoreCounts[res.category]+=1
   })
@@ -991,6 +995,8 @@ if(!objectPair || dataForInstance.length==0){
       return {
         instanceName: instance,
         totalResponses: totalResponses,
+        learningStage,
+        learningLevelIndex,
         scoreCounts:scorePercentages,
         chartData: {
           labels: labels,
@@ -1019,10 +1025,12 @@ if(!objectPair || dataForInstance.length==0){
      const data=response.data.data
     if(data==undefined){
       setErr(true)
+      setLoading(false)
       return
     }
     if(data.length==0){
       setMsg(true)
+      setLoading(false)
        return
     }
 setErr(false)
@@ -1228,15 +1236,49 @@ const questionData=["Do you need more reading or explanation on the topic?",
                   >
                     {index + 1}. {instanceNames[item?.instanceName.trim()]}
                   </Typography>
-
-                  <Typography
-                    variant="body1"
-                    align="center"
-                    gutterBottom
-                    style={{ marginTop: "16px" }}
-                  >
-                    Total Responses: {item?.totalResponses}
-                  </Typography>
+                  <div className="flex flex-col justify-center items-center gap-2 sm:gap-6 mt-5 mb-10 flex-wrap">
+                    <div>
+       
+        </div>
+        <div className="flex justify-center items-center gap-20 w-full ">
+        <p  className="font-bold">
+          Learning Index: {item.learningLevelIndex}
+        </p>
+        <p  className="font-bold">
+        Learning Stage: {item.learningStage}
+        </p>
+        </div>
+      </div>
+                  <Box textAlign="center" marginTop="16px" className="flex justify-center items-center gap-20 ">
+                  <Typography variant="body1" align="center" gutterBottom >
+         Attendence : 60
+        </Typography>
+        <div>
+      <Typography variant="body1" gutterBottom>
+       Number of Responses: {item.totalResponses}
+      </Typography>
+      
+      <Box
+        width="140px"
+        height="20px"
+        bgcolor="lightgray"
+        position="relative"
+        margin="0 auto"
+      >
+        <Box
+          width={`${((item.totalResponses/60)*100).toFixed(2)}%`}
+          height="100%"
+          bgcolor="blue"
+          position="absolute"
+          top="0"
+          left="0"
+        />
+      </Box>
+      <Typography variant="body2" marginTop="8px">
+        {((item.totalResponses/60)*100).toFixed(2)}%
+      </Typography>
+      </div>
+    </Box>
                   <Grid item xs={12} md={0} className="block md:hidden">
  
             <>
@@ -1339,17 +1381,51 @@ const questionData=["Do you need more reading or explanation on the topic?",
         </>
       ) : (
         <>
-         <div className="flex justify-center items-center gap-2 sm:gap-6 mt-10 flex-wrap">
-        <Typography variant="body1" align="center" gutterBottom >
-          Total Responses: {totalCount}
-        </Typography>
-        <Typography variant="body1" align="center" gutterBottom >
+              <div className="flex flex-col justify-center items-center gap-2 sm:gap-6 mt-5 mb-10 flex-wrap">
+                    <div>
+       
+        </div>
+        <div className="flex justify-center items-center gap-20 w-full ">
+        <p  className="font-bold">
           Learning Index: {learningLevelIndex}
-        </Typography>
-        <Typography variant="body1" align="center" gutterBottom >
+        </p>
+        <p  className="font-bold">
         Learning Stage: {learningStage}
-        </Typography>
+        </p>
+        </div>
       </div>
+      <Box textAlign="center" marginTop="16px" className="flex justify-center items-center gap-20 ">
+      <Typography variant="body1" gutterBottom>
+       Attendence: 60
+      </Typography>
+      <div>
+      <Typography variant="body1" gutterBottom>
+       Number of Responses: {totalCount}
+      </Typography>
+      
+      <Box
+        width="140px"
+        height="20px"
+        bgcolor="lightgray"
+        position="relative"
+        margin="0 auto"
+      >
+        <Box
+          width={`${((totalCount/60)*100).toFixed(2)}%`}
+          height="100%"
+          bgcolor="blue"
+          position="absolute"
+          top="0"
+          left="0"
+        />
+      </Box>
+      
+      <Typography variant="body2" marginTop="8px">
+        {((totalCount/60)*100).toFixed(2)}%
+      </Typography>
+      </div>
+    </Box>
+    
       <Grid item xs={12} md={0} className="block md:hidden">
   {selectedChannel.length < 1 || selectedInstance.length < 1 ? null : (
             <>
