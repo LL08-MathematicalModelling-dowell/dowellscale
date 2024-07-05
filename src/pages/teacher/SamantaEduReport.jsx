@@ -481,19 +481,20 @@ setOptions(options)
   setLearningIndexDataForChart({
     labels: labels,
     datasets: [
-     
       {
-        label: "percentage",
-        data: percentagesInfo,
-        borderColor: "green",
-        backgroundColor: "green",
-      },
-      {
-        label: "Attendence",
+        label: "Attendance",
         data: attendenceInfo,
         borderColor: "yellow",
         backgroundColor: "yellow",
       },
+     
+      {
+        label: "Response Percentage",
+        data: percentagesInfo,
+        borderColor: "green",
+        backgroundColor: "green",
+      },
+      
       {
         label: "Total Responses",
         data: daysInfo,
@@ -755,19 +756,20 @@ setLearningOptionData(options)
         chartData: {
           labels: labels,
           datasets: [
-         
             {
-              label: "percentage",
-              data: percentagesInfo,
-              borderColor: "green",
-              backgroundColor: "green",
-            },
-            {
-              label: "Attendence",
+              label: "Attendance",
               data: attendenceInfo,
               borderColor: "yellow",
               backgroundColor: "yellow",
             },
+         
+            {
+              label: "Response Percentage",
+              data: percentagesInfo,
+              borderColor: "green",
+              backgroundColor: "green",
+            },
+            
             {
               label: "Total Responses",
               data: daysInfo,
