@@ -377,7 +377,7 @@ setDateIndexPair(objectPair)
   else
   setLearningStage("applying in context")
   
-  let labels,datasetsInfo,options, percentagesInfo, daysInfo
+  let labels,datasetsInfo,options, percentagesInfo, daysInfo, attendenceInfo
 if(!objectPair || !arr || arr.length==0){
   labels= [1,2,3,4,5],
   datasetsInfo= [0,0,0,0,0],
@@ -409,7 +409,8 @@ if(!objectPair || !arr || arr.length==0){
 }else{
   const isSmallScreen = window.innerWidth < 600;
    labels=Object.keys(objectPair)
-   datasetsInfo=[50,50,50,50,50,50,50,50]
+   datasetsInfo=Object.values(objectPair)
+   attendenceInfo=[50,50,50,50,50,50,50,50]
    daysInfo=Object.values(selectedDaysCounts)
    percentagesInfo=Object.values(selectedDaysPercentages)
    const maxValue=Object.values(objectPair).reduce((val,ele)=>Number(val)>ele?val:ele,0)
@@ -457,16 +458,22 @@ if(!objectPair || !arr || arr.length==0){
     labels: labels,
     datasets: [
       {
-        label: "percentage",
-        data: percentagesInfo,
+        label: "(below 1 = Learning, above 1 = Applying in a context) ",
+        data: datasetsInfo,
         borderColor: "red",
         backgroundColor: "red",
       },
       {
-        label: "Attendence",
-        data: datasetsInfo,
+        label: "percentage",
+        data: percentagesInfo,
         borderColor: "green",
         backgroundColor: "green",
+      },
+      {
+        label: "Attendence",
+        data: attendenceInfo,
+        borderColor: "yellow",
+        backgroundColor: "yellow",
       },
       {
         label: "Total Responses",
@@ -625,7 +632,7 @@ let scoreCounts,percentages,objectPair,totalResponses, learningLevelIndex, learn
 
   
 
-     let labels,datasetsInfo,options, daysInfo, percentagesInfo
+     let labels,datasetsInfo,options, daysInfo, percentagesInfo, attendenceInfo
 if(!objectPair || dataForInstance.length==0){
   labels= [1,2,3,4,5],
   datasetsInfo= [0,0,0,0,0],
@@ -658,7 +665,8 @@ if(!objectPair || dataForInstance.length==0){
 }else{
   const isSmallScreen = window.innerWidth < 600;
    labels=Object.keys(objectPair)
-   datasetsInfo=[50,50,50,50,50,50,50,50]
+   attendenceInfo=[50,50,50,50,50,50,50,50]
+   datasetsInfo=Object.values(objectPair)
    daysInfo=Object.values(selectedDaysCounts)
    percentagesInfo=Object.values(selectedDaysPercentages)
    const maxValue=Object.values(objectPair).reduce((val,ele)=>Number(val)>ele?val:ele,0)
@@ -714,16 +722,22 @@ if(!objectPair || dataForInstance.length==0){
           labels: labels,
           datasets: [
             {
-              label: "percentage",
-              data: percentagesInfo,
+              label: "(below 1 = Learning, above 1 = Applying in a context) ",
+              data: datasetsInfo,
               borderColor: "red",
               backgroundColor: "red",
             },
             {
-              label: "Attendence",
-              data: datasetsInfo,
+              label: "percentage",
+              data: percentagesInfo,
               borderColor: "green",
               backgroundColor: "green",
+            },
+            {
+              label: "Attendence",
+              data: attendenceInfo,
+              borderColor: "yellow",
+              backgroundColor: "yellow",
             },
             {
               label: "Total Responses",
