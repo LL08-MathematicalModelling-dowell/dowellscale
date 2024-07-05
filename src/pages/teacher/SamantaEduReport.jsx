@@ -1,5 +1,4 @@
 
-
 import React, { useState, useEffect } from "react";
 import {
   Select,
@@ -512,7 +511,7 @@ setLearningDataForChart({
   labels: labels,
   datasets: [
     {
-      label: "(below 1 = Learning, above 1 = Applying in a context) ",
+      label: " Learning Level Index (below 1 = Learning, above 1 = Applying in a context)",
       data: datasetsInfo,
       borderColor: "red",
       backgroundColor: "red",
@@ -782,7 +781,7 @@ setLearningOptionData(options)
        learningData:{
           labels: labels,
           datasets: [   {
-            label: "(below 1 = Learning, above 1 = Applying in a context) ",
+            label: "Learning Level Index (below 1 = Learning, above 1 = Applying in a context)",
             data: datasetsInfo,
             borderColor: "red",
             backgroundColor: "red",
@@ -798,7 +797,7 @@ setLearningOptionData(options)
 
     try {
       const response = await axios.get(
-        "https://100035.pythonanywhere.com/addons/learning-index-report/?scale_id=66867ea81640f70a85079d73"
+        "https://100035.pythonanywhere.com/addons/learning-index-report/?scale_id=6687b86203025a8916545730"
       );
      const data=response.data.data
     if(data==undefined){

@@ -1,5 +1,4 @@
-
-
+import mvjImage from "../../../src/assets/images/MVJLogo.png"
 import React, { useState, useEffect } from "react";
 import {
   Select,
@@ -34,7 +33,47 @@ ChartJS.register(
 );
 
 
+function getDatesInRange(startDate, endDate) {
+  const date = new Date(startDate.getTime());
+  const dates = [];
 
+  while (date <= endDate) {
+      dates.push(new Date(date));
+      date.setDate(date.getDate() + 1);
+  }
+
+  return dates;
+}
+
+function getUpdatedValues(obj, selectedDays) {
+  // Get today's date
+  const today = new Date();
+  
+  // Calculate the start date based on selectedDays
+  const startDate = new Date();
+  startDate.setDate(today.getDate() - selectedDays);
+  
+  // Generate all dates in the range from startDate to today
+  const allDates = getDatesInRange(startDate, today);
+  
+
+  const updatedArr = [];
+  let previousValue = 0;
+  
+  for (const date of allDates) {
+      const formattedDate = formatDate(date);; // Format date as 'YYYY-MM-DD'
+      const value = obj[formattedDate] ? obj[formattedDate].totalCount : previousValue;
+
+      updatedArr.push({ date: formattedDate, value });
+
+      // Update previous value only if the current value is not zero
+      if (value !== 0) {
+          previousValue = value;
+      }
+  }
+  
+  return updatedArr;
+}
 
 
 const instanceNames = {
@@ -50,10 +89,6 @@ const channelNames = {
   channel_1: "Class room",
 };
 
-
-
-
-
 const initialScoreData = {
     Reading: { count: 0, percentage: 0 },
     Understanding: { count: 0, percentage: 0 },
@@ -61,136 +96,6 @@ const initialScoreData = {
     Evaluating: { count: 0, percentage: 0 },
     Applying: { count: 0, percentage: 0 }
 };
-// const extractLabelsAndDatasetsInfo = (data = []) => {
-// if(data.length==0)
-//   return {labels: [1,2,3,4,5],
-//     datasetsInfo: [0,0,0,0,0],
-//     options:{
-//       responsive: true,
-//       maintainAspectRatio: false,
-//       scales: {
-//         y: {
-//           min: 0,
-//           max: 5,
-//           ticks: {
-//             stepSize: 1,
-//           },
-//           beginAtZero: true,
-//         },
-//         x: {
-//           type: 'linear',
-//           position: 'bottom',
-//           min: 0,
-//           max: 5,
-//           ticks: {
-//             stepSize: 1,
-//           },
-//           beginAtZero: true,
-//         },
-//       },
-//     }
-//     }
-  
-//   let length=data.length;
-//   let arr=data 
-  
-//   if(length>5){
-//     let x=Math.floor(length/5);
-//      arr=[]
-//      for(let i=0;i<length;i+=x){
- 
-//       arr.push(data[i])
-//      }
-//      if (!arr.includes(data[length - 1])) {
-//       arr.push(data[length - 1]);
-//     }
-//   }
-
-//   let labelsForCharts = [
-//     ...new Set(
-//       arr
-//         .map(
-//           (item) =>
-//             item?.learning_index_data ?.control_group_size
-            
-//         )
-//     ),
-//   ];
-
-//   if (!labelsForCharts.includes(0)) {
-//     labelsForCharts = [0, ...labelsForCharts];
-//   }
-//   let datasetsForCharts = {
-//     indexData: [],
-
-//   };
-
-
-// arr.forEach((data)=>{
-//   datasetsForCharts.indexData.push(data.learning_index_data ?.learning_level_index)
-// })
- 
-
-//   datasetsForCharts.indexData = [0, ...datasetsForCharts.indexData];
-
-//   let stepSize, max, index;
-//   if (arr.length === 0) {
-//     max = 5;
-//     stepSize = 0;
-//   } else {
-//     index = arr.reduce((initial, ele) => {
-//       const currentIndex = ele?.learning_index_data?.learning_level_index;
-//       if (currentIndex !== undefined && currentIndex > initial) {
-//         return currentIndex;
-//       } else {
-//         return initial;
-//       }
-//     }, 0);
-   
-//   }
-
-
-//     const options = {
-//       responsive: true,
-//       maintainAspectRatio: false,
-//       plugins: {
-//         legend: {
-//           position: "top",
-//         },
-//         title: {
-//           display: true,
-//           text: "Learning Indexes",
-//         },
-//       },
-//       scales: {
-//         y: {
-//           min: 0,
-//           max:index+1,
-//           ticks: {
-//             stepSize:Math.ceil(index / 5) || 1
-//           },
-//           beginAtZero: true,
-//         },
-//         x: {
-//           type: 'linear',
-//           position: 'bottom',
-//           max:max || arr[arr.length-1].learning_index_data.control_group_size+2,
-//           ticks: {
-//             stepSize:stepSize || Math.floor(arr[arr.length-1].learning_index_data.control_group_size/5),
-//             min: 0,
-          
-//           },
-//           beginAtZero: true
-//         },
-//       },
-//     };
-
-//   return {
-//     labels: labelsForCharts,
-//     datasetsInfo: datasetsForCharts,
-//     options
-//   };
-// };
 
 function processData(responseData) {
   const dataByDate = {};
@@ -331,192 +236,6 @@ function pickSevenKeys(transformedData) {
 
 
 
-const extractLabelsAndDatasetsInfo = (data = [],days) => {
-  if(data.length==0)
-    return {labels: [1,2,3,4,5],
-      datasetsInfo: [0,0,0,0,0],
-      options:{
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: {
-            min: 0,
-            max: 5,
-            ticks: {
-              stepSize: 1,
-            },
-            beginAtZero: true,
-          },
-          x: {
-            type: 'linear',
-            position: 'bottom',
-            min: 0,
-            max: 5,
-            ticks: {
-              stepSize: 1,
-            },
-            beginAtZero: true,
-          },
-        },
-      }
-      }
-    
-    let length=data.length;
-    let arr=data 
-
-    if(length>5){
-      let x=Math.floor(length/5);
-       arr=[]
-       for(let i=0;i<length;i+=x){
-   
-        arr.push(data[i])
-       }
-       if (!arr.includes(data[length - 1])) {
-        arr.push(data[length - 1]);
-      }
-    }
-    function formatDate(dateString) {
-      const date = new Date(dateString);
-      return date.toDateString();
-    }
-    
-  
-    
-    // Function to create the object pair
-    function createObjectPair(responses) {
-      const result = {};
-    
-      responses.forEach(response => {
-        const readableDate = formatDate(response.date_created);
-        const learningLevelIndex = response.learning_index_data.learning_level_index;
-    
-      
-          result[readableDate] = learningLevelIndex;
-       
-      });
-    
-      return result;
-    }
-    
-    // Function to get the last 7 days and fill in missing values
-    function getLastXDaysData(responses,days) {
-      const objectPair = createObjectPair(responses);
-  
-      const result = {};
-      const now = new Date();
-    
-      for (let i = days-1; i >= 0; i--) {
-        const date = new Date();
-        date.setDate(now.getDate() - i);
-        const dateString = date.toDateString();
-    
-        if (objectPair.hasOwnProperty(dateString)) {
-          result[dateString] = objectPair[dateString];
-        } else {
-          let previousValue = 0;
-          let valueArray=Object.values(result)
-          if(valueArray.length>0){
-              previousValue=valueArray[valueArray.length-1]
-          }else{
-         
-          for (let j = 1; j <= i; j++) {
-            const previousDate = new Date(date);
-            previousDate.setDate(date.getDate() - j);
-            const previousDateString = previousDate.toDateString();
-
-        if (objectPair.hasOwnProperty(previousDateString)) {
-          previousValue = objectPair[previousDateString];
-          break;
-        }
-      }
-      }
-
-      result[dateString] = previousValue;
-      
-        }
-      }
-      const keys = Object.keys(result);
-  if (keys.length > 10) {
-    const step = Math.ceil((keys.length - 2) / 8); // 8 steps between the first and last
-    const selectedKeys = [keys[0]]; // Always include the first key
-    for (let i = step; i < keys.length - 1; i += step) {
-      selectedKeys.push(keys[i]);
-      if (selectedKeys.length === 9) break; // Ensure only 8 middle values are selected
-    }
-    selectedKeys.push(keys[keys.length - 1]); // Always include the last key
-
-    // Construct a new result object with only the selected keys
-    const selectedResult = {};
-    selectedKeys.forEach(key => {
-      selectedResult[key] = result[key];
-    });
-
-    return selectedResult;
-  }
-      
-      return result;
-    }
-
-    // Create the object pair
-    const objectPair = getLastXDaysData(arr,days)
-
-    let labelsForCharts = [
-      ...new Set(
-        arr
-          .map(
-            (item) =>
-              item?.learning_index_data ?.control_group_size
-              
-          )
-      ),
-    ];
-  
-    if (!labelsForCharts.includes(0)) {
-      labelsForCharts = [0, ...labelsForCharts];
-    }
-    let datasetsForCharts = {
-      indexData: Object.values(objectPair),
-  
-    };
-  
-  const maxValue=Object.values(objectPair).reduce((val,ele)=>val>ele?val:ele,0)
- 
-  
-  
-   
-  
-   
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: "top",
-      },
-      title: {
-        display: true,
-        text: "Day-wise Index",
-      },
-    },
-    scales: {
-      y: {
-        min: 0,
-        max:Math.ceil(maxValue+2),
-        ticks: {
-          stepSize: Math.ceil(maxValue / 5),
-        },
-        beginAtZero: true,
-      },
-    },
-  };
-  
-    return {
-      labels: Object.keys(objectPair),
-      datasetsInfo: datasetsForCharts,
-      options
-    };
-  };
-
 
 const App = () => {
 
@@ -547,6 +266,15 @@ const[options,setOptions]=useState({})
   const[err,setErr]=useState(false)
   const[msg,setMsg]=useState(false)
 const[selectedDays,setSelectedDays]=useState(7)
+const[learningDataForChart,setLearningDataForChart]=useState({
+  labels: [],
+  datasets: [],
+})
+const[learningOptionData,setLearningOptionData]=useState({})
+
+
+
+
   useEffect(() => {
     fetchData();
     const x=setInterval(()=>{
@@ -556,44 +284,6 @@ const[selectedDays,setSelectedDays]=useState(7)
  clearInterval(x)
  })
   }, []);
-
-
-
-//   useEffect(() => {
-//     if (selectedChannel.length < 1 || selectedInstance.length < 1) return;
-    
-//       if(responseData.length==0){
-//         setMsg(true)
-//         return
-//       }
-   
-//       const arr= responseData.filter(
-//         (item) =>
-//           item.channel === selectedChannel &&
-//           item.instance.trim() === selectedInstance
-//       )
-//       if(arr.length==0){
-    
-//         setMsg(true)
-//         return
-//       }
-//       setMsg(false)
-//     const { labels, datasetsInfo,options } = extractLabelsAndDatasetsInfo(arr,selectedDays);
-
-// setOptions(options)
-//     setLearningIndexDataForChart({
-//       labels: labels,
-//       datasets: [
-//         {
-//           label: "(below 1 = Learning, above 1 = Applying in a context) ",
-//           data: datasetsInfo.indexData,
-//           borderColor: "red",
-//           backgroundColor: "red",
-//         },
-       
-//       ],
-//     });
-//   }, [selectedChannel, selectedInstance, responseData,selectedDays]);
 
 
 
@@ -609,7 +299,18 @@ useEffect(()=>{
     );
   
   const arr = filterDataWithinDays(filteredData,selectedDays);
-
+  setLearningDataForChart({
+    labels: [1,2,3,4,5],
+    datasets: [
+                  {
+                    label: "NPS",
+                    data:[0,0,0,0,0],
+                    borderColor: "red",
+                    backgroundColor: "red",
+                  },
+                 
+                ],
+  });
   if(arr.length==0){
 
     setMsg(true)
@@ -663,7 +364,24 @@ useEffect(()=>{
 
  const transData=transformData(processedData,selectedDays)
  const objectPair=pickSevenKeys(transData)
+ const daysHelper=getUpdatedValues(processedData, selectedDays);
+  
+ 
+    const arrayToObject = (arr) => {
+      return arr.reduce((obj, item) => {
+          obj[item.date] = item.value;
+          return obj;
+      }, {});
+  };
+let selectedDaysCounts=arrayToObject(daysHelper),  selectedDaysPercentages={}
+  for(let dateData of Object.keys(selectedDaysCounts)){
+    let per=((selectedDaysCounts[dateData]/50)*100).toFixed(2)
 
+    selectedDaysPercentages[dateData]=Number(per)>100 ? 100 :per
+  }
+
+   selectedDaysCounts=pickSevenKeys(selectedDaysCounts)
+   selectedDaysPercentages=pickSevenKeys(selectedDaysPercentages)
   setLearningIndexData(arr[arr.length-1].learning_index_data)
 
   setTotalCount(totalResponses);
@@ -678,7 +396,7 @@ setDateIndexPair(objectPair)
   else
   setLearningStage("applying in context")
   
-  let labels,datasetsInfo,options
+  let labels,datasetsInfo,options, percentagesInfo, daysInfo, attendenceInfo, learningOptions
 if(!objectPair || !arr || arr.length==0){
   labels= [1,2,3,4,5],
   datasetsInfo= [0,0,0,0,0],
@@ -707,37 +425,34 @@ if(!objectPair || !arr || arr.length==0){
     },
   }
   
+  
 }else{
   const isSmallScreen = window.innerWidth < 600;
    labels=Object.keys(objectPair)
    datasetsInfo=Object.values(objectPair)
+   attendenceInfo=[50,50,50,50,50,50,50,50]
+   daysInfo=Object.values(selectedDaysCounts)
+   percentagesInfo=Object.values(selectedDaysPercentages)
    const maxValue=Object.values(objectPair).reduce((val,ele)=>Number(val)>ele?val:ele,0)
     options = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: {
-        labels: {
-          // Customizing the legend labels
-          generateLabels: function(chart) {
-            const data = chart.data;
-            return data.datasets.map((dataset, i) => ({
-              text: dataset.label,
-              fillStyle: 'transparent', // Make the fillStyle transparent to remove the colored box
-              strokeStyle: 'transparent', // Make the strokeStyle transparent to remove the line
-              lineWidth: 0, // Set line width to 0 to ensure no line is drawn
-            }));
-          }
-        }
-      },
-      // legend: {
-      //   display: false, // This disables the legend entirely
-      // },
       title: {
         display: true,
-        text: "Day-wise Index",
+        text: "Day-wise Responses",
+      },
+      legend: {
+        labels: {
+          font: {
+            size: 12, // Adjust the size as needed
+          },
+          boxWidth: 10, // Adjust the width of the colored box
+          padding: 10, // Adjust the padding between legend items
+        },
       },
     },
+    
     scales: {
       x: {
         ticks: {
@@ -747,30 +462,62 @@ if(!objectPair || !arr || arr.length==0){
       },
       y: {
         min: 0,
-        max:Math.ceil(maxValue)+Math.ceil(maxValue / 5),
+        max:100,
         ticks: {
-          stepSize: Math.ceil(maxValue / 5),
+          stepSize: Math.ceil(100 / 5),
         },
         beginAtZero: true,
       },
     },
   };
-}
+
      
       // co
-  setOptions(options)
+  
+
+}
+setOptions(options)
   setLearningIndexDataForChart({
     labels: labels,
     datasets: [
       {
-        label: "(below 1 = Learning, above 1 = Applying in a context) ",
-        data: datasetsInfo,
-        borderColor: "red",
-        backgroundColor: "red",
+        label: "Attendance",
+        data: attendenceInfo,
+        borderColor: "yellow",
+        backgroundColor: "yellow",
+      },
+     
+      {
+        label: "Response Percentage",
+        data: percentagesInfo,
+        borderColor: "green",
+        backgroundColor: "green",
+      },
+      
+      {
+        label: "Total Responses",
+        data: daysInfo,
+        borderColor: "blue",
+        backgroundColor: "blue",
       },
      
     ],
   });
+
+
+
+setLearningOptionData(options)
+setLearningDataForChart({
+  labels: labels,
+  datasets: [
+    {
+      label: "Learning Level Index (below 1 = Learning, above 1 = Applying in a context)",
+      data: datasetsInfo,
+      borderColor: "red",
+      backgroundColor: "red",
+    },]
+})
+
 },[selectedDays,selectedInstance,responseData])
 
 
@@ -827,7 +574,7 @@ if(!objectPair || !arr || arr.length==0){
         reading: 0, understanding: 0, explaining: 0, evaluating: 0, applying: 0
       }
   
-let scoreCounts,percentages,objectPair,totalResponses, learningLevelIndex, learningStage
+let scoreCounts,percentages,objectPair,totalResponses, learningLevelIndex, learningStage, selectedDaysCounts, selectedDaysPercentages={}
   if(dataForInstance.length==0 || !dataForInstance[dataForInstance.length - 1].learning_index_data ||  !dataForInstance[dataForInstance.length - 1].learning_index_data.learning_level_count){
      scoreCounts=dummyCount
      percentages=dummyPercentages
@@ -863,10 +610,31 @@ let scoreCounts,percentages,objectPair,totalResponses, learningLevelIndex, learn
     evaluating:((scoreCounts.evaluating/totalResponses)*100),
     applying:((scoreCounts.applying/totalResponses)*100)
   }
-    const processedData = processData(arr);
 
+
+
+    const processedData = processData(arr);
+   
+    const daysHelper=getUpdatedValues(processedData, selectedDays);
+  
+ 
+    const arrayToObject = (arr) => {
+      return arr.reduce((obj, item) => {
+          obj[item.date] = item.value;
+          return obj;
+      }, {});
+  };
+ selectedDaysCounts=arrayToObject(daysHelper)
+  for(let dateData of Object.keys(selectedDaysCounts)){
+ let per=((selectedDaysCounts[dateData]/50)*100).toFixed(2)
+
+    selectedDaysPercentages[dateData]=Number(per)>100 ? 100 :per
+  }
  const transData=transformData(processedData,selectedDays)
+
   objectPair=pickSevenKeys(transData)
+   selectedDaysCounts=pickSevenKeys(selectedDaysCounts)
+   selectedDaysPercentages=pickSevenKeys(selectedDaysPercentages)
   }
   const scorePercentages = {
     Reading: {
@@ -892,21 +660,13 @@ let scoreCounts,percentages,objectPair,totalResponses, learningLevelIndex, learn
   };
  
 
-//   setTotalCount(totalResponses);
-// setDateIndexPair(objectPair)
+
 
   setScores(scorePercentages);
 
   
-  
-    
-  //     setLearningIndexData(filteredData[filteredData.length-1].learning_index_data)
-  //     const totalCount = filteredData.length;
-  //     setTotalCount(totalCount);
-  // setLearningStage(responseData[responseData.length-1].learning_index_data.learning_stage)
-      // /setScores(scorePercentages);
-     // setLearningLevelIndex(filteredData[filteredData.length-1].learning_index_data.learning_level_index.toFixed(2));
-     let labels,datasetsInfo,options
+
+     let labels,datasetsInfo,options, daysInfo, percentagesInfo, attendenceInfo
 if(!objectPair || dataForInstance.length==0){
   labels= [1,2,3,4,5],
   datasetsInfo= [0,0,0,0,0],
@@ -939,30 +699,27 @@ if(!objectPair || dataForInstance.length==0){
 }else{
   const isSmallScreen = window.innerWidth < 600;
    labels=Object.keys(objectPair)
+   attendenceInfo=[50,50,50,50,50,50,50,50]
    datasetsInfo=Object.values(objectPair)
+   daysInfo=Object.values(selectedDaysCounts)
+   percentagesInfo=Object.values(selectedDaysPercentages)
    const maxValue=Object.values(objectPair).reduce((val,ele)=>Number(val)>ele?val:ele,0)
     options = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: {
-        labels: {
-          // Customizing the legend labels
-          generateLabels: function(chart) {
-            const data = chart.data;
-            return data.datasets.map((dataset, i) => ({
-              text: dataset.label,
-              fillStyle: 'transparent', // Make the fillStyle transparent to remove the colored box
-              strokeStyle: 'transparent', // Make the strokeStyle transparent to remove the line
-              lineWidth: 0, // Set line width to 0 to ensure no line is drawn
-            }));
-          }
-        }
-      },
-    
       title: {
         display: true,
-        text: "Day-wise Index",
+        text: "Day-wise Responses",
+      },
+      legend: {
+        labels: {
+          font: {
+            size: 12, // Adjust the size as needed
+          },
+          boxWidth: 10, // Adjust the width of the colored box
+          padding: 10, // Adjust the padding between legend items
+        },
       },
     },
     
@@ -975,9 +732,9 @@ if(!objectPair || dataForInstance.length==0){
       },
       y: {
         min: 0,
-        max:Math.ceil(maxValue)+Math.ceil(maxValue / 5),
+        max:100,
         ticks: {
-          stepSize: Math.ceil(maxValue / 5),
+          stepSize: Math.ceil(100 / 5),
           
         },
         beginAtZero: true,
@@ -985,11 +742,8 @@ if(!objectPair || dataForInstance.length==0){
     },
   };
 }
-     
-      // const { labels, datasetsInfo, options } = extractLabelsAndDatasetsInfo(
-      //   dataForInstance,selectedDays
-      // );
-
+   
+setLearningOptionData(options)
    setOptions(options)
 
       return {
@@ -1002,14 +756,37 @@ if(!objectPair || dataForInstance.length==0){
           labels: labels,
           datasets: [
             {
-              label: "(below 1 = Learning, above 1 = Applying in a context) ",
-              data: datasetsInfo,
-              borderColor: "red",
-              backgroundColor: "red",
+              label: "Attendance",
+              data: attendenceInfo,
+              borderColor: "yellow",
+              backgroundColor: "yellow",
+            },
+         
+            {
+              label: "Response Percentage",
+              data: percentagesInfo,
+              borderColor: "green",
+              backgroundColor: "green",
+            },
+            
+            {
+              label: "Total Responses",
+              data: daysInfo,
+              borderColor: "blue",
+              backgroundColor: "blue",
             },
            
           ],
         },
+       learningData:{
+          labels: labels,
+          datasets: [   {
+            label: "Learning Level Index (below 1 = Learning, above 1 = Applying in a context)",
+            data: datasetsInfo,
+            borderColor: "red",
+            backgroundColor: "red",
+          },]
+        }
       };
     });
 
@@ -1066,76 +843,7 @@ setErr(false)
   const handleInstanceSelect = (event) => {
     setSelectedInstance(event.target.value);
   
-    // Filter data based on the selected instance and channel
-    // const filteredData = responseData.filter(
-    //   (item) =>
-    //     item.instance.trim() === event.target.value &&
-    //     item.channel === selectedChannel
-    // );
-    
-  
-//     const arr = filterDataWithinDays(responseData,selectedDays);
-//     console.log(arr)
-//     if(arr.length==0){
-  
-//       setMsg(true)
-//       return
-//     }
-    
-//     setMsg(false)
-//     let scoreCounts={
-//       reading:0,
-//       understanding:0,
-//       explaining:0,
-//       evaluating:0,
-//       applying:0
-//     }
-//     arr.forEach((res)=>{
-//       scoreCounts[res.category]+=1
-//     })
-//     const totalResponses=arr.length
 
-//     let percentages={
-//       reading:((scoreCounts.reading/totalResponses)*100),
-//       understanding:((scoreCounts.understanding/totalResponses)*100),
-//       explaining:((scoreCounts.explaining/totalResponses)*100),
-//       evaluating:((scoreCounts.evaluating/totalResponses)*100),
-//       applying:((scoreCounts.applying/totalResponses)*100)
-//     }
- 
-//     const scorePercentages = {
-//       Reading: {
-//         count: scoreCounts["reading"],
-//         percentage: percentages["reading"],
-//       },
-//       Understanding: {
-//         count: scoreCounts["understanding"],
-//         percentage: percentages["understanding"],
-//       },
-//       Explaining: {
-//         count: scoreCounts["explaining"],
-//         percentage: percentages["explaining"],
-//       },
-//       Evaluating: {
-//         count: scoreCounts["evaluating"],
-//         percentage: percentages["evaluating"],
-//       },
-//       Applying: {
-//         count: scoreCounts["applying"],
-//         percentage: percentages["applying"],
-//       },
-//     };
-//     const processedData = processData(arr);
-  
-//    const objectPair=transformData(processedData)
-//    console.log(objectPair)
-//     setLearningIndexData(arr[arr.length-1].learning_index_data)
-   
-//     setTotalCount(totalResponses);
-// setLearningStage(arr[arr.length-1].learning_index_data.learning_stage)
-//     setScores(scorePercentages);
-//     setLearningLevelIndex(arr[arr.length-1].learning_index_data.learning_level_index.toFixed(2));
-    
   };
 
 const questionData=["Do you need more reading or explanation on the topic?",
@@ -1158,7 +866,12 @@ const questionData=["Do you need more reading or explanation on the topic?",
   }
 
   return (
-    <Box p={1}>
+    <Box p={1}>   
+    <img 
+              className=" w-[150px] sm:w-[150px] mx-[45%] p-[15px]" 
+              src={mvjImage} 
+              alt="college logo"
+            />
       <Typography variant="h6" align="center" gutterBottom>
       DoWell Learning Level Index
       </Typography>
@@ -1240,48 +953,28 @@ const questionData=["Do you need more reading or explanation on the topic?",
                     <div>
        
         </div>
-        <div className="flex justify-center items-center gap-20 w-full ">
-        <p  className="font-bold">
+        <div className="flex justify-between sm:justify-center  items-center sm:gap-20 gap-2 w-full ">
+        <p  className="font-bold text-[10px] sm:text-[16px]">
           Learning Index: {item.learningLevelIndex}
         </p>
-        <p  className="font-bold">
+        <p  className="font-bold text-[10px] sm:text-[16px]">
         Learning Stage: {item.learningStage}
         </p>
         </div>
       </div>
-                  <Box textAlign="center" marginTop="16px" className="flex justify-center items-center gap-20 ">
-                  <Typography variant="body1" align="center" gutterBottom >
-         Attendence : 60
-        </Typography>
-        <div>
-      <Typography variant="body1" gutterBottom>
-       Number of Responses: {item.totalResponses}
-      </Typography>
-      
-      <Box
-        width="140px"
-        height="20px"
-        bgcolor="lightgray"
-        position="relative"
-        margin="0 auto"
-      >
-        <Box
-          width={`${((item.totalResponses/60)*100).toFixed(2)}%`}
-          height="100%"
-          bgcolor="blue"
-          position="absolute"
-          top="0"
-          left="0"
-        />
-      </Box>
-      <Typography variant="body2" marginTop="8px">
-        {((item.totalResponses/60)*100).toFixed(2)}%
-      </Typography>
-      </div>
-    </Box>
-                  <Grid item xs={12} md={0} className="block md:hidden">
- 
+       <Grid item xs={12} md={0} className="block md:hidden">
             <>
+            <Box
+                sx={{
+                  mt: 4,
+                  width: "100%",
+                  height: { xs: "300px", sm: "400px" },
+                  maxWidth: "900px",
+                  mx: "auto",
+                }}
+              >
+                 <Line options={learningOptionData} data={item?.learningData} />
+              </Box>
               <Box
                 sx={{
                   mt: 4,
@@ -1295,7 +988,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
               </Box>
             </>
          
-  </Grid>
+        </Grid>
       <p 
      
       
@@ -1356,23 +1049,33 @@ const questionData=["Do you need more reading or explanation on the topic?",
       </Box>
     ))}
   </Grid>
-
-  {/* Right side with chart data */}
   <Grid item xs={12} md={5} className="hidden md:block">
-    <Box
-      sx={{
+    <Box  sx={{
          ml:"10px",
         width: "100%",
         height: { xs: "300px", sm: "380px" },
         maxWidth: "900px",
+        mx: "auto",
+      }}>
+      <Line options={learningOptionData} data={item?.learningData} />
+    </Box>
+  </Grid>
+  {/* Right side with chart data */}
+
+</Grid>
+<Grid item xs={12} md={5} className="hidden md:block">
+    <Box
+      sx={{
+         ml:"10px",
+        width: "70%",
+        height: { xs: "300px", sm: "420px" },
+        maxWidth: "600px",
         mx: "auto",
       }}
     >
       <Line options={options} data={item?.chartData} />
     </Box>
   </Grid>
-</Grid>
-
 
                 </>
               );
@@ -1385,47 +1088,16 @@ const questionData=["Do you need more reading or explanation on the topic?",
                     <div>
        
         </div>
-        <div className="flex justify-center items-center gap-20 w-full ">
-        <p  className="font-bold">
+        <div className="flex justify-between sm:justify-center  items-center sm:gap-20 gap-2 w-full ">
+        <p  className="font-bold text-[10px] sm:text-[16px]">
           Learning Index: {learningLevelIndex}
         </p>
-        <p  className="font-bold">
+        <p  className="font-bold text-[10px] sm:text-[16px]">
         Learning Stage: {learningStage}
         </p>
         </div>
       </div>
-      <Box textAlign="center" marginTop="16px" className="flex justify-center items-center gap-20 ">
-      <Typography variant="body1" gutterBottom>
-       Attendence: 60
-      </Typography>
-      <div>
-      <Typography variant="body1" gutterBottom>
-       Number of Responses: {totalCount}
-      </Typography>
-      
-      <Box
-        width="140px"
-        height="20px"
-        bgcolor="lightgray"
-        position="relative"
-        margin="0 auto"
-      >
-        <Box
-          width={`${((totalCount/60)*100).toFixed(2)}%`}
-          height="100%"
-          bgcolor="blue"
-          position="absolute"
-          top="0"
-          left="0"
-        />
-      </Box>
-      
-      <Typography variant="body2" marginTop="8px">
-        {((totalCount/60)*100).toFixed(2)}%
-      </Typography>
-      </div>
-    </Box>
-    
+  
       <Grid item xs={12} md={0} className="block md:hidden">
   {selectedChannel.length < 1 || selectedInstance.length < 1 ? null : (
             <>
@@ -1438,8 +1110,22 @@ const questionData=["Do you need more reading or explanation on the topic?",
                   mx: "auto",
                 }}
               >
+                <Line options={learningOptionData} data={learningDataForChart} />
+              </Box>
+
+              <Box
+                sx={{
+                  mt: 4,
+                  width: "100%",
+                  height: { xs: "300px", sm: "400px" },
+                  maxWidth: "900px",
+                  mx: "auto",
+                }}
+              >
                 <Line options={options} data={learningIndexDataForChart} />
               </Box>
+              
+            
             </>
           )}
   </Grid>
@@ -1512,6 +1198,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
   <Grid item md={5} className="hidden md:block">
   {selectedChannel.length < 1 || selectedInstance.length < 1 ? null : (
             <>
+              
               <Box
                 sx={{
                   mt: 4,
@@ -1521,65 +1208,23 @@ const questionData=["Do you need more reading or explanation on the topic?",
                   mx: "auto",
                 }}
               >
-                <Line options={options} data={learningIndexDataForChart} />
+                <Line options={learningOptionData} data={learningDataForChart} />
               </Box>
             </>
           )}
   </Grid>
 </Grid>
-{/* 
-      <Grid container spacing={3} justifyContent="center">
-  {Object.entries(scores).map(([score, data]) => (
-    <Grid item xs={12} key={score}>
-      <Box
-        sx={{
-          maxWidth: { xs: "100%", sm: "80%", md: "70%", lg: "60%" },
-          mx: "auto",
-          textAlign: "center",
-        }}
-      >
-        <Typography variant="subtitle1" gutterBottom>
-          {`${score}: ${data.count} (${data.percentage.toFixed(2)}%)`}
-        </Typography>
-        <LinearProgress
-          variant="determinate"
-          value={data.percentage || 0}
-          sx={{
-            height: "10px",
-            borderRadius: "10px",
-            "& .MuiLinearProgress-bar": {
-              borderRadius: "10px",
-              backgroundColor: (() => {
-                if (score === "Reading") return "#FF0000"; // Red
-                if (score === "Understanding") return "#FF7F00"; // Orange
-                if (score === "Explaining") return "#FFFF00"; // Yellow
-                if (score === "Evaluating") return "#7FFF00"; // Light Green
-                return "#00FF00"; // Green
-              })(),
-            },
-          }}
-        />
-      </Box>
-    </Grid>
-  ))}
-   
-</Grid> */}
-        
-          {/* {selectedChannel.length < 1 || selectedInstance.length < 1 ? null : (
-            <>
-              <Box
+<Box className="hidden md:block"
                 sx={{
                   mt: 4,
-                  width: "100%",
-                  height: { xs: "300px", sm: "400px" },
-                  maxWidth: "900px",
+                  width: "70%",
+                  height: { xs: "300px", sm: "420px" },
+                  maxWidth: "600px",
                   mx: "auto",
                 }}
               >
                 <Line options={options} data={learningIndexDataForChart} />
               </Box>
-            </>
-          )} */}
         </>
       )}
     </Box>
@@ -1587,308 +1232,4 @@ const questionData=["Do you need more reading or explanation on the topic?",
 };
 
 export default App
-// import React, { useState, useEffect } from "react";
-// import {
-//   Select,
-//   MenuItem,
-//   CircularProgress,
-//   LinearProgress,
-//   Grid,
-//   Typography,
-//   Box,
-// } from "@mui/material";
-// import axios from "axios";
-// import {
-//   Chart as ChartJS,
-//   CategoryScale,
-//   LinearScale,
-//   LineElement,
-//   PointElement,
-//   Title,
-//   Tooltip,
-//   Legend,
-// } from "chart.js";
 
-
-// ChartJS.register(
-//   CategoryScale,
-//   LinearScale,
-//   LineElement,
-//   PointElement,
-//   Title,
-//   Tooltip,
-//   Legend
-// );
-// import LineChart from "../../Components/LineChart"
-// const instanceNames = {
-//   instance_1: "Student feedback",
-
-// };
-
-// // const allChannelsNameTag = "channel_all_x";
-
-// const channelNames = {
-// //   [`${allChannelsNameTag}`]: "All Channels",
-//   channel_1: "Classroom",
-// };
-
-// const options = {
-//   responsive: true,
-//   maintainAspectRatio: false,
-//   plugins: {
-//     legend: {
-//       position: "top",
-//     },
-//     title: {
-//       display: true,
-//       text: "Responses Insights by Day",
-//     },
-//   },
-// };
-
-
-
-// const initialScoreData = {
-//     Reading: { count: 0, percentage: 0 },
-//     Understanding: { count: 0, percentage: 0 },
-//     Explaining: { count: 0, percentage: 0 },
-//     Evaluating: { count: 0, percentage: 0 },
-//     Applying: { count: 0, percentage: 0 }
-// };
-
-// const App = () => {
-//   const [channels, setChannels] = useState([]);
-//   const [instances, setInstances] = useState([]);
-//   const [selectedChannel, setSelectedChannel] = useState("");
-//   const [selectedInstance, setSelectedInstance] = useState("");
-//   const [scores, setScores] = useState(initialScoreData);
-//   const [totalCount, setTotalCount] = useState(0);
-//   const [loading, setLoading] = useState(true);
-//   const [responseData, setResponseData] = useState([]);
-//   const[learningIndexData,setLearningIndexData]=useState({})
-//   const[learningLevelIndex,setLearningLevelIndex]=useState(0)
-//   const[learningStage,setLearningStage]=useState("")
-//   const[indexes,setIndexes]=useState([])
-//   const[counts,setCounts]=useState([])
-//   const[responseForChannles,setResponseForChannels]=useState([{
-//     channelName:"",
-//     instances:[{
-//       instanceNames
-//     }]
-//   }])
-
-
-// useEffect(()=>{
-//   fetchData()
-// },[])
-
-//   const fetchData = async () => {
-//     try {
-//       const response = await axios.get(
-//         "https://100035.pythonanywhere.com/addons/learning-index-report/?scale_id=66581beae29ef8faa980b1c2"
-//       );
-//       const data = response.data.data;
-
-//       setChannels(["channel_1"]);
-//       setInstances(["instance_1"]);
-//       setResponseData(data);
-//       setLearningIndexData(data[data.length - 1].learning_index_data);
-   
-//     } catch (error) {
-//       console.error("Error fetching data:", error);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const handleChannelSelect = (event) => {
-//     setSelectedChannel(event.target.value);
-//   };
-
-//   const handleInstanceSelect = (event) => {
-//     setSelectedInstance(event.target.value);
-//     const scoreCounts = learningIndexData.learning_level_count;
-//     const percentages = learningIndexData.learning_level_percentages;
-
-//     setTotalCount(learningIndexData.control_group_size);
-
-//     const scorePercentages = {
-//       Reading: {
-//         count: scoreCounts["reading"],
-//         percentage: percentages["reading"],
-//       },
-//       Understanding: {
-//         count: scoreCounts["understanding"],
-//         percentage: percentages["understanding"],
-//       },
-//       Explaining: {
-//         count: scoreCounts["explaining"],
-//         percentage: percentages["explaining"],
-//       },
-//       Evaluating: {
-//         count: scoreCounts["evaluating"],
-//         percentage: percentages["evaluating"],
-//       },
-//       Applying: {
-//         count: scoreCounts["applying"],
-//         percentage: percentages["applying"],
-//       },
-//     };
-// setLearningStage(responseData[responseData.length-1].learning_index_data.learning_stage)
-//     setScores(scorePercentages);
-//     setLearningLevelIndex(learningIndexData.learning_level_index.toFixed(2));
-//     getChartDetails();
-//   };
-
-//   const getChartDetails = () => {
-//     const lengthOfResponses = responseData.length;
-//     if (lengthOfResponses < 5) {
-//       const newIndexes = [];
-//       const newCounts = [];
-//       responseData.forEach((obj) => {
-//         newIndexes.push(obj.learning_index_data.learning_level_index);
-//         newCounts.push(obj.learning_index_data.control_group_size);
-//       });
-//       setIndexes(newIndexes);
-//       setCounts(newCounts);
-//     } else {
-//       const increment = Math.floor(lengthOfResponses / 5);
-//       const newIndexes = [0];
-//       const newCounts = [0];
-//       for (let i = increment - 1; i < lengthOfResponses; i += increment) {
-//         newIndexes.push(responseData[i].learning_index_data.learning_level_index.toFixed(2));
-//         newCounts.push(responseData[i].learning_index_data.control_group_size);
-//       }
-//       setIndexes(newIndexes);
-//       setCounts(newCounts);
-//     }
-//   };
-
-
-
-//   if (loading) {
-//     return <CircularProgress />;
-//   }
-
-//   return (
-//     <Box p={3}>
-//     <Typography variant="h4" align="center" gutterBottom>
-//       Feedback Analysis Dashboard
-//     </Typography>
-//     <Grid container spacing={3} alignItems="center" justifyContent="center">
-//       <Grid item xs={12} md={6}>
-//         <Select
-//           value={selectedChannel}
-//           onChange={handleChannelSelect}
-//           displayEmpty
-//           fullWidth
-//         >
-//           <MenuItem value="" disabled>
-//             Select Channel
-//           </MenuItem>
-//           {channels.map((channel) => (
-//             <MenuItem key={channel} value={channel}>
-//               {channelNames[channel]}
-//             </MenuItem>
-//           ))}
-//         </Select>
-//       </Grid>
-//       <Grid item xs={12} md={6}>
-//         <Select
-//           value={selectedInstance}
-//           onChange={handleInstanceSelect}
-//           displayEmpty
-//           fullWidth
-//         >
-//           <MenuItem value="" disabled>
-//             Select Instance
-//           </MenuItem>
-//           {instances.map((instance) => (
-//             <MenuItem key={instance} value={instance}>
-//               {instanceNames[instance]}
-//             </MenuItem>
-//           ))}
-//         </Select>
-//       </Grid>
-//     </Grid>
-    
-//     <>
-//     <div className="flex justify-center items-center gap-2 sm:gap-6 mt-10 flex-wrap">
-//   <Typography variant="body1" align="center" gutterBottom >
-//     Total Responses: {totalCount}
-//   </Typography>
-//   <Typography variant="body1" align="center" gutterBottom >
-//     Learning Index: {learningLevelIndex}
-//   </Typography>
-//   <Typography variant="body1" align="center" gutterBottom >
-//    Learning Stage: {learningStage}
-//   </Typography>
-// </div>
-
-// <Typography 
-//   variant="body1" 
-//   align="center" 
-//   gutterBottom 
-
-//   style={{ color: 'orange',fontWeight:"bold" }}
-// >
-//   Scores:
-// </Typography>
-
-//       <Grid container spacing={3} justifyContent="center">
-//   {Object.entries(scores).map(([score, data]) => (
-//     <Grid item xs={12} key={score}>
-//       <Box
-//         sx={{
-//           maxWidth: { xs: "100%", sm: "80%", md: "70%", lg: "60%" },
-//           mx: "auto",
-//           textAlign: "center",
-//         }}
-//       >
-//         <Typography variant="subtitle1" gutterBottom>
-//           {`${score}: ${data.count} (${data.percentage.toFixed(2)}%)`}
-//         </Typography>
-//         <LinearProgress
-//           variant="determinate"
-//           value={data.percentage || 0}
-//           sx={{
-//             height: "10px",
-//             borderRadius: "10px",
-//             "& .MuiLinearProgress-bar": {
-//               borderRadius: "10px",
-//               backgroundColor: (() => {
-//                 if (score === "Reading") return "#FF0000"; // Red
-//                 if (score === "Understanding") return "#FF7F00"; // Orange
-//                 if (score === "Explaining") return "#FFFF00"; // Yellow
-//                 if (score === "Evaluating") return "#7FFF00"; // Light Green
-//                 return "#00FF00"; // Green
-//               })(),
-//             },
-//           }}
-//         />
-//       </Box>
-//     </Grid>
-//   ))}
-// </Grid>
-
-//       {selectedChannel.length < 1 || selectedInstance.length < 1 ? null : (
-//         <>
-//           <Box
-//             sx={{
-//               mt: 4,
-//               width: "100%",
-//               height: { xs: "300px", sm: "400px" },
-//               maxWidth: "900px",
-//               mx: "auto",
-//             }}
-//           >
-//             {totalCount !== 0 && <LineChart indexes={indexes} total={counts} stepSize={Math.floor(responseData.length / 5)} />}
-//           </Box>
-//         </>
-//       )}
-//     </>
-//   </Box>
-//   );
-// };
-
-// export default App;
