@@ -430,7 +430,7 @@ if(!objectPair || !arr || arr.length==0){
   const isSmallScreen = window.innerWidth < 600;
    labels=Object.keys(objectPair)
    datasetsInfo=Object.values(objectPair)
-   attendenceInfo=[50,50,50,50,50,50,50,50]
+   attendenceInfo=[60,60,60,60,60,60,60,60]
    daysInfo=Object.values(selectedDaysCounts)
    percentagesInfo=Object.values(selectedDaysPercentages)
    const maxValue=Object.values(objectPair).reduce((val,ele)=>Number(val)>ele?val:ele,0)
@@ -699,7 +699,7 @@ if(!objectPair || dataForInstance.length==0){
 }else{
   const isSmallScreen = window.innerWidth < 600;
    labels=Object.keys(objectPair)
-   attendenceInfo=[50,50,50,50,50,50,50,50]
+   attendenceInfo=[60,60,60,60,60,60,60,60]
    datasetsInfo=Object.values(objectPair)
    daysInfo=Object.values(selectedDaysCounts)
    percentagesInfo=Object.values(selectedDaysPercentages)
