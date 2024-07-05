@@ -1251,7 +1251,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
       </div>
                   <Box textAlign="center" marginTop="16px" className="flex justify-center items-center gap-20 ">
                   <Typography variant="body1" align="center" gutterBottom >
-         Attendence : 60
+         Attendance : 50
         </Typography>
         <div>
       <Typography variant="body1" gutterBottom>
@@ -1396,7 +1396,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
       </div>
       <Box textAlign="center" marginTop="16px" className="flex justify-center items-center gap-20 ">
       <Typography variant="body1" gutterBottom>
-       Attendence: 60
+       Attendance: 50
       </Typography>
       <div>
       <Typography variant="body1" gutterBottom>
