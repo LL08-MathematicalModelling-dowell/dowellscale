@@ -1062,7 +1062,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
       sx={{
          ml:"10px",
         width: "70%",
-        height: { xs: "300px", sm: "380px" },
+        height: { xs: "300px", sm: "420px" },
         maxWidth: "600px",
         mx: "auto",
       }}
@@ -1212,7 +1212,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
                 sx={{
                   mt: 4,
                   width: "70%",
-                  height: { xs: "300px", sm: "400px" },
+                  height: { xs: "300px", sm: "420px" },
                   maxWidth: "600px",
                   mx: "auto",
                 }}
