@@ -9,7 +9,7 @@ export default function EvaluateSamanta(){
    
      function handleButtonClick(index){
       setSubmitted(index)
-        window.location.href=`https://100035.pythonanywhere.com/addons/create-response/v3/?user=True&scale_type=learning_index&channel=channel_1&instance=instance_1&workspace_id=6385c0e48eca0fb652c9447b&username=HeenaK&scale_id=6687ba40ef5d3fc7f399d9a9&item=${index}`
+        window.location.href=`https://100035.pythonanywhere.com/addons/create-response/v3/?user=True&scale_type=learning_index&channel=channel_1&instance=instance_1&workspace_id=6385c0e48eca0fb652c9447b&username=HeenaK&scale_id=6687b86203025a8916545730&item=${index}`
    
       }
 
