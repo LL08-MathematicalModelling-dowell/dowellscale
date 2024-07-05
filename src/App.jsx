@@ -7,7 +7,9 @@ import DowellScaleForCollegeReport from "./pages/CollegeScaleReport";
 import DowellScaleForCollege from "./pages/DowellScaleForCollege";
 import DowellScaleNew from "./pages/DowellScaleNew";
 import Evaluate from "./pages/Evaluate";
+import EvaluateSamanta from "./pages/SamantaEdu";
 import TeacherReport from "./pages/teacher/TeacherReport";
+import SamantaEduReport from "./pages/teacher/SamantaEduReport"
 import MVJReport from "./pages/MVJReport"
 import ExhibitionPage from "./pages/ExhibitionPage";
 import ExhibitionReport from "./pages/ExhibitionReport";
@@ -42,6 +44,8 @@ function App() {
         <Route path="/dowellscale/teacherevaluation/report" Component={TeacherReport} />
         <Route path="/dowellscale/plex-exhibition" Component={ExhibitionPage}/>
         <Route path="/dowellscale/plex-exhibition/report" Component={ExhibitionReport}/>
+        <Route path="/dowellscale/samanta-edu" Component={EvaluateSamanta} />
+        <Route path="/dowellscale/samanta-edu/report" Component={SamantaEduReport} />
 
         <Route path="/dowellscale/shop/registration" Component={RegistrationPage}/>
         <Route path="/dowellscale/shop/report" Component={ShopReport}/>
