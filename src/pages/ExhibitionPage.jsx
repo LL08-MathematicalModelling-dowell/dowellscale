@@ -19,7 +19,7 @@ const[submitted,setSubmitted]=useState(-1)
             </div>
             <div  className="flex flex-col justify-center items-center p-2 mt-10 sm:mt-0 gap-8 ">
                 <img src={npsScale} alt="nps-scale" className="w-[350px] sm:w-[450px]"/>
-                <p className="font-bold text-red-500 sm:text-[30px] text-[18px]">How do you rate this event?</p>
+                <p className="font-bold text-red-500 sm:text-[25px] text-[18px] text-center">Would you recommend our product/service to your friends and colleagues?</p>
                 <p className="sm:text-[18px] text-[14px]">Tell us what you think using the scale below!</p>
             </div>
            
