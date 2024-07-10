@@ -1,15 +1,25 @@
 import classImage from "../../src/assets/images/class.png"
 import axios from "axios"
+import { useLocation } from 'react-router-dom';
 import { useState } from "react"
 const buttons=[0,1,2,3,4,5,6,7,8,9,10]
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+ }
 export default function EvaluateSamanta(){
-   const[submitted,setSubmitted]=useState(-1)
+  const query = useQuery();
+  const[submitted,setSubmitted]=useState(-1)
+  // const scale_type = query.get('scale_type');
+  const workspace_id = query.get('workspace_id');
+  const scale_id = query.get('scale_id');
+  // const score = query.get('score');
+  const channel = query.get('channel') || '';
+  const instance = query.get('instance') || '';
+  const username = query.get('username') || '';
 
-
-   
      function handleButtonClick(index){
       setSubmitted(index)
-        window.location.href=`https://100035.pythonanywhere.com/addons/create-response/v3/?user=True&scale_type=learning_index&channel=channel_1&instance=instance_1&workspace_id=6385c0e48eca0fb652c9447b&username=HeenaK&scale_id=6687b86203025a8916545730&item=${index}`
+        window.location.href=`https://100035.pythonanywhere.com/addons/create-response/v3/?user=True&scale_type=learning_index&channel=${channel}&instance=${instance}&workspace_id=${workspace_id}&username=${username}&scale_id=${scale_id}&item=${index}`
    
       }
 
