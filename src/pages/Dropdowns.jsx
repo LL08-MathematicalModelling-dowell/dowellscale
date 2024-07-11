@@ -1,4 +1,3 @@
-// src/pages/Dropdowns.jsx
 import React, { useState, useEffect } from 'react';
 
 const Dropdown = ({ label, options, value, onChange }) => {
@@ -40,6 +39,7 @@ const Dropdowns = () => {
   const [subject, setSubject] = useState('');
   const [channel, setChannel] = useState('');
   const [instance, setInstance] = useState('');
+  const [submitEnabled, setSubmitEnabled] = useState(false);
 
   const classrooms = ['Classroom 1', 'Classroom 2', 'Classroom 3', 'Classroom 4', 'Classroom 5'];
   const subjects = ['Subject 1', 'Subject 2', 'Subject 3', 'Subject 4', 'Subject 5'];
@@ -48,8 +48,10 @@ const Dropdowns = () => {
     if (classroom) {
       const selectedClassroomNumber = classrooms.indexOf(classroom) + 1;
       setChannel(`channel_${selectedClassroomNumber}`);
+      checkSubmitButton();
     } else {
       setChannel('');
+      setSubmitEnabled(false);
     }
   }, [classroom]);
 
@@ -57,22 +59,20 @@ const Dropdowns = () => {
     if (subject) {
       const selectedSubjectNumber = subjects.indexOf(subject) + 1;
       setInstance(`instance_${selectedSubjectNumber}`);
+      checkSubmitButton();
     } else {
       setInstance('');
+      setSubmitEnabled(false);
     }
   }, [subject]);
 
-  useEffect(() => {
-    if (channel) {
-      console.log(`Selected channel: ${channel}`);
+  const checkSubmitButton = () => {
+    if (classroom && subject) {
+      setSubmitEnabled(true);
+    } else {
+      setSubmitEnabled(false);
     }
-  }, [channel]);
-
-  useEffect(() => {
-    if (instance) {
-      console.log(`Selected instance: ${instance}`);
-    }
-  }, [instance]);
+  };
 
   const handleSubmit = () => {
     if (channel && instance) {
@@ -83,10 +83,28 @@ const Dropdowns = () => {
     }
   };
 
+  const handleRefresh = () => {
+    setClassroom('');
+    setSubject('');
+    setChannel('');
+    setInstance('');
+    setSubmitEnabled(false);
+  };
+
   const containerStyle = {
     textAlign: 'center',
     marginTop: '50px',
     fontFamily: 'Arial, sans-serif',
+  };
+
+  const logoStyle = {
+    marginBottom: '20px',
+    maxWidth: '100%',
+    height: 'auto',
+    width: '300px', 
+    display: 'block',
+    marginLeft: 'auto',
+    marginRight: 'auto',
   };
 
   const headerStyle = {
@@ -95,29 +113,32 @@ const Dropdowns = () => {
     fontSize: '24px',
   };
 
-  const logoStyle = {
-    marginBottom: '50px',
-    maxWidth: '20%', // Reduce the size of the logo
-    height: 'auto',
-    display: 'block', // Center align the logo
-    margin: '0 auto', // Center align the logo
-  };
-
   const buttonStyle = {
-    marginTop: '25px',
+    marginTop: '20px',
     padding: '12px 24px',
     fontSize: '16px',
-    backgroundColor: '#4CAF50',
     color: 'white',
     border: 'none',
     borderRadius: '4px',
     cursor: 'pointer',
     transition: 'background-color 0.3s',
+    marginRight: '10px',
   };
 
-  const buttonHoverStyle = {
+  const submitButtonEnabledStyle = {
     ...buttonStyle,
-    backgroundColor: '#45a049',
+    backgroundColor: '#4CAF50',
+  };
+
+  const submitButtonDisabledStyle = {
+    ...buttonStyle,
+    backgroundColor: '#cccccc', 
+    cursor: 'not-allowed',
+  };
+
+  const refreshButtonStyle = {
+    ...buttonStyle,
+    backgroundColor: '#f44336', 
   };
 
   return (
@@ -140,22 +161,23 @@ const Dropdowns = () => {
         value={subject}
         onChange={setSubject}
       />
-      
+      {channel && <p>Selected Channel: {channel}</p>}
+      {instance && <p>Selected Instance: {instance}</p>}
       <button
         onClick={handleSubmit}
-        style={buttonStyle}
-        onMouseOver={() => setButtonStyle(buttonHoverStyle)}
-        onMouseOut={() => setButtonStyle(buttonStyle)}
+        style={submitEnabled ? submitButtonEnabledStyle : submitButtonDisabledStyle}
+        disabled={!submitEnabled}
       >
-        Connect
+        Submit
+      </button>
+      <button
+        onClick={handleRefresh}
+        style={refreshButtonStyle}
+      >
+        Refresh
       </button>
     </div>
   );
 };
 
 export default Dropdowns;
-
-
-
-
-
