@@ -167,7 +167,7 @@ const Dropdowns = () => {
         style={submitEnabled ? submitButtonEnabledStyle : submitButtonDisabledStyle}
         disabled={!submitEnabled}
       >
-        Submit
+        Connect
       </button>
       <button
         onClick={handleRefresh}
