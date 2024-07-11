@@ -98,7 +98,7 @@ const Dropdowns = () => {
   };
 
   const logoStyle = {
-    marginBottom: '20px',
+    marginBottom: '70px',
     maxWidth: '100%',
     height: 'auto',
     width: '300px', 
@@ -148,7 +148,7 @@ const Dropdowns = () => {
         alt="True Moments Logo"
         style={logoStyle}
       />
-      <h1 style={headerStyle}>Please select classroom and subject</h1>
+      <h1 style={headerStyle}>Select classroom and subject</h1>
       <Dropdown
         label="Classroom"
         options={classrooms}
