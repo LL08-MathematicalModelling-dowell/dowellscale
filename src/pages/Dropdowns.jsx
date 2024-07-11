@@ -161,8 +161,7 @@ const Dropdowns = () => {
         value={subject}
         onChange={setSubject}
       />
-      {channel && <p>Selected Channel: {channel}</p>}
-      {instance && <p>Selected Instance: {instance}</p>}
+      
       <button
         onClick={handleSubmit}
         style={submitEnabled ? submitButtonEnabledStyle : submitButtonDisabledStyle}
