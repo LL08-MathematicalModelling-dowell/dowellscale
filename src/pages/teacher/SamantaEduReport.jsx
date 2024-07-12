@@ -77,16 +77,22 @@ function getUpdatedValues(obj, selectedDays) {
 
 
 const instanceNames = {
-  instance_1: "Student feedback",
-  instance_2:"Example1",
-  instance_3:"Example2"
+  instance_1: "Subject 1",
+  instance_2:"Subject 2",
+  instance_3:"Subject 3",
+  instance_4: "Subject 4",
+  instance_5: "Subject 5"
 };
 
  const allChannelsNameTag = "channel_all_x";
 
 const channelNames = {
    [`${allChannelsNameTag}`]: "Entire Institution",
-  channel_1: "Class room",
+  channel_1: "Classroom 1",
+  channel_2: "Classroom 2",
+  channel_3: "Classroom 3",
+  channel_4: "Classroom 4",
+  channel_5: "Classroom 5"
 };
 
 const initialScoreData = {
@@ -150,10 +156,6 @@ function processData(responseData) {
 
   return dataByDate;
 }
-
-
-
-
 
 function filterDataWithinDays(responseData,days) {
   const filteredData = responseData.filter(
@@ -470,9 +472,6 @@ if(!objectPair || !arr || arr.length==0){
       },
     },
   };
-
-     
-      // co
   
 
 }
@@ -797,7 +796,7 @@ setLearningOptionData(options)
 
     try {
       const response = await axios.get(
-        "https://100035.pythonanywhere.com/addons/learning-index-report/?scale_id=6687b86203025a8916545730"
+        "https://100035.pythonanywhere.com/addons/learning-index-report/?scale_id=6687e18aa74d1fcdca15fde3"
       );
      const data=response.data.data
     if(data==undefined){

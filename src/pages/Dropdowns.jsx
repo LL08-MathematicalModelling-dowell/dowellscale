@@ -89,7 +89,7 @@ const Dropdowns = () => {
   };
 
   const logoStyle = {
-    marginBottom: '20px',
+    marginBottom: '10px',
     maxWidth: '100%',
     height: 'auto',
     width: '300px',
