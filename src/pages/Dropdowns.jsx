@@ -40,39 +40,29 @@ const Dropdowns = () => {
   const [channel, setChannel] = useState('');
   const [instance, setInstance] = useState('');
   const [submitEnabled, setSubmitEnabled] = useState(false);
+  const [qrCodeImage, setQrCodeImage] = useState(null);
 
   const classrooms = ['Classroom 1', 'Classroom 2', 'Classroom 3', 'Classroom 4', 'Classroom 5'];
   const subjects = ['Subject 1', 'Subject 2', 'Subject 3', 'Subject 4', 'Subject 5'];
 
   useEffect(() => {
-    if (classroom) {
+    if (classroom && subject) {
       const selectedClassroomNumber = classrooms.indexOf(classroom) + 1;
+      const selectedSubjectNumber = subjects.indexOf(subject) + 1;
       setChannel(`channel_${selectedClassroomNumber}`);
-      checkSubmitButton();
+      setInstance(`instance_${selectedSubjectNumber}`);
+      setSubmitEnabled(true);
+      // Load QR code image based on channel and instance
+      const imageName = `channel_${selectedClassroomNumber}_instance_${selectedSubjectNumber}.png`; 
+      const imagePath = `/dowellscale/src/assets/images/qrcodes/${imageName}`; 
+      setQrCodeImage(imagePath);
     } else {
       setChannel('');
-      setSubmitEnabled(false);
-    }
-  }, [classroom]);
-
-  useEffect(() => {
-    if (subject) {
-      const selectedSubjectNumber = subjects.indexOf(subject) + 1;
-      setInstance(`instance_${selectedSubjectNumber}`);
-      checkSubmitButton();
-    } else {
       setInstance('');
       setSubmitEnabled(false);
+      setQrCodeImage(null);
     }
-  }, [subject]);
-
-  const checkSubmitButton = () => {
-    if (classroom && subject) {
-      setSubmitEnabled(true);
-    } else {
-      setSubmitEnabled(false);
-    }
-  };
+  }, [classroom, subject]);
 
   const handleSubmit = () => {
     if (channel && instance) {
@@ -89,6 +79,7 @@ const Dropdowns = () => {
     setChannel('');
     setInstance('');
     setSubmitEnabled(false);
+    setQrCodeImage(null);
   };
 
   const containerStyle = {
@@ -98,10 +89,10 @@ const Dropdowns = () => {
   };
 
   const logoStyle = {
-    marginBottom: '70px',
+    marginBottom: '20px',
     maxWidth: '100%',
     height: 'auto',
-    width: '300px', 
+    width: '300px',
     display: 'block',
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -138,7 +129,20 @@ const Dropdowns = () => {
 
   const refreshButtonStyle = {
     ...buttonStyle,
-    backgroundColor: '#f44336', 
+    backgroundColor: '#1e81b0',
+  };
+
+  const qrCodeContainerStyle = {
+    marginTop: '20px',
+    textAlign: 'center', 
+  };
+
+  const qrCodeImageStyle = {
+    maxWidth: '200px', 
+    height: 'auto',
+    display: 'block', 
+    marginLeft: 'auto',
+    marginRight: 'auto',
   };
 
   return (
@@ -148,7 +152,7 @@ const Dropdowns = () => {
         alt="True Moments Logo"
         style={logoStyle}
       />
-      <h1 style={headerStyle}>Select classroom and subject</h1>
+      <h1 style={headerStyle}>Select Classroom and Subject</h1>
       <Dropdown
         label="Classroom"
         options={classrooms}
@@ -161,7 +165,11 @@ const Dropdowns = () => {
         value={subject}
         onChange={setSubject}
       />
-      
+      {qrCodeImage && (
+        <div style={qrCodeContainerStyle}>
+          <img src={qrCodeImage} alt={`QR Code for ${channel} and ${instance}`} style={qrCodeImageStyle} />
+        </div>
+      )}
       <button
         onClick={handleSubmit}
         style={submitEnabled ? submitButtonEnabledStyle : submitButtonDisabledStyle}
