@@ -1,5 +1,6 @@
-
+import { useLocation } from 'react-router-dom';
 import React, { useState, useEffect } from "react";
+
 import {
   Select,
   MenuItem,
@@ -32,6 +33,9 @@ ChartJS.register(
   Legend
 );
 
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+ }
 
 function getDatesInRange(startDate, endDate) {
   const date = new Date(startDate.getTime());
@@ -74,7 +78,6 @@ function getUpdatedValues(obj, selectedDays) {
   
   return updatedArr;
 }
-
 
 const instanceNames = {
   instance_1: "Subject 1",
@@ -240,8 +243,10 @@ function pickSevenKeys(transformedData) {
 
 
 const App = () => {
+  const query = useQuery(); 
+  const scale_id = query.get('scale_id');
 
-const[options,setOptions]=useState({})
+  const[options,setOptions]=useState({})
   const [responseData, setResponseData] = useState([]);
   const[learningIndexData,setLearningIndexData]=useState({})
   const[learningLevelIndex,setLearningLevelIndex]=useState(0)
@@ -796,7 +801,7 @@ setLearningOptionData(options)
 
     try {
       const response = await axios.get(
-        "https://100035.pythonanywhere.com/addons/learning-index-report/?scale_id=6687e18aa74d1fcdca15fde3"
+        `https://100035.pythonanywhere.com/addons/learning-index-report/?scale_id=${scale_id}`
       );
      const data=response.data.data
     if(data==undefined){
