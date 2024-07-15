@@ -52,7 +52,7 @@ const Dropdowns = () => {
       setChannel(`channel_${selectedClassroomNumber}`);
       setInstance(`instance_${selectedSubjectNumber}`);
       setSubmitEnabled(true);
-      // Load QR code image based on channel and instance
+     
       const imageName = `channel_${selectedClassroomNumber}_instance_${selectedSubjectNumber}.png`; 
       const imagePath = `/dowellscale/src/assets/images/qrcodes/${imageName}`; 
       setQrCodeImage(imagePath);
@@ -66,7 +66,7 @@ const Dropdowns = () => {
 
   const handleSubmit = () => {
     if (channel && instance) {
-      const url = `http://localhost:8003/dowellscale/samanta-edu/?workspace_id=66879a901c299b49c227088b&username=samantaeducation&channel=${channel}&instance=${instance}&scale_id=6687e18aa74d1fcdca15fde3&class=${classroom}&subject=${subject}`;
+      const url = `https://www.uxlive.me/dowellscale/samanta-edu/?workspace_id=66879a901c299b49c227088b&username=samantaeducation&channel=${channel}&instance=${instance}&scale_id=6687e18aa74d1fcdca15fde3&class=${classroom}&subject=${subject}`;
       window.open(url, '_blank');
     } else {
       alert('Please select both Classroom and Subject before submitting.');
