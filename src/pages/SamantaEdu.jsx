@@ -14,7 +14,7 @@ export default function EvaluateSamanta() {
   const [submitted, setSubmitted] = useState(-1);
   const [channelDisplayName, setChannelDisplayName] = useState('');
   const [instanceDisplayName, setInstanceDisplayName] = useState('');
-  const [isLoading, setIsLoading] = useState(true); // Loading state for channel and instance names
+  const [isLoading, setIsLoading] = useState(true); 
 
   const workspace_id = query.get('workspace_id');
   const scale_id = query.get('scale_id');
@@ -28,23 +28,21 @@ export default function EvaluateSamanta() {
         const scaleData = response.data.scale_data;
         const urls = scaleData.urls;
         
-        // Find the correct channel display name
         const channelData = urls.find(url => url.channel_name === channel);
         if (channelData) {
           setChannelDisplayName(channelData.channel_display_name);
           
-          // Find the correct instance display name within the channel data
           const instanceData = channelData.urls.find(url => url.instance_name === instance);
           if (instanceData) {
             setInstanceDisplayName(instanceData.instance_display_name);
           }
         }
 
-        setIsLoading(false); // Set loading state to false after fetching completes
+        setIsLoading(false); 
       })
       .catch(error => {
         console.error('Error fetching data:', error);
-        setIsLoading(false); // Ensure loading state is set to false on error
+        setIsLoading(false);
       });
   }, [channel, instance]);
 
@@ -53,20 +51,19 @@ export default function EvaluateSamanta() {
       <img 
         src='https://i0.wp.com/dowellresearch.de/wp-content/uploads/2023/04/true-moments-logo-1-1-442919954-1538479590775-1.webp?w=382&ssl=1' 
         alt='dowelllogo'
-        className="md:w-[300px] w-[200px] mt-16 sm:mt-6" 
+        className="md:w-[300px] w-[200px] mt-16 sm:mt-1" 
       />
-       {/* Render channel and instance loading message only when isLoading is true */}
+      
        {isLoading ? (
-        <p className="text-[14px] md:text-[18px] font-bold text-center mb-4 mt-14">
+        <p className="text-[14px] md:text-[18px] font-bold text-center mb-4 mt-1">
           Fetching classroom and subject details...
         </p>
       ) : (
-        <p className="text-[14px] md:text-[18px] font-bold text-center mb-4 mt-14">
+        <p className="text-[14px] md:text-[18px] font-bold text-center mb-4 mt-1">
           {`Classroom: ${channelDisplayName}, Subject: ${instanceDisplayName}`}
         </p>
       )}
-      
-      {/* Render other UI components immediately */}
+    
       <div className="w-full flex flex-col justify-center items-center flex-grow">
         <div className="w-full sm:w-max p-1 flex flex-col items-center md:py-8 h-[80%] sm:h-full md:px-10 relative">
           <img 
@@ -127,7 +124,7 @@ export default function EvaluateSamanta() {
                 </div>
               </div>
             </div>
-            <p className="text-[12px] mt-5">www.dowellresearch.sg</p>
+            <p className="text-[12px] mt-2">www.dowellresearch.sg</p>
           </div>
         </div>
       </div>
