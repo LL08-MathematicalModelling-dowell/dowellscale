@@ -14,6 +14,7 @@ export default function EvaluateSamanta() {
   const [submitted, setSubmitted] = useState(-1);
   const [channelDisplayName, setChannelDisplayName] = useState('');
   const [instanceDisplayName, setInstanceDisplayName] = useState('');
+  const [isLoading, setIsLoading] = useState(true); // Loading state for channel and instance names
 
   const workspace_id = query.get('workspace_id');
   const scale_id = query.get('scale_id');
@@ -24,37 +25,28 @@ export default function EvaluateSamanta() {
   useEffect(() => {
     axios.get('https://100035.pythonanywhere.com/addons/create-scale/v3/?scale_id=6687e18aa74d1fcdca15fde3')
       .then(response => {
-        const urls = response.data.scale_data.urls;
+        const scaleData = response.data.scale_data;
+        const urls = scaleData.urls;
+        
+        // Find the correct channel display name
         const channelData = urls.find(url => url.channel_name === channel);
-
         if (channelData) {
           setChannelDisplayName(channelData.channel_display_name);
-
-          // Check if there are urls under this channel
-          if (channelData.urls && channelData.urls.length > 0) {
-            const instanceData = channelData.urls.find(url => url.instance_name === instance);
-
-            if (instanceData) {
-              setInstanceDisplayName(instanceData.instance_display_name);
-            } else {
-              console.error(`Instance '${instance}' not found in channel '${channel}'.`);
-            }
-          } else {
-            console.error(`No instance details found for channel '${channel}'.`);
+          
+          // Find the correct instance display name within the channel data
+          const instanceData = channelData.urls.find(url => url.instance_name === instance);
+          if (instanceData) {
+            setInstanceDisplayName(instanceData.instance_display_name);
           }
-        } else {
-          console.error(`Channel '${channel}' not found in API response.`);
         }
+
+        setIsLoading(false); // Set loading state to false after fetching completes
       })
       .catch(error => {
         console.error('Error fetching data:', error);
+        setIsLoading(false); // Ensure loading state is set to false on error
       });
   }, [channel, instance]);
-
-  function handleButtonClick(index) {
-    setSubmitted(index);
-    window.location.href = `https://100035.pythonanywhere.com/addons/create-response/v3/?user=True&scale_type=learning_index&channel=${channel}&instance=${instance}&workspace_id=${workspace_id}&username=${username}&scale_id=${scale_id}&item=${index}`;
-  }
 
   return (
     <div className="w-full flex flex-col justify-between items-center gap-4 h-screen sm:p-4">
@@ -63,7 +55,18 @@ export default function EvaluateSamanta() {
         alt='dowelllogo'
         className="md:w-[300px] w-[200px] mt-16 sm:mt-6" 
       />
-      <p><b>Classroom:</b> {channelDisplayName}, <b>Instance:</b> {instanceDisplayName} </p>
+       {/* Render channel and instance loading message only when isLoading is true */}
+       {isLoading ? (
+        <p className="text-[14px] md:text-[18px] font-bold text-center mb-4 mt-14">
+          Fetching classroom and subject details...
+        </p>
+      ) : (
+        <p className="text-[14px] md:text-[18px] font-bold text-center mb-4 mt-14">
+          {`Classroom: ${channelDisplayName}, Subject: ${instanceDisplayName}`}
+        </p>
+      )}
+      
+      {/* Render other UI components immediately */}
       <div className="w-full flex flex-col justify-center items-center flex-grow">
         <div className="w-full sm:w-max p-1 flex flex-col items-center md:py-8 h-[80%] sm:h-full md:px-10 relative">
           <img 
