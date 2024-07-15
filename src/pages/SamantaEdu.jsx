@@ -16,6 +16,9 @@ export default function EvaluateSamanta(){
   const channel = query.get('channel') || '';
   const instance = query.get('instance') || '';
   const username = query.get('username') || '';
+  const classroom = query.get('class') || '';
+  const subject = query.get('subject')
+
 
      function handleButtonClick(index){
       setSubmitted(index)
@@ -30,6 +33,7 @@ export default function EvaluateSamanta(){
           alt='dowelllogo'
           className=" md:w-[300px] w-[200px] mt-16 sm:mt-6" 
         />
+        <p><b>Classroom:</b> {classroom}, <b>Subject:</b> {subject}</p>
         <div className="w-full flex flex-col justify-center items-center flex-grow ">
           <div className="w-full sm:w-max p-1 flex flex-col  items-center md:py-8 h-[80%] sm:h-full md:px-10 relative">
             <img 
