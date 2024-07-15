@@ -46,6 +46,12 @@ export default function EvaluateSamanta() {
       });
   }, [channel, instance]);
 
+  function handleButtonClick(index){
+    setSubmitted(index)
+      window.location.href=`https://100035.pythonanywhere.com/addons/create-response/v3/?user=True&scale_type=learning_index&channel=${channel}&instance=${instance}&workspace_id=${workspace_id}&username=${username}&scale_id=${scale_id}&item=${index}`
+ 
+    }
+
   return (
     <div className="w-full flex flex-col justify-between items-center gap-4 h-screen sm:p-4">
       <img 
