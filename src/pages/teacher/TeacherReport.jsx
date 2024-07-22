@@ -303,7 +303,7 @@ useEffect(()=>{
     labels: [1,2,3,4,5],
     datasets: [
                   {
-                    label: "NPS",
+                    label: "Learning Level Index",
                     data:[0,0,0,0,0],
                     borderColor: "red",
                     backgroundColor: "red",
