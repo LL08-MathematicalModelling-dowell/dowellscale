@@ -1,8 +1,8 @@
 import { useLocation } from 'react-router-dom';
 import React, { useState, useEffect } from "react";
-
+import Select  from "react-select"
 import {
-  Select,
+  
   MenuItem,
   CircularProgress,
   LinearProgress,
@@ -239,8 +239,21 @@ function pickSevenKeys(transformedData) {
 }
 
 
+const channelOptionList = [
+  { value: "classroom1", label: "Classroom 1" },
+  { value: "classroom2", label: "Classroom 2" },
+  { value: "classroom3", label: "Classroom 3" },
+  { value: "classroom4", label: "Classroom 4" },
+  { value: "classroom5", label: "Classroom 5" }
+];
 
-
+const instanceOptionList = [
+  { value: "instance1", label: "Instance 1" },
+  { value: "instance2", label: "Instance 2" },
+  { value: "instance3", label: "Instance 3" },
+  { value: "instance4", label: "Instance 4" },
+  { value: "instance5", label: "Instance 5" }
+];
 
 const App = () => {
   const query = useQuery(); 
@@ -256,8 +269,8 @@ const App = () => {
 
   const [channels, setChannels] = useState([]);
   const [instances, setInstances] = useState([]);
-  const [selectedChannel, setSelectedChannel] = useState("");
-  const [selectedInstance, setSelectedInstance] = useState("");
+  const [selectedChannel, setSelectedChannel] = useState();
+  const [selectedInstance, setSelectedInstance] = useState();
   const [scores, setScores] = useState(initialScoreData);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -295,8 +308,9 @@ const[learningOptionData,setLearningOptionData]=useState({})
 
 
 useEffect(()=>{
-  if(selectedChannel.length==0 || selectedInstance.length==0)
-    return
+  if (!Array.isArray(selectedChannel) || !Array.isArray(selectedInstance) || selectedChannel.length === 0 || selectedInstance.length === 0) {
+    return;
+}
   
    // Filter data based on the selected instance and channel
     const filteredData = responseData.filter(
@@ -528,7 +542,9 @@ setLearningDataForChart({
 
   useEffect(() => {
     if (selectedChannel !== allChannelsNameTag){
-      if(selectedInstance.length==0){
+     
+      
+      if(Array.isArray(selectedInstance)){
       const scorePercentages = {
         Reading: {
           count: 0,
@@ -834,18 +850,20 @@ setErr(false)
     }
   };
 
-  const handleChannelSelect = (event) => {
-    setSelectedChannel(event.target.value);
+  const handleChannelSelect = (data) => {
+    console.log(data)
+    setSelectedChannel(data)
+    // setSelectedChannel(event.target.value);
 
-    if (event.target.value === allChannelsNameTag) {
-      setSelectedInstance("");
-      setScores(initialScoreData);
-      setTotalCount(0);
-    }
+    // if (event.target.value === allChannelsNameTag) {
+    //   setSelectedInstance("");
+    //   setScores(initialScoreData);
+    //   setTotalCount(0);
+    // }
   };
 
-  const handleInstanceSelect = (event) => {
-    setSelectedInstance(event.target.value);
+  const handleInstanceSelect = (data) => {
+    setSelectedInstance(data);
   
 
   };
@@ -877,7 +895,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
       {msg && <p className="text-red-500 self-center w-full flex justify-center">Provide feedback to check report</p>}
       <Grid container spacing={3} alignItems="center" justifyContent="center">
         <Grid item xs={12} md={4}>
-          <Select
+          {/* <Select
             value={selectedChannel}
             onChange={handleChannelSelect}
             displayEmpty
@@ -891,10 +909,18 @@ const questionData=["Do you need more reading or explanation on the topic?",
                 {channelNames[channel]}
               </MenuItem>
             ))}
-          </Select>
+          </Select> */}
+          <Select
+  options={channelOptionList}
+  placeholder="Select Classroom"
+  value={selectedChannel}
+  onChange={handleChannelSelect}
+  isSearchable={true}
+  isMulti
+/>
         </Grid>
         <Grid item xs={12} md={4}>
-          <Select
+          {/* <Select
             value={selectedInstance}
             onChange={handleInstanceSelect}
             displayEmpty
@@ -909,14 +935,23 @@ const questionData=["Do you need more reading or explanation on the topic?",
                 {instanceNames[instance]}
               </MenuItem>
             ))}
-          </Select>
-        </Grid>
+          </Select>*/}
+                     <Select
+  options={instanceOptionList}
+  placeholder="Select Instance"
+  value={selectedInstance}
+  onChange={handleInstanceSelect}
+  isSearchable={true}
+  isMulti
+/>
+        </Grid> 
+ 
         <Grid item xs={12} md={3}>
   <Select
     value={selectedDays}
     onChange={(e) => setSelectedDays(parseInt(e.target.value))}
     fullWidth
-    disabled={selectedChannel.length === 0}
+    disabled={Array.isArray(selectedChannel)==false}
   >
     <MenuItem key={1} value={7}>
       7 days
@@ -1098,7 +1133,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
       </div>
   
       <Grid item xs={12} md={0} className="block md:hidden">
-  {selectedChannel.length < 1 || selectedInstance.length < 1 ? null : (
+  {!Array.isArray(selectedChannel) || !Array.isArray(selectedInstance) ? null : (
             <>
               <Box
                 sx={{
@@ -1145,8 +1180,8 @@ const questionData=["Do you need more reading or explanation on the topic?",
 
   <Grid item xs={12}   sx={{
       mt: { xs: 0, md: 5 },
-    }} md={selectedChannel.length==0 || (selectedChannel=="channel_1" && selectedInstance.length==0) ? 11 : 7}
-    lg={selectedInstance.length==0 ? 9 : 7}
+    }} md={!Array.isArray(selectedChannel) || (selectedChannel=="channel_1" && !Array.isArray(selectedInstance)) ? 11 : 7}//check this line
+    lg={!Array.isArray(selectedInstance) ? 9 : 7}
     >
     {Object.entries(scores).map(([score, data], index) => (
       <Box
@@ -1195,7 +1230,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
 
   {/* Right side with chart data */}
   <Grid item md={5} className="hidden md:block">
-  {selectedChannel.length < 1 || selectedInstance.length < 1 ? null : (
+  {!Array.isArray(selectedChannel) || !Array.isArray(selectedInstance) ? null : (
             <>
               
               <Box
