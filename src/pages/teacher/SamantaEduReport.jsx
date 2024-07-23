@@ -263,11 +263,11 @@ const channelList = [
 ];
 
 const instanceOptionList = [
-  { value: "instance_1", label: "Section 1" },
-  { value: "instance_2", label: "Section 2" },
-  { value: "instance_3", label: "Section 3" },
-  { value: "instance_4", label: "Section 4" },
-  { value: "instance_5", label: "Section 5" }
+  { value: "instance_1", label: "Subject 1" },
+  { value: "instance_2", label: "Subject 2" },
+  { value: "instance_3", label: "Subject 3" },
+  { value: "instance_4", label: "Subject 4" },
+  { value: "instance_5", label: "Subject 5" }
 ];
 
 
