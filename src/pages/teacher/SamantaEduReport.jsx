@@ -270,6 +270,26 @@ const instanceOptionList = [
   { value: "instance_5", label: "Section 5" }
 ];
 
+
+function deepClone(obj) {
+  if (obj === null || typeof obj !== 'object') {
+      return obj;
+  }
+
+  if (Array.isArray(obj)) {
+      return obj.map(deepClone);
+  }
+
+  const clone = { ...obj };
+  Object.keys(clone).forEach(key => {
+      clone[key] = deepClone(clone[key]);
+  });
+
+  return clone;
+}
+
+
+
 const App = () => {
   const query = useQuery(); 
   const scale_id = query.get('scale_id');
@@ -559,7 +579,10 @@ setOptions(options)
 
 
 
-setLearningOptionData(options)
+const obj=deepClone(options)
+obj.plugins.title.text="Day-wise LLx"
+
+setLearningOptionData(obj)
 setLearningDataForChart({
   labels: labels,
   datasets: [
@@ -791,8 +814,9 @@ setLearningDataForChart({
             },
           };
         }
-    
-        setLearningOptionData(options);
+    const obj=deepClone(options)
+    obj.plugins.title.text="Day-wise LLx"
+        setLearningOptionData(obj);
         setOptions(options);
     
         return {
@@ -995,7 +1019,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
           </Select>*/}
                      <Select
   options={instanceOptionList}
-  placeholder="Select Section"
+  placeholder="Select Subject"
   value={selectedInstance}
   onChange={handleInstanceSelect}
   isSearchable={true}
