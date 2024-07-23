@@ -328,7 +328,7 @@ useEffect(()=>{
 }
 const channelData=[]
 const helperChannel = !selectedChannel ? [] : (Array.isArray(selectedChannel) ? selectedChannel : [selectedChannel]);
-
+const helperInstance = !selectedInstance ? [] : (Array.isArray(selectedInstance) ? selectedInstance : [selectedInstance]);
 
 helperChannel.map((channelName)=>{
   
@@ -1219,7 +1219,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
                     <div>
        
         </div>
-        <div className="flex justify-between sm:justify-center  items-center sm:gap-20 gap-2 w-full ">
+        <div className="flex justify-center  items-center sm:gap-20 gap-8 w-full ">
         <p  className="font-bold text-[10px] sm:text-[16px]">
           Learning Index: {learningLevelIndex}
         </p>
@@ -1275,7 +1275,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
 >
   {/* Left side with score counts */}
 
-  <Grid item xs={12} xl={!selectedChannel ? 10 : 7}  sx={{
+  <Grid item xs={12} xl={!selectedChannel || !selectedInstance ? 10 : 7}  sx={{
       mt: { xs: 0, md: 5 },
     }}
    
@@ -1328,24 +1328,35 @@ const questionData=["Do you need more reading or explanation on the topic?",
   </Grid>
 
   {/* Right side with chart data */}
-  <Grid item md={6} xl={5} className="hidden xl:block">
+  {!selectedInstance ?(
+      <Grid item md={6} xl={5} className="hidden xl:block">
  
-            <>
-              
-              <Box
-                sx={{
-                  mt: 4,
-                  width: "100%",
-                  height: { xs: "300px", sm: "420px" },
-                  maxWidth: "900px",
-                  mx: "auto",
-                }}
-              >
-                <Line options={learningOptionData} data={learningDataForChart} />
-              </Box>
-            </>
-         
-  </Grid>
+      <>
+ 
+      </>
+   
+</Grid>
+  ):(
+    <Grid item md={6} xl={5} className="hidden xl:block">
+ 
+    <>
+      
+      <Box
+        sx={{
+          mt: 4,
+          width: "100%",
+          height: { xs: "300px", sm: "420px" },
+          maxWidth: "900px",
+          mx: "auto",
+        }}
+      >
+        <Line options={learningOptionData} data={learningDataForChart} />
+      </Box>
+    </>
+ 
+</Grid>
+  )}
+
 </Grid>
 <Grid item md={5} className="hidden md:block xl:hidden">
   {!selectedChannel || !selectedInstance ? null : (
@@ -1365,7 +1376,8 @@ const questionData=["Do you need more reading or explanation on the topic?",
             </>
           )}
   </Grid>
-<Box className="hidden md:block"
+  {selectedInstance && (
+    <Box className="hidden md:block"
                 sx={{
                   mt: 4,
                   width: "70%",
@@ -1376,6 +1388,8 @@ const questionData=["Do you need more reading or explanation on the topic?",
               >
                 <Line options={options} data={learningIndexDataForChart} />
               </Box>
+  )}
+
         </>
       )}
     </Box>
