@@ -10,7 +10,7 @@ import {
   Typography,
   Box,
 } from "@mui/material";
-import axios from "axios";
+import axios, { all } from "axios";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -237,22 +237,37 @@ function pickSevenKeys(transformedData) {
 
   return selectedKeysObject;
 }
-
+const daysOptionList = [
+  { value: "7", label: "7 days" },
+  { value: "30", label: "30 days" },
+  { value: "90", label: "90 days" },
+];
 
 const channelOptionList = [
-  { value: "classroom1", label: "Classroom 1" },
-  { value: "classroom2", label: "Classroom 2" },
-  { value: "classroom3", label: "Classroom 3" },
-  { value: "classroom4", label: "Classroom 4" },
-  { value: "classroom5", label: "Classroom 5" }
+  { value: "channel_1", label: "Classroom 1" },
+  { value: "channel_2", label: "Classroom 2" },
+  { value: "channel_3", label: "Classroom 3" },
+  { value: "channel_4", label: "Classroom 4" },
+  { value: "channel_5", label: "Classroom 5" },
+  { value:allChannelsNameTag, label: "Entire Institution" }
+];
+
+
+const channelList = [
+  { value: "channel_1", label: "Classroom 1" },
+  { value: "channel_2", label: "Classroom 2" },
+  { value: "channel_3", label: "Classroom 3" },
+  { value: "channel_4", label: "Classroom 4" },
+  { value: "channel_5", label: "Classroom 5" },
+ 
 ];
 
 const instanceOptionList = [
-  { value: "instance1", label: "Instance 1" },
-  { value: "instance2", label: "Instance 2" },
-  { value: "instance3", label: "Instance 3" },
-  { value: "instance4", label: "Instance 4" },
-  { value: "instance5", label: "Instance 5" }
+  { value: "instance_1", label: "Section 1" },
+  { value: "instance_2", label: "Section 2" },
+  { value: "instance_3", label: "Section 3" },
+  { value: "instance_4", label: "Section 4" },
+  { value: "instance_5", label: "Section 5" }
 ];
 
 const App = () => {
@@ -291,10 +306,10 @@ const[learningDataForChart,setLearningDataForChart]=useState({
   datasets: [],
 })
 const[learningOptionData,setLearningOptionData]=useState({})
-
-
-
-
+const[daysOptions,setDaysOptions]=useState({value: '7', label: '7 days'})
+const[enableMultiChannel,setEnableMultiChannel]=useState(true)
+const[enableMultiInstance,setEnableMultiInstance]=useState(true)
+const[disableInstance,setDisableInstance]=useState(false)
   useEffect(() => {
     fetchData();
     const x=setInterval(()=>{
@@ -308,16 +323,36 @@ const[learningOptionData,setLearningOptionData]=useState({})
 
 
 useEffect(()=>{
-  if (!Array.isArray(selectedChannel) || !Array.isArray(selectedInstance) || selectedChannel.length === 0 || selectedInstance.length === 0) {
+  if (!selectedChannel || !selectedInstance || (selectedChannel && selectedChannel.value==allChannelsNameTag)  ) {
     return;
 }
+const channelData=[]
+const helperChannel = !selectedChannel ? [] : (Array.isArray(selectedChannel) ? selectedChannel : [selectedChannel]);
+
+
+helperChannel.map((channelName)=>{
+  
+  responseData.map((data)=>{
+   
+    if(data.channel==channelName.value)
+      channelData.push(data)
+  })
+
+})
+const filteredData=[]
+channelData.map((data)=>{
+    helperInstance.map((instanceName)=>{
+          if(data.instance.trim()==instanceName.value)
+            filteredData.push(data)
+    })
+})
   
    // Filter data based on the selected instance and channel
-    const filteredData = responseData.filter(
-      (item) =>
-        item.instance.trim() === selectedInstance &&
-        item.channel === selectedChannel
-    );
+    // const filteredData = responseData.filter(
+    //   (item) =>
+    //     item.instance.trim() === selectedInstance &&
+    //     item.channel === selectedChannel
+    // );
   
   const arr = filterDataWithinDays(filteredData,selectedDays);
   setLearningDataForChart({
@@ -541,10 +576,12 @@ setLearningDataForChart({
 
 
   useEffect(() => {
-    if (selectedChannel !== allChannelsNameTag){
-     
+
+
+    if (!selectedChannel || Array.isArray(selectedChannel) || (selectedChannel && selectedChannel.value !==allChannelsNameTag)){
+  
       
-      if(Array.isArray(selectedInstance)){
+      if(!Array.isArray(selectedInstance)){
       const scorePercentages = {
         Reading: {
           count: 0,
@@ -578,236 +615,227 @@ setLearningDataForChart({
       setMsg(true)
       return
     }
+
+    const allData = instanceOptionList.flatMap((instance) => {
+      return channelList.map((channel) => {
+        const dataForInstanceAndChannel = responseData.filter(
+          (item) => item.instance.trim() === instance.value && item.channel.trim() === channel.value
+        );
     
-    const allData = instances.map((instance) => {
-      const dataForInstance = responseData.filter(
-        (item) => item.instance.trim() === instance
-      );
+        let dummyCount = {
+          reading: 0,
+          understanding: 0,
+          explaining: 0,
+          evaluating: 0,
+          applying: 0
+        };
+        let dummyPercentages = {
+          reading: 0,
+          understanding: 0,
+          explaining: 0,
+          evaluating: 0,
+          applying: 0
+        };
     
-      let dummyCount={
-        reading: 0,
-         understanding: 0,
-          explaining: 0, 
-          evaluating: 0,applying: 0
-      }
-      let dummyPercentages={
-        reading: 0, understanding: 0, explaining: 0, evaluating: 0, applying: 0
-      }
-  
-let scoreCounts,percentages,objectPair,totalResponses, learningLevelIndex, learningStage, selectedDaysCounts, selectedDaysPercentages={}
-  if(dataForInstance.length==0 || !dataForInstance[dataForInstance.length - 1].learning_index_data ||  !dataForInstance[dataForInstance.length - 1].learning_index_data.learning_level_count){
-     scoreCounts=dummyCount
-     percentages=dummyPercentages
-  }else{
-  
-  const arr = filterDataWithinDays(dataForInstance,selectedDays)
-
-  if(arr.length==0){
-
-    setMsg(true)
-    return
-  }
-  
-  setMsg(false)
-   scoreCounts={
-    reading:0,
-    understanding:0,
-    explaining:0,
-    evaluating:0,
-    applying:0
-  }
-  learningLevelIndex=arr[arr.length-1].learning_index_data.learning_level_index.toFixed(2)
-  learningStage=arr[arr.length-1].learning_index_data.learning_stage
-  arr.forEach((res)=>{
-    scoreCounts[res.category]+=1
-  })
- totalResponses=arr.length
-
-   percentages={
-    reading:((scoreCounts.reading/totalResponses)*100),
-    understanding:((scoreCounts.understanding/totalResponses)*100),
-    explaining:((scoreCounts.explaining/totalResponses)*100),
-    evaluating:((scoreCounts.evaluating/totalResponses)*100),
-    applying:((scoreCounts.applying/totalResponses)*100)
-  }
-
-
-
-    const processedData = processData(arr);
-   
-    const daysHelper=getUpdatedValues(processedData, selectedDays);
-  
- 
-    const arrayToObject = (arr) => {
-      return arr.reduce((obj, item) => {
-          obj[item.date] = item.value;
-          return obj;
-      }, {});
-  };
- selectedDaysCounts=arrayToObject(daysHelper)
-  for(let dateData of Object.keys(selectedDaysCounts)){
- let per=((selectedDaysCounts[dateData]/50)*100).toFixed(2)
-
-    selectedDaysPercentages[dateData]=Number(per)>100 ? 100 :per
-  }
- const transData=transformData(processedData,selectedDays)
-
-  objectPair=pickSevenKeys(transData)
-   selectedDaysCounts=pickSevenKeys(selectedDaysCounts)
-   selectedDaysPercentages=pickSevenKeys(selectedDaysPercentages)
-  }
-  const scorePercentages = {
-    Reading: {
-      count: scoreCounts["reading"],
-      percentage: percentages["reading"],
-    },
-    Understanding: {
-      count: scoreCounts["understanding"],
-      percentage: percentages["understanding"],
-    },
-    Explaining: {
-      count: scoreCounts["explaining"],
-      percentage: percentages["explaining"],
-    },
-    Evaluating: {
-      count: scoreCounts["evaluating"],
-      percentage: percentages["evaluating"],
-    },
-    Applying: {
-      count: scoreCounts["applying"],
-      percentage: percentages["applying"],
-    },
-  };
- 
-
-
-
-  setScores(scorePercentages);
-
-  
-
-     let labels,datasetsInfo,options, daysInfo, percentagesInfo, attendenceInfo
-if(!objectPair || dataForInstance.length==0){
-  labels= [1,2,3,4,5],
-  datasetsInfo= [0,0,0,0,0],
-  options={
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
+        let scoreCounts, percentages, objectPair, totalResponses, learningLevelIndex, learningStage, selectedDaysCounts, selectedDaysPercentages = {};
+        if (dataForInstanceAndChannel.length == 0 || !dataForInstanceAndChannel[dataForInstanceAndChannel.length - 1].learning_index_data || !dataForInstanceAndChannel[dataForInstanceAndChannel.length - 1].learning_index_data.learning_level_count) {
+          scoreCounts = dummyCount;
+          percentages = dummyPercentages;
+        } else {
+          const arr = filterDataWithinDays(dataForInstanceAndChannel, selectedDays);
     
-      y: {
-        min: 0,
-        max: 5,
-        ticks: {
-          stepSize: 1,
-        },
-        beginAtZero: true,
-      },
-      x: {
-        type: 'linear',
-        position: 'bottom',
-        min: 0,
-        max: 5,
-        ticks: {
-          stepSize: 1,
-        },
-        beginAtZero: true,
-      },
-    },
-  }
-  
-}else{
-  const isSmallScreen = window.innerWidth < 600;
-   labels=Object.keys(objectPair)
-   attendenceInfo=[50,50,50,50,50,50,50,50]
-   datasetsInfo=Object.values(objectPair)
-   daysInfo=Object.values(selectedDaysCounts)
-   percentagesInfo=Object.values(selectedDaysPercentages)
-   const maxValue=Object.values(objectPair).reduce((val,ele)=>Number(val)>ele?val:ele,0)
-    options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      title: {
-        display: true,
-        text: "Day-wise Responses",
-      },
-      legend: {
-        labels: {
-          font: {
-            size: 12, // Adjust the size as needed
+          if (arr.length == 0) {
+            setMsg(true);
+            return;
+          }
+    
+          setMsg(false);
+          scoreCounts = {
+            reading: 0,
+            understanding: 0,
+            explaining: 0,
+            evaluating: 0,
+            applying: 0
+          };
+          learningLevelIndex = arr[arr.length - 1].learning_index_data.learning_level_index.toFixed(2);
+          learningStage = arr[arr.length - 1].learning_index_data.learning_stage;
+          arr.forEach((res) => {
+            scoreCounts[res.category] += 1;
+          });
+          totalResponses = arr.length;
+    
+          percentages = {
+            reading: ((scoreCounts.reading / totalResponses) * 100),
+            understanding: ((scoreCounts.understanding / totalResponses) * 100),
+            explaining: ((scoreCounts.explaining / totalResponses) * 100),
+            evaluating: ((scoreCounts.evaluating / totalResponses) * 100),
+            applying: ((scoreCounts.applying / totalResponses) * 100)
+          };
+    
+          const processedData = processData(arr);
+    
+          const daysHelper = getUpdatedValues(processedData, selectedDays);
+    
+          const arrayToObject = (arr) => {
+            return arr.reduce((obj, item) => {
+              obj[item.date] = item.value;
+              return obj;
+            }, {});
+          };
+          selectedDaysCounts = arrayToObject(daysHelper);
+          for (let dateData of Object.keys(selectedDaysCounts)) {
+            let per = ((selectedDaysCounts[dateData] / 50) * 100).toFixed(2);
+            selectedDaysPercentages[dateData] = Number(per) > 100 ? 100 : per;
+          }
+          const transData = transformData(processedData, selectedDays);
+    
+          objectPair = pickSevenKeys(transData);
+          selectedDaysCounts = pickSevenKeys(selectedDaysCounts);
+          selectedDaysPercentages = pickSevenKeys(selectedDaysPercentages);
+        }
+    
+        const scorePercentages = {
+          Reading: {
+            count: scoreCounts["reading"],
+            percentage: percentages["reading"],
           },
-          boxWidth: 10, // Adjust the width of the colored box
-          padding: 10, // Adjust the padding between legend items
-        },
-      },
-    },
+          Understanding: {
+            count: scoreCounts["understanding"],
+            percentage: percentages["understanding"],
+          },
+          Explaining: {
+            count: scoreCounts["explaining"],
+            percentage: percentages["explaining"],
+          },
+          Evaluating: {
+            count: scoreCounts["evaluating"],
+            percentage: percentages["evaluating"],
+          },
+          Applying: {
+            count: scoreCounts["applying"],
+            percentage: percentages["applying"],
+          },
+        };
     
-    scales: {
-      x: {
-        ticks: {
-          maxRotation: isSmallScreen ? 90 : 0,  // Vertical on small screens
-          minRotation: isSmallScreen ? 90 : 0,  // Vertical on small screens
+        setScores(scorePercentages);
+    
+        let labels, datasetsInfo, options, daysInfo, percentagesInfo, attendenceInfo;
+        if (!objectPair || dataForInstanceAndChannel.length == 0) {
+          labels = [1, 2, 3, 4, 5];
+          datasetsInfo = [0, 0, 0, 0, 0];
+          options = {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                min: 0,
+                max: 5,
+                ticks: {
+                  stepSize: 1,
+                },
+                beginAtZero: true,
+              },
+              x: {
+                type: 'linear',
+                position: 'bottom',
+                min: 0,
+                max: 5,
+                ticks: {
+                  stepSize: 1,
+                },
+                beginAtZero: true,
+              },
+            },
+          };
+        } else {
+          const isSmallScreen = window.innerWidth < 600;
+          labels = Object.keys(objectPair);
+          attendenceInfo = [50, 50, 50, 50, 50, 50, 50, 50];
+          datasetsInfo = Object.values(objectPair);
+          daysInfo = Object.values(selectedDaysCounts);
+          percentagesInfo = Object.values(selectedDaysPercentages);
+          const maxValue = Object.values(objectPair).reduce((val, ele) => Number(val) > ele ? val : ele, 0);
+          options = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              title: {
+                display: true,
+                text: "Day-wise Responses",
+              },
+              legend: {
+                labels: {
+                  font: {
+                    size: 12, // Adjust the size as needed
+                  },
+                  boxWidth: 10, // Adjust the width of the colored box
+                  padding: 10, // Adjust the padding between legend items
+                },
+              },
+            },
+            scales: {
+              x: {
+                ticks: {
+                  maxRotation: isSmallScreen ? 90 : 0,  // Vertical on small screens
+                  minRotation: isSmallScreen ? 90 : 0,  // Vertical on small screens
+                }
+              },
+              y: {
+                min: 0,
+                max: 100,
+                ticks: {
+                  stepSize: Math.ceil(100 / 5),
+                },
+                beginAtZero: true,
+              },
+            },
+          };
         }
-      },
-      y: {
-        min: 0,
-        max:100,
-        ticks: {
-          stepSize: Math.ceil(100 / 5),
-          
-        },
-        beginAtZero: true,
-      },
-    },
-  };
-}
-   
-setLearningOptionData(options)
-   setOptions(options)
-
-      return {
-        instanceName: instance,
-        totalResponses: totalResponses,
-        learningStage,
-        learningLevelIndex,
-        scoreCounts:scorePercentages,
-        chartData: {
-          labels: labels,
-          datasets: [
-            {
-              label: "Attendance",
-              data: attendenceInfo,
-              borderColor: "yellow",
-              backgroundColor: "yellow",
-            },
-         
-            {
-              label: "Response Percentage",
-              data: percentagesInfo,
-              borderColor: "green",
-              backgroundColor: "green",
-            },
-            
-            {
-              label: "Total Responses",
-              data: daysInfo,
-              borderColor: "blue",
-              backgroundColor: "blue",
-            },
-           
-          ],
-        },
-       learningData:{
-          labels: labels,
-          datasets: [   {
-            label: "Learning Level Index (below 1 = Learning, above 1 = Applying in a context)",
-            data: datasetsInfo,
-            borderColor: "red",
-            backgroundColor: "red",
-          },]
-        }
-      };
+    
+        setLearningOptionData(options);
+        setOptions(options);
+    
+        return {
+          instanceName: instance,
+          channelName: channel,
+          totalResponses: totalResponses,
+          learningStage,
+          learningLevelIndex,
+          scoreCounts: scorePercentages,
+          chartData: {
+            labels: labels,
+            datasets: [
+              {
+                label: "Attendance",
+                data: attendenceInfo,
+                borderColor: "yellow",
+                backgroundColor: "yellow",
+              },
+              {
+                label: "Response Percentage",
+                data: percentagesInfo,
+                borderColor: "green",
+                backgroundColor: "green",
+              },
+              {
+                label: "Total Responses",
+                data: daysInfo,
+                borderColor: "blue",
+                backgroundColor: "blue",
+              },
+            ],
+          },
+          learningData: {
+            labels: labels,
+            datasets: [{
+              label: "Learning Level Index (below 1 = Learning, above 1 = Applying in a context)",
+              data: datasetsInfo,
+              borderColor: "red",
+              backgroundColor: "red",
+            },]
+          }
+        };
+      });
     });
 
     setDisplayDataForAllSelection(allData);
@@ -851,8 +879,33 @@ setErr(false)
   };
 
   const handleChannelSelect = (data) => {
-    console.log(data)
+
+    if(Array.isArray(data) ){
+      if(data[data.length-1].value==allChannelsNameTag){
+      setSelectedChannel(data[data.length-1])
+      setEnableMultiChannel(false)
+      setDisableInstance(true)
+      setSelectedInstance(null)
+    }else{
+      setEnableMultiChannel(true)
     setSelectedChannel(data)
+    setDisableInstance(false)
+
+    }
+   
+  }else{
+    if(data.value==allChannelsNameTag){
+      setDisableInstance(true)
+      setEnableMultiChannel(false)
+      setSelectedInstance(null)
+    }else{
+      setDisableInstance(false)
+      setEnableMultiChannel(true)
+
+
+    }
+    setSelectedChannel(data)
+  }
     // setSelectedChannel(event.target.value);
 
     // if (event.target.value === allChannelsNameTag) {
@@ -864,9 +917,13 @@ setErr(false)
 
   const handleInstanceSelect = (data) => {
     setSelectedInstance(data);
-  
-
   };
+
+  const handleDaysSelect = (data) => {
+    setDaysOptions(data)
+    setSelectedDays(parseInt(data.value));
+  };
+
 
 const questionData=["Do you need more reading or explanation on the topic?",
   "Did you understand the topic well?",
@@ -916,7 +973,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
   value={selectedChannel}
   onChange={handleChannelSelect}
   isSearchable={true}
-  isMulti
+  isMulti={enableMultiChannel}
 />
         </Grid>
         <Grid item xs={12} md={4}>
@@ -938,18 +995,19 @@ const questionData=["Do you need more reading or explanation on the topic?",
           </Select>*/}
                      <Select
   options={instanceOptionList}
-  placeholder="Select Instance"
+  placeholder="Select Section"
   value={selectedInstance}
   onChange={handleInstanceSelect}
   isSearchable={true}
   isMulti
+  isDisabled={disableInstance}
 />
         </Grid> 
  
         <Grid item xs={12} md={3}>
-  <Select
+  {/* <Select
     value={selectedDays}
-    onChange={(e) => setSelectedDays(parseInt(e.target.value))}
+    onChange={(e) => setSelectedDays(parseInt(e))}
     fullWidth
     disabled={Array.isArray(selectedChannel)==false}
   >
@@ -962,7 +1020,14 @@ const questionData=["Do you need more reading or explanation on the topic?",
     <MenuItem key={3} value={90}>
       90 days
     </MenuItem>
-  </Select>
+  </Select> */}
+                     <Select
+  options={daysOptionList}
+  placeholder="Select Days"
+  value={daysOptions}
+  onChange={handleDaysSelect}
+
+/>
 </Grid>
 
 
@@ -970,7 +1035,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
       
          
       </Grid>
-      {selectedChannel === allChannelsNameTag ? (
+      {!Array.isArray(selectedChannel) && (selectedChannel && selectedChannel.value==allChannelsNameTag) ? (
         <>
           {React.Children.toArray(
             displayDataForAllSelection.map((item, index) => {
@@ -981,17 +1046,17 @@ const questionData=["Do you need more reading or explanation on the topic?",
                     align="left"
                     style={{ marginTop: "32px", marginBottom: "10px" }}
                   >
-                    {index + 1}. {instanceNames[item?.instanceName.trim()]}
+                   <span className='flex justify-center items-center w-full gap-10'><span> {index + 1}. <span className='text-[18px] ml-3 font-medium'>{item.channelName.label}</span></span>  <span className='text-[16px]'>{item.instanceName.label} </span></span>
                   </Typography>
                   <div className="flex flex-col justify-center items-center gap-2 sm:gap-6 mt-5 mb-10 flex-wrap">
                     <div>
        
         </div>
-        <div className="flex justify-between sm:justify-center  items-center sm:gap-20 gap-2 w-full ">
-        <p  className="font-bold text-[10px] sm:text-[16px]">
+        <div className="flex justify-center  items-center sm:gap-20 gap-8 w-full ">
+        <p  className="font-bold text-[12px] sm:text-[16px]">
           Learning Index: {item.learningLevelIndex}
         </p>
-        <p  className="font-bold text-[10px] sm:text-[16px]">
+        <p  className="font-bold text-[12px] sm:text-[16px]">
         Learning Stage: {item.learningStage}
         </p>
         </div>
@@ -1002,7 +1067,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
                 sx={{
                   mt: 4,
                   width: "100%",
-                  height: { xs: "300px", sm: "400px" },
+                  height: { xs: "300px", sm: "420px" },
                   maxWidth: "900px",
                   mx: "auto",
                 }}
@@ -1013,7 +1078,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
                 sx={{
                   mt: 4,
                   width: "100%",
-                  height: { xs: "300px", sm: "400px" },
+                  height: { xs: "300px", sm: "420px" },
                   maxWidth: "900px",
                   mx: "auto",
                 }}
@@ -1030,28 +1095,35 @@ const questionData=["Do you need more reading or explanation on the topic?",
       >
         Learning funnel:
   </p>
-    <Grid
+  <Grid
   container
   spacing={10}
   alignItems="center"
   justifyContent="center"
 >
   {/* Left side with score counts */}
-  <Grid item xs={12} md={7}  sx={{
+
+  <Grid item xs={12} xl={7}  sx={{
       mt: { xs: 0, md: 5 },
-    }}>
-    {Object.entries(item?.scoreCounts).map(([score, data], index) => (
+    }}
+   
+
+    >
+    {Object.entries(scores).map(([score, data], index) => (
       <Box
         key={score}
         sx={{
-          maxWidth: { xs: "100%", sm: "90%", md: "85%", lg: "100%" },
+          maxWidth: { xs: "100%", sm: "90%", md: "80%", xl: "100%" },
           mx: "10px",
-        
+           alignItems:"center",
+           justifyContent:"center",
           textAlign: "center",
           mb: 4,
         }}
       >
-        <div className="grid lg:flex lg:justify-between">
+       
+     
+       <div className="grid lg:flex lg:justify-between">
         <span className="text-[12px] flex items-start justify-start">{questionData[index]}</span>
         <div className="flex justify-center items-center">
         <span className="md:text-[14px] xl:text-[16px] font-medium">{smallText[index]}: </span>
@@ -1083,20 +1155,44 @@ const questionData=["Do you need more reading or explanation on the topic?",
       </Box>
     ))}
   </Grid>
-  <Grid item xs={12} md={5} className="hidden md:block">
-    <Box  sx={{
-         ml:"10px",
-        width: "100%",
-        height: { xs: "300px", sm: "380px" },
-        maxWidth: "900px",
-        mx: "auto",
-      }}>
-      <Line options={learningOptionData} data={item?.learningData} />
-    </Box>
-  </Grid>
-  {/* Right side with chart data */}
 
+  {/* Right side with chart data */}
+  <Grid item md={6} xl={5} className="hidden xl:block">
+
+          
+              
+              <Box
+                sx={{
+                  mt: 4,
+                  width: "100%",
+                  height: { xs: "300px", sm: "420px" },
+                  maxWidth: "900px",
+                  mx: "auto",
+                }}
+              >
+                <Line options={learningOptionData} data={item?.learningData} />
+              </Box>
+           
+  </Grid>
 </Grid>
+
+   
+<Grid item md={5} className="hidden md:block xl:hidden">
+  
+              
+              <Box
+                sx={{
+                  mt: 4,
+                  width: "70%",
+                  height: { xs: "300px", sm: "420px" },
+                  maxWidth: "600px",
+                  mx: "auto",
+                }}
+              >
+                <Line options={options} data={item?.learningData} />
+              </Box>
+           
+  </Grid>
 <Grid item xs={12} md={5} className="hidden md:block">
     <Box
       sx={{
@@ -1118,6 +1214,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
         </>
       ) : (
         <>
+       
               <div className="flex flex-col justify-center items-center gap-2 sm:gap-6 mt-5 mb-10 flex-wrap">
                     <div>
        
@@ -1133,13 +1230,13 @@ const questionData=["Do you need more reading or explanation on the topic?",
       </div>
   
       <Grid item xs={12} md={0} className="block md:hidden">
-  {!Array.isArray(selectedChannel) || !Array.isArray(selectedInstance) ? null : (
+  {!selectedChannel || !selectedInstance ? null : (
             <>
               <Box
                 sx={{
                   mt: 4,
                   width: "100%",
-                  height: { xs: "300px", sm: "400px" },
+                  height: { xs: "300px", sm: "420px" },
                   maxWidth: "900px",
                   mx: "auto",
                 }}
@@ -1151,7 +1248,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
                 sx={{
                   mt: 4,
                   width: "100%",
-                  height: { xs: "300px", sm: "400px" },
+                  height: { xs: "300px", sm: "420px" },
                   maxWidth: "900px",
                   mx: "auto",
                 }}
@@ -1178,18 +1275,20 @@ const questionData=["Do you need more reading or explanation on the topic?",
 >
   {/* Left side with score counts */}
 
-  <Grid item xs={12}   sx={{
+  <Grid item xs={12} xl={!selectedChannel ? 10 : 7}  sx={{
       mt: { xs: 0, md: 5 },
-    }} md={!Array.isArray(selectedChannel) || (selectedChannel=="channel_1" && !Array.isArray(selectedInstance)) ? 11 : 7}//check this line
-    lg={!Array.isArray(selectedInstance) ? 9 : 7}
+    }}
+   
+
     >
     {Object.entries(scores).map(([score, data], index) => (
       <Box
         key={score}
         sx={{
-          maxWidth: { xs: "100%", sm: "90%", md: "85%", lg: "100%" },
+          maxWidth: { xs: "100%", sm: "90%", md: "80%", xl: "100%" },
           mx: "10px",
-        
+           alignItems:"center",
+           justifyContent:"center",
           textAlign: "center",
           mb: 4,
         }}
@@ -1229,16 +1328,35 @@ const questionData=["Do you need more reading or explanation on the topic?",
   </Grid>
 
   {/* Right side with chart data */}
-  <Grid item md={5} className="hidden md:block">
-  {!Array.isArray(selectedChannel) || !Array.isArray(selectedInstance) ? null : (
+  <Grid item md={6} xl={5} className="hidden xl:block">
+ 
             <>
               
               <Box
                 sx={{
                   mt: 4,
                   width: "100%",
-                  height: { xs: "300px", sm: "400px" },
+                  height: { xs: "300px", sm: "420px" },
                   maxWidth: "900px",
+                  mx: "auto",
+                }}
+              >
+                <Line options={learningOptionData} data={learningDataForChart} />
+              </Box>
+            </>
+         
+  </Grid>
+</Grid>
+<Grid item md={5} className="hidden md:block xl:hidden">
+  {!selectedChannel || !selectedInstance ? null : (
+            <>
+              
+              <Box
+                sx={{
+                  mt: 4,
+                  width: "70%",
+                  height: { xs: "300px", sm: "420px" },
+                  maxWidth: "600px",
                   mx: "auto",
                 }}
               >
@@ -1247,7 +1365,6 @@ const questionData=["Do you need more reading or explanation on the topic?",
             </>
           )}
   </Grid>
-</Grid>
 <Box className="hidden md:block"
                 sx={{
                   mt: 4,
