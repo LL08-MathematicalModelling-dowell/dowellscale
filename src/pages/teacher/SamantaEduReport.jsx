@@ -22,6 +22,7 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
+import { isArray } from 'chart.js/helpers';
 
 ChartJS.register(
   CategoryScale,
@@ -249,7 +250,8 @@ const channelOptionList = [
   { value: "channel_3", label: "Classroom 3" },
   { value: "channel_4", label: "Classroom 4" },
   { value: "channel_5", label: "Classroom 5" },
-  { value:allChannelsNameTag, label: "Entire Institution" }
+  { value:allChannelsNameTag, label: "Entire Institution" },
+  { value: "channel_all", label: "All Classrooms" },
 ];
 
 
@@ -262,7 +264,7 @@ const channelList = [
  
 ];
 
-const instanceOptionList = [
+const instanceList = [
   { value: "instance_1", label: "Subject 1" },
   { value: "instance_2", label: "Subject 2" },
   { value: "instance_3", label: "Subject 3" },
@@ -270,6 +272,41 @@ const instanceOptionList = [
   { value: "instance_5", label: "Subject 5" }
 ];
 
+const instanceOptionList = [
+  { value: "instance_1", label: "Subject 1" },
+  { value: "instance_2", label: "Subject 2" },
+  { value: "instance_3", label: "Subject 3" },
+  { value: "instance_4", label: "Subject 4" },
+  { value: "instance_5", label: "Subject 5" },
+  { value: "instance_all", label: "All Subjects" }
+];
+
+const defaultLabels = [0, 0, 0, 0, 0];
+const deafultDatasets = [0, 0, 0, 0, 0];
+const defaultOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  scales: {
+    y: {
+      min: 0,
+      max: 5,
+      ticks: {
+        stepSize: 1,
+      },
+      beginAtZero: true,
+    },
+    x: {
+      type: 'linear',
+      position: 'bottom',
+      min: 0,
+      max: 5,
+      ticks: {
+        stepSize: 1,
+      },
+      beginAtZero: true,
+    },
+  },
+};
 
 function deepClone(obj) {
   if (obj === null || typeof obj !== 'object') {
@@ -343,12 +380,83 @@ const[disableInstance,setDisableInstance]=useState(false)
 
 
 useEffect(()=>{
-  if (!selectedChannel || !selectedInstance || (selectedChannel && selectedChannel.value==allChannelsNameTag)  ) {
+  if (!selectedChannel || !selectedInstance || (selectedChannel && selectedChannel.value==allChannelsNameTag) ||  ( selectedInstance && Array.isArray(selectedInstance) && selectedInstance.length==0)  || (selectedChannel && Array.isArray(selectedChannel) && selectedChannel.length==0)) {
+  if((selectedInstance && Array.isArray(selectedInstance) && selectedInstance.length==0) || (selectedChannel && Array.isArray(selectedChannel) && selectedChannel.length==0)){
+     const scorePercentages = {
+        Reading: {
+          count: 0,
+          percentage: 0,
+        },
+        Understanding: {
+          count: 0,
+          percentage: 0,
+        },
+        Explaining: {
+          count:0,
+          percentage:0,
+        },
+        Evaluating: {
+          count:0,
+          percentage:0,
+        },
+        Applying: {
+          count:0,
+          percentage:0,
+        },
+      };
+    
+    
+    setScores(scorePercentages)
+    
+  setLearningIndexDataForChart({
+    labels: defaultLabels,
+    datasets: [
+      {
+        label: "Attendance",
+        data: deafultDatasets,
+        borderColor: "yellow",
+        backgroundColor: "yellow",
+      },
+     
+      {
+        label: "Response Percentage",
+        data: deafultDatasets,
+        borderColor: "green",
+        backgroundColor: "green",
+      },
+      
+      {
+        label: "Total Responses",
+        data: deafultDatasets,
+        borderColor: "blue",
+        backgroundColor: "blue",
+      },
+     
+    ],
+  })
+  setLearningOptionData(defaultOptions)
+  setOptions(defaultOptions)
+  setLearningDataForChart({
+    labels: defaultLabels,
+    datasets: [
+      {
+        label: " Learning Level Index (below 1 = Learning, above 1 = Applying in a context)",
+        data: deafultDatasets,
+        borderColor: "red",
+        backgroundColor: "red",
+      },]
+  })
+  setLearningStage("")
+  setLearningLevelIndex(0)
+      }
+  
+  
     return;
 }
+
 const channelData=[]
-const helperChannel = !selectedChannel ? [] : (Array.isArray(selectedChannel) ? selectedChannel : [selectedChannel]);
-const helperInstance = !selectedInstance ? [] : (Array.isArray(selectedInstance) ? selectedInstance : [selectedInstance]);
+const helperChannel = !selectedChannel ? [] :(selectedChannel.value=="channel_all" ? channelList : (Array.isArray(selectedChannel) ? selectedChannel : [selectedChannel]));
+const helperInstance = !selectedInstance ? [] : (selectedInstance.value=="instance_all" ? instanceList : (Array.isArray(selectedInstance) ? selectedInstance : [selectedInstance]));
 
 helperChannel.map((channelName)=>{
   
@@ -404,6 +512,7 @@ channelData.map((data)=>{
   arr.forEach((res)=>{
     scoreCounts[res.category]+=1
   })
+
   const totalResponses=arr.length
 
   let percentages={
@@ -464,6 +573,7 @@ let selectedDaysCounts=arrayToObject(daysHelper),  selectedDaysPercentages={}
 setDateIndexPair(objectPair)
 
   setScores(scorePercentages);
+
   let x=Object.values(objectPair)
   let llx=x[x.length-1]
   setLearningLevelIndex(llx);
@@ -474,33 +584,9 @@ setDateIndexPair(objectPair)
   
   let labels,datasetsInfo,options, percentagesInfo, daysInfo, attendenceInfo, learningOptions
 if(!objectPair || !arr || arr.length==0){
-  labels= [1,2,3,4,5],
-  datasetsInfo= [0,0,0,0,0],
-  options={
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      y: {
-        min: 0,
-        max: 5,
-        ticks: {
-          stepSize: 1,
-        },
-        beginAtZero: true,
-      },
-      x: {
-        type: 'linear',
-        position: 'bottom',
-        min: 0,
-        max: 5,
-        ticks: {
-          stepSize: 1,
-        },
-        beginAtZero: true,
-      },
-    },
-  }
-  
+ labels=defaultLabels,
+ datasetsInfo=deafultDatasets,
+ options=defaultOptions
   
 }else{
   const isSmallScreen = window.innerWidth < 600;
@@ -605,6 +691,8 @@ setLearningDataForChart({
   
       
       if(!Array.isArray(selectedInstance)){
+        if(selectedInstance && selectedInstance.value!="instance_all"){
+        
       const scorePercentages = {
         Reading: {
           count: 0,
@@ -629,17 +717,19 @@ setLearningDataForChart({
       };
     
     setScores(scorePercentages)
+   
       }
     setDisplayDataForAllSelection([]);
       return 
   }
+}
 
     if(responseData.length==0){
       setMsg(true)
       return
     }
 
-    const allData = instanceOptionList.flatMap((instance) => {
+    const allData = instanceList.flatMap((instance) => {
       return channelList.map((channel) => {
         const dataForInstanceAndChannel = responseData.filter(
           (item) => item.instance.trim() === instance.value && item.channel.trim() === channel.value
@@ -741,35 +831,12 @@ setLearningDataForChart({
         };
     
         setScores(scorePercentages);
-    
+     
         let labels, datasetsInfo, options, daysInfo, percentagesInfo, attendenceInfo;
         if (!objectPair || dataForInstanceAndChannel.length == 0) {
-          labels = [1, 2, 3, 4, 5];
-          datasetsInfo = [0, 0, 0, 0, 0];
-          options = {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              y: {
-                min: 0,
-                max: 5,
-                ticks: {
-                  stepSize: 1,
-                },
-                beginAtZero: true,
-              },
-              x: {
-                type: 'linear',
-                position: 'bottom',
-                min: 0,
-                max: 5,
-                ticks: {
-                  stepSize: 1,
-                },
-                beginAtZero: true,
-              },
-            },
-          };
+         labels=defaultLabels,
+         datasetsInfo=deafultDatasets,
+         options=defaultOptions
         } else {
           const isSmallScreen = window.innerWidth < 600;
           labels = Object.keys(objectPair);
@@ -905,16 +972,25 @@ setErr(false)
   const handleChannelSelect = (data) => {
 
     if(Array.isArray(data) ){
+     
+      if(data.length==0){
+          setSelectedChannel([])
+          return
+      }
       if(data[data.length-1].value==allChannelsNameTag){
       setSelectedChannel(data[data.length-1])
       setEnableMultiChannel(false)
       setDisableInstance(true)
       setSelectedInstance(null)
     }else{
+      if(data[data.length-1].value=="channel_all"){
+        setSelectedChannel(data[data.length-1])
+        setEnableMultiChannel(false)
+      }else{
       setEnableMultiChannel(true)
     setSelectedChannel(data)
     setDisableInstance(false)
-
+      }
     }
    
   }else{
@@ -923,9 +999,13 @@ setErr(false)
       setEnableMultiChannel(false)
       setSelectedInstance(null)
     }else{
+      if(data.value=="channel_all"){
+        setSelectedChannel(data[data.length-1])
+        setEnableMultiChannel(false)
+      }else{
       setDisableInstance(false)
       setEnableMultiChannel(true)
-
+      }
 
     }
     setSelectedChannel(data)
@@ -940,7 +1020,30 @@ setErr(false)
   };
 
   const handleInstanceSelect = (data) => {
-    setSelectedInstance(data);
+    
+    if(Array.isArray(data)){
+      if(data.length==0){
+        setSelectedInstance([])
+        return
+    }
+      if(data[data.length-1].value=="instance_all"){
+        setSelectedInstance(data[data.length-1]);
+       
+        setEnableMultiInstance(false) 
+      }else{
+        setSelectedInstance(data);
+        setEnableMultiInstance(true)
+      }
+    }else{
+      if(data.value=="instance_all"){
+        setSelectedInstance(data);
+        setEnableMultiInstance(false) 
+      }else{
+        setSelectedInstance(data);
+        setEnableMultiInstance(true)
+      }
+    }
+   
   };
 
   const handleDaysSelect = (data) => {
@@ -1023,7 +1126,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
   value={selectedInstance}
   onChange={handleInstanceSelect}
   isSearchable={true}
-  isMulti
+  isMulti={enableMultiInstance}
   isDisabled={disableInstance}
 />
         </Grid> 
@@ -1133,7 +1236,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
    
 
     >
-    {Object.entries(scores).map(([score, data], index) => (
+    {Object.entries(item.scoreCounts).map(([score, data], index) => (
       <Box
         key={score}
         sx={{
