@@ -156,10 +156,10 @@ const[disableInstance,setDisableInstance]=useState(false)
 
 useEffect(()=>{
   if (!selectedChannel || !selectedInstance || (selectedChannel && selectedChannel.value==allChannelsNameTag) ||  ( selectedInstance && Array.isArray(selectedInstance) && selectedInstance.length==0)  || (selectedChannel && Array.isArray(selectedChannel) && selectedChannel.length==0)) {
- console.log(selectedChannel)
+
     if((selectedInstance && Array.isArray(selectedInstance) && selectedInstance.length==0) || (selectedChannel && Array.isArray(selectedChannel) && selectedChannel.length==0) || (selectedChannel && !Array.isArray(selectedChannel) && !selectedInstance)){
     
-    console.log("scores set 1")
+  
     
     setScores(defaultScorePercentages)
   setLearningIndexDataForChart(defaultLearningDataIndex)
@@ -275,7 +275,7 @@ let selectedDaysCounts=arrayToObject(daysHelper),  selectedDaysPercentages={}
 setDateIndexPair(objectPair)
 
   setScores(scorePercentages);
-  console.log("scores set 2")
+ 
   let x=Object.values(objectPair)
   let llx=x[x.length-1]
   setLearningLevelIndex(llx);
