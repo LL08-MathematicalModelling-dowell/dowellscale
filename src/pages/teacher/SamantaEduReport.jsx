@@ -23,7 +23,8 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { isArray } from 'chart.js/helpers';
-
+import { getUpdatedValues,pickSevenKeys,processData,filterDataWithinDays,transformData,deepClone, scorePercentagesfunc} from '../helperFunctions/jsFunctions';
+import { deafultDatasets,defaultOptions,defaultLabels,defaultScorePercentages, defaultLearningDataIndex } from '../helperFunctions/jsObjects';
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -38,66 +39,13 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
  }
 
-function getDatesInRange(startDate, endDate) {
-  const date = new Date(startDate.getTime());
-  const dates = [];
 
-  while (date <= endDate) {
-      dates.push(new Date(date));
-      date.setDate(date.getDate() + 1);
-  }
 
-  return dates;
-}
 
-function getUpdatedValues(obj, selectedDays) {
-  // Get today's date
-  const today = new Date();
-  
-  // Calculate the start date based on selectedDays
-  const startDate = new Date();
-  startDate.setDate(today.getDate() - selectedDays);
-  
-  // Generate all dates in the range from startDate to today
-  const allDates = getDatesInRange(startDate, today);
-  
-
-  const updatedArr = [];
-  let previousValue = 0;
-  
-  for (const date of allDates) {
-      const formattedDate = formatDate(date);; // Format date as 'YYYY-MM-DD'
-      const value = obj[formattedDate] ? obj[formattedDate].totalCount : previousValue;
-
-      updatedArr.push({ date: formattedDate, value });
-
-      // Update previous value only if the current value is not zero
-      if (value !== 0) {
-          previousValue = value;
-      }
-  }
-  
-  return updatedArr;
-}
-
-const instanceNames = {
-  instance_1: "Subject 1",
-  instance_2:"Subject 2",
-  instance_3:"Subject 3",
-  instance_4: "Subject 4",
-  instance_5: "Subject 5"
-};
 
  const allChannelsNameTag = "channel_all_x";
 
-const channelNames = {
-   [`${allChannelsNameTag}`]: "Entire Institution",
-  channel_1: "Classroom 1",
-  channel_2: "Classroom 2",
-  channel_3: "Classroom 3",
-  channel_4: "Classroom 4",
-  channel_5: "Classroom 5"
-};
+
 
 const initialScoreData = {
     Reading: { count: 0, percentage: 0 },
@@ -107,137 +55,7 @@ const initialScoreData = {
     Applying: { count: 0, percentage: 0 }
 };
 
-function processData(responseData) {
-  const dataByDate = {};
-  let previousDateData = null;
 
-  responseData.forEach((response) => {
-    const dateCreated = formatDate(response.date_created);
-    const category = response.category;
-    let count = -1;
-
-    if (category === "reading" || category === "understanding") {
-      count = 1;
-    } else if (category !== "explaining") {
-      count = 0;
-    }
-
-    if (!dataByDate[dateCreated]) {
-      dataByDate[dateCreated] = { totalCount: 0, readingUnderstandingCount: 0, evaluationCount: 0, percentage: 0 };
-    }
-
-    if (count === 1) {
-      dataByDate[dateCreated].readingUnderstandingCount++;
-    } else if(count==0) {
-      dataByDate[dateCreated].evaluationCount++;
-    }
-
-    dataByDate[dateCreated].totalCount++;
-  });
-
-  // Calculate cumulative counts and percentages
-  Object.keys(dataByDate).forEach((date) => {
-    const obj = dataByDate[date];
-    if (previousDateData !== null) {
-      obj.readingUnderstandingCount += previousDateData.readingUnderstandingCount;
-      obj.evaluationCount += previousDateData.evaluationCount;
-      obj.totalCount += previousDateData.totalCount;
-    }
-
-    // Calculate percentage
-    const x = obj.readingUnderstandingCount / obj.totalCount * 100;
-    if (x === 0) {
-      obj.percentage = obj.evaluationCount / obj.totalCount * 100;
-    } else {
-
-      obj.percentage = obj.evaluationCount / obj.totalCount * 100 / x;
-    }
-
-    // Update previousDateData for next iteration
-    previousDateData = obj;
-
-  });
-
-  return dataByDate;
-}
-
-function filterDataWithinDays(responseData,days) {
-  const filteredData = responseData.filter(
-    (item) =>
-      isWithinLastDays(item.date_created, days)
-  );
-
-  return filteredData;
-}
-
-function isWithinLastDays(dateString, days) {
-  const dateCreated = new Date(dateString);
-  const today = new Date();
-  const cutoffDate = new Date(today);
-  cutoffDate.setDate(today.getDate() - days);
-
-  return dateCreated >= cutoffDate && dateCreated <= today;
-}
-
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const year = String(date.getFullYear()).slice(-2);
-  return `${day}/${month}/${year}`;
-}
-
-
-function transformData(originalData,days) {
-
-  const transformedData = {};
-  const endDate = new Date(); // Today's date
-  const startDate = new Date(endDate.getTime() - days * 24 * 60 * 60 * 1000); // Today minus 7 days
-
-  let currentDate = new Date(startDate);
-
-  while (currentDate <= endDate) {
-    const dateKey = formatDate(currentDate);
-
-    if (originalData.hasOwnProperty(dateKey)) {
-      const { percentage } = originalData[dateKey];
-    
-     transformedData[dateKey]=percentage.toFixed(2)
-    } else {
-      transformedData[dateKey] = transformedData[formatDate(new Date(currentDate.getTime() - 86400000))] || 0; // Get the value of the previous day or 0 if it doesn't exist
-    }
-
-    currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
-  }
-
-  return transformedData;
-}
-
-function pickSevenKeys(transformedData) {
-
-  const keys = Object.keys(transformedData);
-  const totalKeys = keys.length;
-  const interval = Math.floor(totalKeys / 6); // Calculate the interval to ensure 7 keys including the first and last
-  const selectedKeys = [];
-
-  // Add the first key
-  selectedKeys.push(keys[0]);
-
-  // Add keys at regular intervals
-  for (let i = interval; i < totalKeys; i += interval) {
-    selectedKeys.push(keys[i]);
-  }
-
-  // Add the last key
-  selectedKeys.push(keys[totalKeys - 1]);
-
-  const selectedKeysObject = {};
-  selectedKeys.forEach(key => {
-    selectedKeysObject[key] = transformedData[key];
-  });
-
-  return selectedKeysObject;
-}
 const daysOptionList = [
   { value: "7", label: "7 days" },
   { value: "30", label: "30 days" },
@@ -281,49 +99,6 @@ const instanceOptionList = [
   { value: "instance_all", label: "All Subjects" }
 ];
 
-const defaultLabels = [0, 0, 0, 0, 0];
-const deafultDatasets = [0, 0, 0, 0, 0];
-const defaultOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  scales: {
-    y: {
-      min: 0,
-      max: 5,
-      ticks: {
-        stepSize: 1,
-      },
-      beginAtZero: true,
-    },
-    x: {
-      type: 'linear',
-      position: 'bottom',
-      min: 0,
-      max: 5,
-      ticks: {
-        stepSize: 1,
-      },
-      beginAtZero: true,
-    },
-  },
-};
-
-function deepClone(obj) {
-  if (obj === null || typeof obj !== 'object') {
-      return obj;
-  }
-
-  if (Array.isArray(obj)) {
-      return obj.map(deepClone);
-  }
-
-  const clone = { ...obj };
-  Object.keys(clone).forEach(key => {
-      clone[key] = deepClone(clone[key]);
-  });
-
-  return clone;
-}
 
 
 
@@ -381,59 +156,13 @@ const[disableInstance,setDisableInstance]=useState(false)
 
 useEffect(()=>{
   if (!selectedChannel || !selectedInstance || (selectedChannel && selectedChannel.value==allChannelsNameTag) ||  ( selectedInstance && Array.isArray(selectedInstance) && selectedInstance.length==0)  || (selectedChannel && Array.isArray(selectedChannel) && selectedChannel.length==0)) {
-  if((selectedInstance && Array.isArray(selectedInstance) && selectedInstance.length==0) || (selectedChannel && Array.isArray(selectedChannel) && selectedChannel.length==0)){
-     const scorePercentages = {
-        Reading: {
-          count: 0,
-          percentage: 0,
-        },
-        Understanding: {
-          count: 0,
-          percentage: 0,
-        },
-        Explaining: {
-          count:0,
-          percentage:0,
-        },
-        Evaluating: {
-          count:0,
-          percentage:0,
-        },
-        Applying: {
-          count:0,
-          percentage:0,
-        },
-      };
+ console.log(selectedChannel)
+    if((selectedInstance && Array.isArray(selectedInstance) && selectedInstance.length==0) || (selectedChannel && Array.isArray(selectedChannel) && selectedChannel.length==0) || (selectedChannel && !Array.isArray(selectedChannel) && !selectedInstance)){
     
+    console.log("scores set 1")
     
-    setScores(scorePercentages)
-    
-  setLearningIndexDataForChart({
-    labels: defaultLabels,
-    datasets: [
-      {
-        label: "Attendance",
-        data: deafultDatasets,
-        borderColor: "yellow",
-        backgroundColor: "yellow",
-      },
-     
-      {
-        label: "Response Percentage",
-        data: deafultDatasets,
-        borderColor: "green",
-        backgroundColor: "green",
-      },
-      
-      {
-        label: "Total Responses",
-        data: deafultDatasets,
-        borderColor: "blue",
-        backgroundColor: "blue",
-      },
-     
-    ],
-  })
+    setScores(defaultScorePercentages)
+  setLearningIndexDataForChart(defaultLearningDataIndex)
   setLearningOptionData(defaultOptions)
   setOptions(defaultOptions)
   setLearningDataForChart({
@@ -474,13 +203,7 @@ channelData.map((data)=>{
             filteredData.push(data)
     })
 })
-  
-   // Filter data based on the selected instance and channel
-    // const filteredData = responseData.filter(
-    //   (item) =>
-    //     item.instance.trim() === selectedInstance &&
-    //     item.channel === selectedChannel
-    // );
+
   
   const arr = filterDataWithinDays(filteredData,selectedDays);
   setLearningDataForChart({
@@ -523,28 +246,7 @@ channelData.map((data)=>{
     applying:((scoreCounts.applying/totalResponses)*100)
   }
 
-  const scorePercentages = {
-    Reading: {
-      count: scoreCounts["reading"],
-      percentage: percentages["reading"],
-    },
-    Understanding: {
-      count: scoreCounts["understanding"],
-      percentage: percentages["understanding"],
-    },
-    Explaining: {
-      count: scoreCounts["explaining"],
-      percentage: percentages["explaining"],
-    },
-    Evaluating: {
-      count: scoreCounts["evaluating"],
-      percentage: percentages["evaluating"],
-    },
-    Applying: {
-      count: scoreCounts["applying"],
-      percentage: percentages["applying"],
-    },
-  };
+  const scorePercentages = scorePercentagesfunc(scoreCounts,percentages)
   const processedData = processData(arr);
 
  const transData=transformData(processedData,selectedDays)
@@ -573,7 +275,7 @@ let selectedDaysCounts=arrayToObject(daysHelper),  selectedDaysPercentages={}
 setDateIndexPair(objectPair)
 
   setScores(scorePercentages);
-
+  console.log("scores set 2")
   let x=Object.values(objectPair)
   let llx=x[x.length-1]
   setLearningLevelIndex(llx);
@@ -687,41 +389,11 @@ setLearningDataForChart({
   useEffect(() => {
 
 
-    if (!selectedChannel || Array.isArray(selectedChannel) || (selectedChannel && selectedChannel.value !==allChannelsNameTag)){
-  
+    if (!selectedChannel || Array.isArray(selectedChannel) || (selectedChannel && selectedChannel.value !==allChannelsNameTag) || selectedInstance){
       
-      if(!Array.isArray(selectedInstance)){
-        if(selectedInstance && selectedInstance.value!="instance_all"){
-        
-      const scorePercentages = {
-        Reading: {
-          count: 0,
-          percentage: 0,
-        },
-        Understanding: {
-          count: 0,
-          percentage: 0,
-        },
-        Explaining: {
-          count:0,
-          percentage:0,
-        },
-        Evaluating: {
-          count:0,
-          percentage:0,
-        },
-        Applying: {
-          count:0,
-          percentage:0,
-        },
-      };
-    
-    setScores(scorePercentages)
-   
-      }
     setDisplayDataForAllSelection([]);
       return 
-  }
+  
 }
 
     if(responseData.length==0){
@@ -807,31 +479,8 @@ setLearningDataForChart({
           selectedDaysPercentages = pickSevenKeys(selectedDaysPercentages);
         }
     
-        const scorePercentages = {
-          Reading: {
-            count: scoreCounts["reading"],
-            percentage: percentages["reading"],
-          },
-          Understanding: {
-            count: scoreCounts["understanding"],
-            percentage: percentages["understanding"],
-          },
-          Explaining: {
-            count: scoreCounts["explaining"],
-            percentage: percentages["explaining"],
-          },
-          Evaluating: {
-            count: scoreCounts["evaluating"],
-            percentage: percentages["evaluating"],
-          },
-          Applying: {
-            count: scoreCounts["applying"],
-            percentage: percentages["applying"],
-          },
-        };
-    
-        setScores(scorePercentages);
-     
+        const scorePercentages =  scorePercentagesfunc(scoreCounts,percentages)
+  
         let labels, datasetsInfo, options, daysInfo, percentagesInfo, attendenceInfo;
         if (!objectPair || dataForInstanceAndChannel.length == 0) {
          labels=defaultLabels,
@@ -1002,6 +651,7 @@ setErr(false)
       if(data.value=="channel_all"){
         setSelectedChannel(data[data.length-1])
         setEnableMultiChannel(false)
+        setDisableInstance(false)
       }else{
       setDisableInstance(false)
       setEnableMultiChannel(true)
@@ -1010,13 +660,6 @@ setErr(false)
     }
     setSelectedChannel(data)
   }
-    // setSelectedChannel(event.target.value);
-
-    // if (event.target.value === allChannelsNameTag) {
-    //   setSelectedInstance("");
-    //   setScores(initialScoreData);
-    //   setTotalCount(0);
-    // }
   };
 
   const handleInstanceSelect = (data) => {
@@ -1079,21 +722,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
       {msg && <p className="text-red-500 self-center w-full flex justify-center">Provide feedback to check report</p>}
       <Grid container spacing={3} alignItems="center" justifyContent="center">
         <Grid item xs={12} md={4}>
-          {/* <Select
-            value={selectedChannel}
-            onChange={handleChannelSelect}
-            displayEmpty
-            fullWidth
-          >
-            <MenuItem value="" disabled>
-              Select Channel
-            </MenuItem>
-            {channels.map((channel) => (
-              <MenuItem key={channel} value={channel}>
-                {channelNames[channel]}
-              </MenuItem>
-            ))}
-          </Select> */}
+     
           <Select
   options={channelOptionList}
   placeholder="Select Classroom"
@@ -1104,22 +733,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
 />
         </Grid>
         <Grid item xs={12} md={4}>
-          {/* <Select
-            value={selectedInstance}
-            onChange={handleInstanceSelect}
-            displayEmpty
-            fullWidth
-            disabled={selectedChannel === allChannelsNameTag || selectedChannel.length==0}
-          >
-            <MenuItem value="" disabled>
-              Select Instance
-            </MenuItem>
-            {instances.map((instance) => (
-              <MenuItem key={instance} value={instance}>
-                {instanceNames[instance]}
-              </MenuItem>
-            ))}
-          </Select>*/}
+        
                      <Select
   options={instanceOptionList}
   placeholder="Select Subject"
@@ -1132,22 +746,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
         </Grid> 
  
         <Grid item xs={12} md={3}>
-  {/* <Select
-    value={selectedDays}
-    onChange={(e) => setSelectedDays(parseInt(e))}
-    fullWidth
-    disabled={Array.isArray(selectedChannel)==false}
-  >
-    <MenuItem key={1} value={7}>
-      7 days
-    </MenuItem>
-    <MenuItem key={2} value={30}>
-      30 days
-    </MenuItem>
-    <MenuItem key={3} value={90}>
-      90 days
-    </MenuItem>
-  </Select> */}
+  
                      <Select
   options={daysOptionList}
   placeholder="Select Days"
@@ -1155,12 +754,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
   onChange={handleDaysSelect}
 
 />
-</Grid>
-
-
-
-      
-         
+</Grid>    
       </Grid>
       {!Array.isArray(selectedChannel) && (selectedChannel && selectedChannel.value==allChannelsNameTag) ? (
         <>
