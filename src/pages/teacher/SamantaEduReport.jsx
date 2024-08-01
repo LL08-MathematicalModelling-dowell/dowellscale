@@ -280,9 +280,9 @@ setDateIndexPair(objectPair)
   let llx=x[x.length-1]
   setLearningLevelIndex(llx);
   if(llx<1)
-    setLearningStage("learning")
+    setLearningStage(" Learning")
   else
-  setLearningStage("applying in context")
+  setLearningStage("Applying in a context")
   
   let labels,datasetsInfo,options, percentagesInfo, daysInfo, attendenceInfo, learningOptions
 if(!objectPair || !arr || arr.length==0){
@@ -701,7 +701,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
   "Can you evaluate others explanation on the topic?",
   "Can you apply what you understood from the topic in real life or role plays?"]
 
-  const smallText=["(Reading Phase)","(Understanding Phase)","(Explanation Phase)","(Evaluation Phase)","(Applying Phase)"]
+  const smallText=["(Reading Phase)","(Understanding Phase)","(Explanation Phase)","(Evaluation Phase)","(Creating Phase)"]
 
   if (loading) {
     return <CircularProgress />;

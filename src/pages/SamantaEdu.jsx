@@ -126,7 +126,7 @@ export default function EvaluateSamanta() {
                   Evaluating
                 </div>
                 <div className="text-[10px] sm:text-[14px] py-2 sm:py-4 w-[18%] bg-[#3ba13b] flex justify-center">
-                  Applying
+                  Creating
                 </div>
               </div>
             </div>
