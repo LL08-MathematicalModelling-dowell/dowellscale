@@ -114,7 +114,7 @@ export default function EvaluateSamanta() {
               </div>
               <div className="flex items-center mt-2 text-black font-medium w-full pl-2">
                 <div className="text-[10px] sm:text-[14px] py-2 sm:py-4 w-[22%] sm:w-[26%] bg-[#FF0000] flex justify-center">
-                  Reading
+                  Remembering
                 </div>
                 <div className="text-[7px] sm:text-[14px] py-[10px] sm:py-4 w-[19%] sm:w-[22%] bg-[#FF7F00] flex justify-center">
                   Understanding

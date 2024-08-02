@@ -169,7 +169,7 @@ useEffect(()=>{
     labels: defaultLabels,
     datasets: [
       {
-        label: " Learning Level Index (below 1 = Learning, above 1 = Applying in a context)",
+        label: " Learning Level Index (below 1 = Learning, above 1 = Innovating)",
         data: deafultDatasets,
         borderColor: "red",
         backgroundColor: "red",
@@ -282,7 +282,7 @@ setDateIndexPair(objectPair)
   if(llx<1)
     setLearningStage(" Learning")
   else
-  setLearningStage("Applying in a context")
+  setLearningStage("Innovating")
   
   let labels,datasetsInfo,options, percentagesInfo, daysInfo, attendenceInfo, learningOptions
 if(!objectPair || !arr || arr.length==0){
@@ -375,7 +375,7 @@ setLearningDataForChart({
   labels: labels,
   datasets: [
     {
-      label: " Learning Level Index (below 1 = Learning, above 1 = Applying in a context)",
+      label: " Learning Level Index (below 1 = Learning, above 1 = Innovating)",
       data: datasetsInfo,
       borderColor: "red",
       backgroundColor: "red",
@@ -568,7 +568,7 @@ setLearningDataForChart({
           learningData: {
             labels: labels,
             datasets: [{
-              label: "Learning Level Index (below 1 = Learning, above 1 = Applying in a context)",
+              label: "Learning Level Index (below 1 = Learning, above 1 = Innovating)",
               data: datasetsInfo,
               borderColor: "red",
               backgroundColor: "red",
@@ -701,7 +701,7 @@ const questionData=["Do you need more reading or explanation on the topic?",
   "Can you evaluate others explanation on the topic?",
   "Can you apply what you understood from the topic in real life or role plays?"]
 
-  const smallText=["(Reading Phase)","(Understanding Phase)","(Explanation Phase)","(Evaluation Phase)","(Creating Phase)"]
+  const smallText=["(Remembering Phase)","(Understanding Phase)","(Explanation Phase)","(Evaluation Phase)","(Creating Phase)"]
 
   if (loading) {
     return <CircularProgress />;
