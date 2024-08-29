@@ -59,7 +59,7 @@ function FeedbackForm({ scale_type, score, channel, instance, username }) {
   };
 
   const handleCloseTab = () => {
-    window.location.href = 'https://www.uxlivinglab.org/';
+    window.location.href = 'https://dowellresearch.sg/';
   };
 
   return (
