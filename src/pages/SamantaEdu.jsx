@@ -23,7 +23,7 @@ export default function EvaluateSamanta() {
   const username = query.get('username') || '';
 
   useEffect(() => {
-    axios.get('https://100035.pythonanywhere.com/addons/create-scale/v3/?scale_id=6687e18aa74d1fcdca15fde3')
+    axios.get('https://www.scales.uxlivinglab.online/api/v1/create-scale/?scale_id=6687e18aa74d1fcdca15fde3')
       .then(response => {
         const scaleData = response.data.scale_data;
         const urls = scaleData.urls;
@@ -48,7 +48,7 @@ export default function EvaluateSamanta() {
 
   function handleButtonClick(index){
     setSubmitted(index)
-      window.location.href=`https://100035.pythonanywhere.com/addons/create-response/v3/?user=True&scale_type=learning_index&channel=${channel}&instance=${instance}&workspace_id=${workspace_id}&username=${username}&scale_id=${scale_id}&item=${index}`
+      window.location.href=`https://www.scales.uxlivinglab.online/api/v1/create-response/?user=True&scale_type=learning_index&channel=${channel}&instance=${instance}&workspace_id=${workspace_id}&username=${username}&scale_id=${scale_id}&item=${index}`
  
     }
 

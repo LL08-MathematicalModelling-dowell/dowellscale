@@ -1385,7 +1385,7 @@ setNpsOptionData(npsOptions)
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        "https://100035.pythonanywhere.com/addons/get-response/?scale_id=665d95ae7ee426d671222a7b"
+        "https://www.scales.uxlivinglab.online/api/v1/get-response/?scale_id=665d95ae7ee426d671222a7b"
       );
 const data=response.data.data
 

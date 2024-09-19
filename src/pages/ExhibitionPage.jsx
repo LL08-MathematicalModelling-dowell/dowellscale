@@ -8,7 +8,7 @@ export default function ExhibitionPage(){
 const[submitted,setSubmitted]=useState(-1)
     async function click(index){
         setSubmitted(index)   
-        window.location.href=`https://100035.pythonanywhere.com/addons/create-response/v3/?user=True&scale_type=nps&channel=channel_1&instance=instance_1&workspace_id=6385c0e48eca0fb652c9447b&username=HeenaK&scale_id=665d95ae7ee426d671222a7b&item=${index}`
+        window.location.href=`https://www.scales.uxlivinglab.online/api/v1/create-response/?user=True&scale_type=nps&channel=channel_1&instance=instance_1&workspace_id=6385c0e48eca0fb652c9447b&username=HeenaK&scale_id=665d95ae7ee426d671222a7b&item=${index}`
     }
     return(
         <div className=" h-full w-screen  relative pb-16 pt-5">

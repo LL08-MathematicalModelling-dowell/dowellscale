@@ -585,7 +585,7 @@ setLearningDataForChart({
 
     try {
       const response = await axios.get(
-        `https://100035.pythonanywhere.com/addons/learning-index-report/?scale_id=${scale_id}`
+        `https://www.scales.uxlivinglab.online/api/v1/learning-index-report/?scale_id=${scale_id}`
       );
      const data=response.data.data
     if(data==undefined){

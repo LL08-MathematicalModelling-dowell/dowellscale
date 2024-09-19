@@ -797,7 +797,7 @@ setLearningOptionData(options)
 
     try {
       const response = await axios.get(
-        "https://100035.pythonanywhere.com/addons/learning-index-report/?scale_id=66867ea81640f70a85079d73"
+        "https://www.scales.uxlivinglab.online/api/v1/learning-index-report/?scale_id=66867ea81640f70a85079d73"
       );
      const data=response.data.data
     if(data==undefined){

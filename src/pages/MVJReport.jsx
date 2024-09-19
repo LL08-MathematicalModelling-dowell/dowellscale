@@ -246,7 +246,7 @@ const App = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        "https://100035.pythonanywhere.com/addons/get-response/?scale_id=66556a7ff11edcfcfb8b0d54"
+        "https://www.scales.uxlivinglab.online/api/v1/learning-index-report/?scale_id=66867ea81640f70a85079d73get-response/?scale_id=66556a7ff11edcfcfb8b0d54"
       );
 const data=response.data.data
       const uniqueChannels = Array.from(
