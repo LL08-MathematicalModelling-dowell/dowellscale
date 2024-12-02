@@ -1,5 +1,5 @@
 import dowellLogo from "../assets/images/dowell.png"
-import npsScale from "../assets/images/nps-scale.png"
+import npsScale from "../assets/npsImageNew.svg"
 import QR from "../assets/images/QR.png"
 import axios from "axios"
 import { useState } from "react"
