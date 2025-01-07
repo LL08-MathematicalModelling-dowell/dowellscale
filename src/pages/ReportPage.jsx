@@ -3,31 +3,38 @@ import {
   Select,
   MenuItem,
   CircularProgress,
-  LinearProgress,
   Grid,
   Typography,
   Box,
 } from "@mui/material";
 import axios from "axios";
-import { 
-  Chart as ChartJS, 
+import {
+  Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend,
 } from "chart.js";
-import { Bar } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend
 );
+
+const timePeriods = [
+  { label: "Last 7 Days", value: 7 },
+  { label: "Last 30 Days", value: 30 },
+  { label: "Last 90 Days", value: 90 },
+];
 
 const instanceNames = {
   instance_1: "Aspirational",
@@ -37,7 +44,7 @@ const instanceNames = {
   instance_5: "Valuable",
 };
 
-const allChannelsNameTag = 'channel_all_x';
+const allChannelsNameTag = "channel_all_x";
 
 const channelNames = {
   [`${allChannelsNameTag}`]: "All Channels",
@@ -45,63 +52,57 @@ const channelNames = {
 };
 
 const options = {
-  indexAxis: 'y',
-  elements: {
-    bar: {
-      borderWidth: 0,
-    },
-  },
   responsive: true,
   plugins: {
     legend: {
-      position: 'top',
+      position: "top",
     },
     title: {
       display: true,
-      text: 'Responses Insights by Day',
+      text: "Responses Insights by Time",
     },
   },
 };
 
-const extractLabelsAndDatasetsInfo = (data=[]) => {
+const extractLabelsAndDatasetsInfo = (data = []) => {
   const labelsForCharts = [
     ...new Set(
-      data
-        .map(
-          item => 
-            item?.dowell_time?.current_time && new Date(item?.dowell_time?.current_time).toDateString()
+      data.map(
+        (item) =>
+          item?.dowell_time?.current_time &&
+          new Date(item?.dowell_time?.current_time).toDateString()
       )
-    )
+    ),
   ];
-  
+
   const datasetsForCharts = {
     yesData: [],
     noData: [],
-    maybeData: []
+    maybeData: [],
   };
 
-  labelsForCharts.forEach(item => {
-    const matchingData = data
-      .filter(dataItem => dataItem?.dowell_time?.current_time && new Date(dataItem?.dowell_time?.current_time).toDateString() === item);
+  labelsForCharts.forEach((item) => {
+    const matchingData = data.filter(
+      (dataItem) =>
+        dataItem?.dowell_time?.current_time &&
+        new Date(dataItem?.dowell_time?.current_time).toDateString() === item
+    );
 
-    datasetsForCharts.noData.push(matchingData.filter(data => data?.score === 0).length);
-    datasetsForCharts.maybeData.push(matchingData.filter(data => data?.score === 1).length);
-    datasetsForCharts.yesData.push(matchingData.filter(data => data?.score === 2).length);
+    datasetsForCharts.noData.push(
+      matchingData.filter((data) => data?.score === 0).length
+    );
+    datasetsForCharts.maybeData.push(
+      matchingData.filter((data) => data?.score === 1).length
+    );
+    datasetsForCharts.yesData.push(
+      matchingData.filter((data) => data?.score === 2).length
+    );
   });
-
-  const totalItems = datasetsForCharts.yesData.reduce((a, b) => a + b, 0) + datasetsForCharts.noData.reduce((a, b) => a + b, 0) + datasetsForCharts.maybeData.reduce((a, b) => a + b, 0)
 
   return {
     labels: labelsForCharts,
     datasetsInfo: datasetsForCharts,
-    totalItems,
-  }
-}
-
-const initialScoreData = {
-  No: { count: 0, percentage: 0 },
-  Maybe: { count: 0, percentage: 0 },
-  Yes: { count: 0, percentage: 0 },
+  };
 };
 
 const App = () => {
@@ -109,121 +110,104 @@ const App = () => {
   const [instances, setInstances] = useState([]);
   const [selectedChannel, setSelectedChannel] = useState("");
   const [selectedInstance, setSelectedInstance] = useState("");
-  const [scores, setScores] = useState(initialScoreData);
-  const [totalCount, setTotalCount] = useState(0);
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState(7); // Default to 7 days
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
-  const [dateDataForChart, setDateDataForChart] = useState({
-    labels: [],
-    datasets: [],
-  });
-  const [displayDataForAllSelection, setDisplayDataForAllSelection] = useState([]);
+  const [dateDataForChart, setDateDataForChart] = useState([]);
 
   useEffect(() => {
     fetchData();
   }, []);
 
   useEffect(() => {
-    if (selectedChannel.length < 1 || selectedInstance.length < 1) return;
+    if (selectedChannel === allChannelsNameTag) {
+      // When "All channels" is selected, generate charts for all instances.
+      const allInstanceCharts = instances.map((instance) => {
+        const filteredData = filterDataByTimePeriod(
+          data.filter(
+            (item) => item.instance_name === instance
+          )
+        );
 
-    const { labels, datasetsInfo, totalItems } = extractLabelsAndDatasetsInfo(
-      data.filter(item => item.channel_name === selectedChannel && item.instance_name === selectedInstance)
-    );
-    
-    // console.log(labels);
-    // console.log((datasetsInfo));
-    // console.log('total -> ', totalItems)
+        const { labels, datasetsInfo } = extractLabelsAndDatasetsInfo(filteredData);
 
-    setDateDataForChart({
-      labels: labels,
-      datasets: [
+        return {
+          instanceName: instance,
+          chartData: {
+            labels: labels,
+            datasets: [
+              {
+                label: "No",
+                data: datasetsInfo.noData,
+                borderColor: "red",
+                backgroundColor: "rgba(255, 0, 0, 0.2)",
+                fill: true,
+              },
+              {
+                label: "Yes",
+                data: datasetsInfo.yesData,
+                borderColor: "green",
+                backgroundColor: "rgba(0, 255, 0, 0.2)",
+                fill: true,
+              },
+              {
+                label: "Maybe",
+                data: datasetsInfo.maybeData,
+                borderColor: "yellow",
+                backgroundColor: "rgba(255, 255, 0, 0.2)",
+                fill: true,
+              },
+            ],
+          },
+        };
+      });
+
+      setDateDataForChart(allInstanceCharts);
+    } else {
+      // When a specific channel is selected, use the current logic to generate a single chart.
+      const filteredData = filterDataByTimePeriod(
+        data.filter(
+          (item) =>
+            item.channel_name === selectedChannel &&
+            item.instance_name === selectedInstance
+        )
+      );
+
+      const { labels, datasetsInfo } = extractLabelsAndDatasetsInfo(filteredData);
+
+      setDateDataForChart([
         {
-          label: 'No',
-          data: datasetsInfo.noData,
-          borderColor: 'red',
-          backgroundColor: 'red',
+          instanceName: selectedInstance,
+          chartData: {
+            labels: labels,
+            datasets: [
+              {
+                label: "No",
+                data: datasetsInfo.noData,
+                borderColor: "red",
+                backgroundColor: "rgba(255, 0, 0, 0.2)",
+                fill: true,
+              },
+              {
+                label: "Yes",
+                data: datasetsInfo.yesData,
+                borderColor: "green",
+                backgroundColor: "rgba(0, 255, 0, 0.2)",
+                fill: true,
+              },
+              {
+                label: "Maybe",
+                data: datasetsInfo.maybeData,
+                borderColor: "yellow",
+                backgroundColor: "rgba(255, 255, 0, 0.2)",
+                fill: true,
+              },
+            ],
+          },
         },
-        {
-          label: 'Yes',
-          data: datasetsInfo.yesData,
-          borderColor: 'green',
-          backgroundColor: 'green',
-        },
-        {
-          label: 'Maybe',
-          data: datasetsInfo.maybeData,
-          borderColor: 'yellow',
-          backgroundColor: 'yellow',
-        },
-      ]
-    })
-
-  }, [selectedChannel, selectedInstance, data])
-
-  useEffect(() => {
-    if (selectedChannel !== allChannelsNameTag) return setDisplayDataForAllSelection([]);
-
-    const allData = instances.map(instance => {
-      const dataForInstance = data.filter(item => item.instance_name === instance);
-      const scoreCounts = {
-        No: {
-          count: 0,
-          percentage: 0,
-        }, 
-        Maybe: {
-          count: 0,
-          percentage: 0,
-        }, 
-        Yes: {
-          count: 0,
-          percentage: 0,
-        },
-      };
-
-      const { labels, datasetsInfo, totalItems } = extractLabelsAndDatasetsInfo(dataForInstance);
-
-      scoreCounts.No.count = datasetsInfo.noData.length;
-      scoreCounts.No.percentage = ( datasetsInfo.noData.reduce((a, b) => a + b, 0) / totalItems ) * 100;
-      
-      scoreCounts.Maybe.count = datasetsInfo.maybeData.length;
-      scoreCounts.Maybe.percentage = ( datasetsInfo.maybeData.reduce((a, b) => a + b, 0) / totalItems ) * 100;
-
-      scoreCounts.Yes.count = datasetsInfo.yesData.length;
-      scoreCounts.Yes.percentage = ( datasetsInfo.yesData.reduce((a, b) => a + b, 0) / totalItems ) * 100;
-
-      return {
-        instanceName: instance,
-        totalResponses: dataForInstance.length,
-        scoreCounts,
-        chartData: {
-          labels: labels,
-          datasets: [
-            {
-              label: 'No',
-              data: datasetsInfo.noData,
-              borderColor: 'red',
-              backgroundColor: 'red',
-            },
-            {
-              label: 'Yes',
-              data: datasetsInfo.yesData,
-              borderColor: 'green',
-              backgroundColor: 'green',
-            },
-            {
-              label: 'Maybe',
-              data: datasetsInfo.maybeData,
-              borderColor: 'yellow',
-              backgroundColor: 'yellow',
-            },
-          ]
-        },
-      }
-    })
-
-    setDisplayDataForAllSelection(allData);
-
-  }, [selectedChannel, data, instances])
+      ]);
+    }
+  }, [selectedChannel, selectedInstance, selectedTimePeriod, data]);
 
   const fetchData = async () => {
     try {
@@ -245,69 +229,23 @@ const App = () => {
       setLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
-      setLoading(false); // Set loading to false even in case of error
+      setLoading(false);
     }
   };
 
-  const handleChannelSelect = (event) => {
-    setSelectedChannel(event.target.value);
+  const filterDataByTimePeriod = (data) => {
+    const now = new Date();
+    const pastDate = new Date();
+    pastDate.setDate(now.getDate() - selectedTimePeriod);
 
-    if (event.target.value === allChannelsNameTag) {
-      setSelectedInstance("");
-      setScores(initialScoreData);
-      setTotalCount(0);
-    }
-  };
-
-  const handleInstanceSelect = (event) => {
-    setSelectedInstance(event.target.value);
-
-    // Filter data based on the selected instance and channel
-    const filteredData = data.filter(
-      (item) =>
-        item.instance_name === event.target.value &&
-        item.channel_name === selectedChannel
-    );
-
-    // Count occurrences of each score
-    const scoreCounts = { No: 0, Maybe: 0, Yes: 0 };
-    filteredData.forEach((item) => {
-      switch (item.score) {
-        case 0:
-          scoreCounts["No"]++;
-          break;
-        case 1:
-          scoreCounts["Maybe"]++;
-          break;
-        case 2:
-          scoreCounts["Yes"]++;
-          break;
-        default:
-          break;
-      }
+    return data.filter((item) => {
+      const itemDate = new Date(item?.dowell_time?.current_time);
+      return itemDate >= pastDate && itemDate <= now;
     });
+  };
 
-    // Calculate total count
-    const totalCount = filteredData.length;
-
-    // Calculate percentage for each score
-    const scorePercentages = {
-      No: {
-        count: scoreCounts["No"],
-        percentage: (scoreCounts["No"] / totalCount) * 100,
-      },
-      Maybe: {
-        count: scoreCounts["Maybe"],
-        percentage: (scoreCounts["Maybe"] / totalCount) * 100,
-      },
-      Yes: {
-        count: scoreCounts["Yes"],
-        percentage: (scoreCounts["Yes"] / totalCount) * 100,
-      },
-    };
-
-    setScores(scorePercentages);
-    setTotalCount(totalCount);
+  const handleTimePeriodChange = (event) => {
+    setSelectedTimePeriod(event.target.value);
   };
 
   if (loading) {
@@ -320,10 +258,10 @@ const App = () => {
         Feedback Analysis Dashboard
       </Typography>
       <Grid container spacing={3} alignItems="center" justifyContent="center">
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={4}>
           <Select
             value={selectedChannel}
-            onChange={handleChannelSelect}
+            onChange={(e) => setSelectedChannel(e.target.value)}
             displayEmpty
             fullWidth
           >
@@ -337,10 +275,10 @@ const App = () => {
             ))}
           </Select>
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={4}>
           <Select
             value={selectedInstance}
-            onChange={handleInstanceSelect}
+            onChange={(e) => setSelectedInstance(e.target.value)}
             displayEmpty
             fullWidth
             disabled={selectedChannel === allChannelsNameTag}
@@ -355,128 +293,36 @@ const App = () => {
             ))}
           </Select>
         </Grid>
-      </Grid>
-      {
-        selectedChannel === allChannelsNameTag ? <>
-          {
-            React.Children.toArray(displayDataForAllSelection.map((item, index) => {
-              return <>
-                <Typography
-                  variant="h6"
-                  align="left"
-                  style={{ marginTop: "32px", marginBottom: "10px" }}
-                >
-                  {index + 1}. {instanceNames[item?.instanceName]}
-                </Typography>
-                
-                <Typography
-                  variant="body1"
-                  align="center"
-                  gutterBottom
-                  style={{ marginTop: "16px" }}
-                >
-                  Total Responses: {item?.totalResponses}
-                </Typography>
-                <Typography variant="body1" align="center" gutterBottom>
-                  Scores:
-                </Typography>
-                <Grid container spacing={3} alignItems="center" justifyContent="center">
-                  {Object.entries(item?.scoreCounts).map(([score, data]) => (
-                    <Grid item xs={12} sm={4} key={score}>
-                      <Box textAlign="center">
-                        <Typography variant="subtitle1" gutterBottom>
-                          {`${score}: ${data.count} (${data.percentage.toFixed(2)}%)`}
-                        </Typography>
-                        <LinearProgress
-                          variant="determinate"
-                          value={data.percentage}
-                          sx={{
-                            height: "20px",
-                            borderRadius: "10px",
-                            "& .MuiLinearProgress-bar": {
-                              borderRadius: "10px",
-                              backgroundColor:
-                                score === "No"
-                                  ? "red"
-                                  : score === "Maybe"
-                                  ? "yellow"
-                                  : "green",
-                            },
-                          }}
-                        />
-                      </Box>
-                    </Grid>
-                  ))}
-                </Grid>
-                <>
-                  <br />
-                  <br />
-
-                  <Bar 
-                    options={options} 
-                    data={item?.chartData} 
-                  />;
-                </>
-
-                <br />
-                <br />
-              </>
-            }))
-          }
-        </> : <>
-          <Typography
-            variant="body1"
-            align="center"
-            gutterBottom
-            style={{ marginTop: "16px" }}
+        <Grid item xs={12} md={4}>
+          <Select
+            value={selectedTimePeriod}
+            onChange={handleTimePeriodChange}
+            displayEmpty
+            fullWidth
           >
-            Total Responses: {totalCount}
-          </Typography>
-          <Typography variant="body1" align="center" gutterBottom>
-            Scores:
-          </Typography>
-          <Grid container spacing={3} alignItems="center" justifyContent="center">
-            {Object.entries(scores).map(([score, data]) => (
-              <Grid item xs={12} sm={4} key={score}>
-                <Box textAlign="center">
-                  <Typography variant="subtitle1" gutterBottom>
-                    {`${score}: ${data.count} (${data.percentage.toFixed(2)}%)`}
-                  </Typography>
-                  <LinearProgress
-                    variant="determinate"
-                    value={data.percentage}
-                    sx={{
-                      height: "20px",
-                      borderRadius: "10px",
-                      "& .MuiLinearProgress-bar": {
-                        borderRadius: "10px",
-                        backgroundColor:
-                          score === "No"
-                            ? "red"
-                            : score === "Maybe"
-                            ? "yellow"
-                            : "green",
-                      },
-                    }}
-                  />
-                </Box>
-              </Grid>
+            {timePeriods.map((period) => (
+              <MenuItem key={period.value} value={period.value}>
+                {period.label}
+              </MenuItem>
             ))}
-          </Grid>
-          {
-            selectedChannel.length < 1 || selectedInstance.length < 1 ? <></> :
-              <>
-                <br />
-                <br />
+          </Select>
+        </Grid>
+      </Grid>
 
-                <Bar 
-                  options={options} 
-                  data={dateDataForChart} 
-                />;
-            </>
-          } 
-        </>
-      }
+      {/* Render charts for each instance */}
+      <Box mt={5} display="flex" flexDirection="column" alignItems="center">
+        {dateDataForChart.map((chart, index) => (
+          <Box key={index} mt={5} display="flex" justifyContent="center" width="100%">
+            <Box style={{ width: "80%", maxWidth: "1200px", height: "500px" }}>
+              <Typography variant="h6" align="center">
+                Instance: {instanceNames[chart.instanceName]}
+              </Typography>
+              <Line options={options} data={chart.chartData} />
+            </Box>
+          </Box>
+        ))}
+      </Box>
+
     </Box>
   );
 };
