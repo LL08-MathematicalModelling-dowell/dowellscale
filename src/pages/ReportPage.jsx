@@ -228,7 +228,7 @@ const App = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        "https://100035.pythonanywhere.com/addons/get-response/?scale_id=6634a67d2c8831894e461782"
+        "https://www.scales.uxlivinglab.online/api/v1/get-response/?scale_id=6634a67d2c8831894e461782"
       );
       const data = response.data.data;
 
