@@ -292,7 +292,7 @@ const App = () => {
                 const datasetsInfo = extractLabelsAndDatasetsInfo(instanceData, dateRange);
 
                 return (
-                  <Box key={instance} style={{ width: "1200px", height: "500px", marginBottom: "40px" }}>
+                  <Box key={instance} style={{ width: "1200px", height: "500px", marginBottom: "105px" }}>
                     <Typography variant="h6" align="center" gutterBottom>
                       {instanceNames[instance]}
                     </Typography>
