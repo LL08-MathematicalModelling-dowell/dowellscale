@@ -62,151 +62,115 @@ const options = {
       text: "Responses Insights by Time",
     },
   },
+  scales: {
+    y: {
+      min: 0, // Ensure Y-axis starts from 0
+    },
+  },
 };
 
-const extractLabelsAndDatasetsInfo = (data = []) => {
-  const labelsForCharts = [
-    ...new Set(
-      data.map(
-        (item) =>
-          item?.dowell_time?.current_time &&
-          new Date(item?.dowell_time?.current_time).toDateString()
-      )
-    ),
-  ];
+const generateDateRange = (startDate, endDate) => {
+  const dateArray = [];
+  const currentDate = new Date(startDate);
 
+  while (currentDate <= endDate) {
+    dateArray.push(new Date(currentDate).toDateString());
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  return dateArray;
+};
+
+const extractLabelsAndDatasetsInfo = (data = [], dateRange) => {
   const datasetsForCharts = {
-    yesData: [],
-    noData: [],
-    maybeData: [],
+    yesData: new Array(dateRange.length).fill(0),
+    noData: new Array(dateRange.length).fill(0),
+    maybeData: new Array(dateRange.length).fill(0),
   };
 
-  labelsForCharts.forEach((item) => {
+  dateRange.forEach((date, index) => {
     const matchingData = data.filter(
       (dataItem) =>
-        dataItem?.dowell_time?.current_time &&
-        new Date(dataItem?.dowell_time?.current_time).toDateString() === item
+        new Date(dataItem?.dowell_time?.current_time).toDateString() === date
     );
 
-    datasetsForCharts.noData.push(
-      matchingData.filter((data) => data?.score === 0).length
-    );
-    datasetsForCharts.maybeData.push(
-      matchingData.filter((data) => data?.score === 1).length
-    );
-    datasetsForCharts.yesData.push(
-      matchingData.filter((data) => data?.score === 2).length
-    );
+    datasetsForCharts.noData[index] = matchingData.filter(
+      (data) => data?.score === 0
+    ).length;
+    datasetsForCharts.maybeData[index] = matchingData.filter(
+      (data) => data?.score === 1
+    ).length;
+    datasetsForCharts.yesData[index] = matchingData.filter(
+      (data) => data?.score === 2
+    ).length;
   });
 
-  return {
-    labels: labelsForCharts,
-    datasetsInfo: datasetsForCharts,
-  };
+  return datasetsForCharts;
 };
 
 const App = () => {
   const [channels, setChannels] = useState([]);
   const [instances, setInstances] = useState([]);
-  const [selectedChannel, setSelectedChannel] = useState("");
+  const [selectedChannel, setSelectedChannel] = useState(""); // Start with an empty value to show message
   const [selectedInstance, setSelectedInstance] = useState("");
   const [selectedTimePeriod, setSelectedTimePeriod] = useState(7); // Default to 7 days
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
-  const [dateDataForChart, setDateDataForChart] = useState([]);
+  const [dateDataForChart, setDateDataForChart] = useState({
+    labels: [],
+    datasets: [],
+  });
 
   useEffect(() => {
     fetchData();
   }, []);
 
   useEffect(() => {
-    if (selectedChannel === allChannelsNameTag) {
-      // When "All channels" is selected, generate charts for all instances.
-      const allInstanceCharts = instances.map((instance) => {
-        const filteredData = filterDataByTimePeriod(
-          data.filter(
-            (item) => item.instance_name === instance
-          )
-        );
+    if (!data || data.length === 0 || selectedChannel === "") return;
 
-        const { labels, datasetsInfo } = extractLabelsAndDatasetsInfo(filteredData);
+    // If "All Channels" is selected, render separate charts for each instance
+    const filteredData =
+      selectedChannel === allChannelsNameTag
+        ? data
+        : data.filter(
+            (item) =>
+              item.channel_name === selectedChannel &&
+              (selectedInstance === "" || item.instance_name === selectedInstance)
+          );
 
-        return {
-          instanceName: instance,
-          chartData: {
-            labels: labels,
-            datasets: [
-              {
-                label: "No",
-                data: datasetsInfo.noData,
-                borderColor: "red",
-                backgroundColor: "rgba(255, 0, 0, 0.2)",
-                fill: true,
-              },
-              {
-                label: "Yes",
-                data: datasetsInfo.yesData,
-                borderColor: "green",
-                backgroundColor: "rgba(0, 255, 0, 0.2)",
-                fill: true,
-              },
-              {
-                label: "Maybe",
-                data: datasetsInfo.maybeData,
-                borderColor: "yellow",
-                backgroundColor: "rgba(255, 255, 0, 0.2)",
-                fill: true,
-              },
-            ],
-          },
-        };
-      });
+    const now = new Date();
+    const pastDate = new Date();
+    pastDate.setDate(now.getDate() - selectedTimePeriod);
 
-      setDateDataForChart(allInstanceCharts);
-    } else {
-      // When a specific channel is selected, use the current logic to generate a single chart.
-      const filteredData = filterDataByTimePeriod(
-        data.filter(
-          (item) =>
-            item.channel_name === selectedChannel &&
-            item.instance_name === selectedInstance
-        )
-      );
+    const dateRange = generateDateRange(pastDate, now);
+    const datasetsInfo = extractLabelsAndDatasetsInfo(filteredData, dateRange);
 
-      const { labels, datasetsInfo } = extractLabelsAndDatasetsInfo(filteredData);
-
-      setDateDataForChart([
+    setDateDataForChart({
+      labels: dateRange,
+      datasets: [
         {
-          instanceName: selectedInstance,
-          chartData: {
-            labels: labels,
-            datasets: [
-              {
-                label: "No",
-                data: datasetsInfo.noData,
-                borderColor: "red",
-                backgroundColor: "rgba(255, 0, 0, 0.2)",
-                fill: true,
-              },
-              {
-                label: "Yes",
-                data: datasetsInfo.yesData,
-                borderColor: "green",
-                backgroundColor: "rgba(0, 255, 0, 0.2)",
-                fill: true,
-              },
-              {
-                label: "Maybe",
-                data: datasetsInfo.maybeData,
-                borderColor: "yellow",
-                backgroundColor: "rgba(255, 255, 0, 0.2)",
-                fill: true,
-              },
-            ],
-          },
+          label: "No",
+          data: datasetsInfo.noData,
+          borderColor: "red",
+          backgroundColor: "rgba(255, 0, 0, 0.2)",
+          fill: true,
         },
-      ]);
-    }
+        {
+          label: "Yes",
+          data: datasetsInfo.yesData,
+          borderColor: "green",
+          backgroundColor: "rgba(0, 255, 0, 0.2)",
+          fill: true,
+        },
+        {
+          label: "Maybe",
+          data: datasetsInfo.maybeData,
+          borderColor: "yellow",
+          backgroundColor: "rgba(255, 255, 0, 0.2)",
+          fill: true,
+        },
+      ],
+    });
   }, [selectedChannel, selectedInstance, selectedTimePeriod, data]);
 
   const fetchData = async () => {
@@ -214,34 +178,23 @@ const App = () => {
       const response = await axios.get(
         "https://www.scales.uxlivinglab.online/api/v1/get-response/?scale_id=6634a67d2c8831894e461782"
       );
-      const data = response.data.data;
+      const fetchedData = response.data.data;
 
       const uniqueChannels = Array.from(
-        new Set(data.map((item) => item.channel_name))
+        new Set(fetchedData.map((item) => item.channel_name))
       );
       const uniqueInstances = Array.from(
-        new Set(data.map((item) => item.instance_name))
+        new Set(fetchedData.map((item) => item.instance_name))
       );
 
       setChannels([allChannelsNameTag, ...uniqueChannels]);
       setInstances(uniqueInstances);
-      setData(data);
+      setData(fetchedData);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
       setLoading(false);
     }
-  };
-
-  const filterDataByTimePeriod = (data) => {
-    const now = new Date();
-    const pastDate = new Date();
-    pastDate.setDate(now.getDate() - selectedTimePeriod);
-
-    return data.filter((item) => {
-      const itemDate = new Date(item?.dowell_time?.current_time);
-      return itemDate >= pastDate && itemDate <= now;
-    });
   };
 
   const handleTimePeriodChange = (event) => {
@@ -266,7 +219,7 @@ const App = () => {
             fullWidth
           >
             <MenuItem value="" disabled>
-              Select Channel
+              Select channel
             </MenuItem>
             {channels.map((channel) => (
               <MenuItem key={channel} value={channel}>
@@ -281,7 +234,7 @@ const App = () => {
             onChange={(e) => setSelectedInstance(e.target.value)}
             displayEmpty
             fullWidth
-            disabled={selectedChannel === allChannelsNameTag}
+            disabled={selectedChannel === allChannelsNameTag} // Disable if All Channels is selected
           >
             <MenuItem value="" disabled>
               Select Instance
@@ -309,20 +262,82 @@ const App = () => {
         </Grid>
       </Grid>
 
-      {/* Render charts for each instance */}
-      <Box mt={5} display="flex" flexDirection="column" alignItems="center">
-        {dateDataForChart.map((chart, index) => (
-          <Box key={index} mt={5} display="flex" justifyContent="center" width="100%">
-            <Box style={{ width: "80%", maxWidth: "1200px", height: "500px" }}>
-              <Typography variant="h6" align="center">
-                Instance: {instanceNames[chart.instanceName]}
-              </Typography>
-              <Line options={options} data={chart.chartData} />
-            </Box>
-          </Box>
-        ))}
-      </Box>
+      {/* Centered message when no channel is selected */}
+      {!selectedChannel && (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          style={{ height: "300px" }}
+        >
+          <Typography variant="h6" align="center">
+            Please make a selection to generate the report
+          </Typography>
+        </Box>
+      )}
 
+      {/* Only show the charts if a channel has been selected */}
+      {selectedChannel && (
+        <Box mt={5} display="flex" justifyContent="center" alignItems="center" flexDirection="column">
+          {selectedChannel === allChannelsNameTag
+            ? instances.map((instance) => {
+                // Filter data specific to each instance
+                const instanceData = data.filter(
+                  (item) => item.instance_name === instance
+                );
+                const now = new Date();
+                const pastDate = new Date();
+                pastDate.setDate(now.getDate() - selectedTimePeriod);
+                const dateRange = generateDateRange(pastDate, now);
+                const datasetsInfo = extractLabelsAndDatasetsInfo(instanceData, dateRange);
+
+                return (
+                  <Box key={instance} style={{ width: "1200px", height: "500px", marginBottom: "40px" }}>
+                    <Typography variant="h6" align="center" gutterBottom>
+                      {instanceNames[instance]}
+                    </Typography>
+                    <Line
+                      options={options}
+                      data={{
+                        labels: dateRange,
+                        datasets: [
+                          {
+                            label: "No",
+                            data: datasetsInfo.noData,
+                            borderColor: "red",
+                            backgroundColor: "rgba(255, 0, 0, 0.2)",
+                            fill: true,
+                          },
+                          {
+                            label: "Yes",
+                            data: datasetsInfo.yesData,
+                            borderColor: "green",
+                            backgroundColor: "rgba(0, 255, 0, 0.2)",
+                            fill: true,
+                          },
+                          {
+                            label: "Maybe",
+                            data: datasetsInfo.maybeData,
+                            borderColor: "yellow",
+                            backgroundColor: "rgba(255, 255, 0, 0.2)",
+                            fill: true,
+                          },
+                        ],
+                      }}
+                    />
+                  </Box>
+                );
+              })
+            : selectedInstance && (
+                <Box style={{ width: "1200px", height: "500px", marginBottom: "40px" }}>
+                  <Typography variant="h6" align="center" gutterBottom>
+                    {instanceNames[selectedInstance]}
+                  </Typography>
+                  <Line options={options} data={dateDataForChart} />
+                </Box>
+              )}
+        </Box>
+      )}
     </Box>
   );
 };
